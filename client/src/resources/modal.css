@@ -1,0 +1,38 @@
+.bill-model-class.ant-modal {
+  top: 5px;
+  width: 100%!important;
+  transform-origin: 85px 43px!important;
+  overflow-y: auto;
+  height: -webkit-fill-available;
+}
+.bill-model-class .ant-modal-body {
+  padding: 5px;
+}
+
+/* -------------- FOR BOOK MODEL ------------------- */
+.book-model-class.ant-modal {
+  top: 10px;
+}
+.book-model-class .ant-modal-content,
+.book-model-class .ant-modal-close-x,
+.book-model-class .ant-modal-header {
+  background-color: #5f5d54!important;
+}
+
+.book-model-class .ant-modal-close-x {
+  color: white!important;
+  padding: 9px 20px 0px 0px;
+  width: unset!important;
+  height: unset!important;
+  line-height: unset!important;
+  color:orange!important;
+}
+
+.book-model-class .ant-modal-header {
+  padding: 10px 24px;
+  border: none!important;
+}
+.book-model-class .ant-modal-title,
+.book-model-class label {
+  color:orange;
+}
