@@ -1,21 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, Modal, Select, Table, Upload } from "antd";
+import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 
 import Request from "../../library/request";
+import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG, REQUIRED } from "../../constants";
 import "../../resources/modal.css";
 
 const LANG = ["English", "Nepali", "Hindi", "Others"];
+const SEARCH_FIELDS = ["name", "author", "language", "category"];
 
 const BookComponent = () => {
-  const [itemsData, setItemsData] = useState([]);
+  const [itemsData, setItemsData] = useState([]); // All data fetched from server
+  const [tableData, setTableData] = useState([]); // Required for Search in table
   const [categories, setCategories] = useState([]);
-  const [categoryMap, setCategoryMap] = useState([]);
+  const [categoryMap, setCategoryMap] = useState({});
   const [openModel, setOpenModel] = useState(false);
   const [editData, setEditData] = useState(null);
   const [itemDetail, setItemDetail] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
 
   const getAll = async (reqType = "books") => {
     try {
@@ -24,6 +28,7 @@ const BookComponent = () => {
       if (success) {
         if (reqType === "books") {
           setItemsData(data);
+          setTableData(data);
         } else {
           const normalized = data.reduce((acc, curr) => {
             acc[curr._id] = curr.name;
@@ -42,7 +47,9 @@ const BookComponent = () => {
 
       if (success) {
         message.success(msg);
-        setItemsData(itemsData.filter(d => d._id !== record._id));
+        const newData = itemsData.filter(d => d._id !== record._id);
+        setItemsData(newData);
+        setTableData(newData);
       } else {
         message.error(msg);
       }
@@ -145,15 +152,61 @@ const BookComponent = () => {
       .catch(() => message.error(DEFAULT_ERR_MSG));
   };
 
+  /* Handle search */
+  const onSearch = (str = "") => {
+    const keyword = str.replace(/\s/g, "").toLowerCase();
+
+    if (searchKeyword !== keyword) {
+      setSearchKeyword(keyword);
+
+      if (!keyword) {
+        return setTableData(itemsData);
+      }
+
+      const reg = new RegExp(keyword);
+      const filteredData = itemsData.filter(obj => {
+        const text = SEARCH_FIELDS.reduce((acc, key) => {
+          let val = obj[key] || "";
+          
+          if (key === "category") {
+            val = categoryMap[val] || "";
+          }
+          acc += val;
+          return acc;
+        }, "");
+
+        return reg.test(text.replace(/\s/g, "").toLowerCase());
+      });
+      setTableData(filteredData);
+    }
+  };
+
+  /* Handle change in search input */
+  const onChange = e => {
+    const keyword = e && e.target && e.target.value;
+
+    if (!keyword) {
+      onSearch("");
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
         <h3>Books</h3>
-        <Button type="primary" onClick={() => setOpenModel(true)}>
-          + New Book
-        </Button>
       </div>
-      <Table columns={columns} dataSource={itemsData} bordered />
+      <TableComponent
+        columns={columns}
+        dataSource={tableData}
+        bordered={true}
+        showSearch={true}
+        searchPlaceholder="Search for the books..."
+        onSearch={onSearch}
+        onChange={onChange}
+        showAddButton={true}
+        addButtonLabel="+ New Book"
+        buttonOnClick={() => setOpenModel(true)}
+      />
 
       {openModel && (
         <Modal

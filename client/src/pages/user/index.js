@@ -1,21 +1,27 @@
 import React, { useEffect, useState } from "react";
 import { DeleteOutlined, CheckCircleOutlined, EyeOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, Modal, Table } from "antd";
+import { Button, Form, Input, message, Modal } from "antd";
 
 import Request from "../../library/request";
+import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG, REQUIRED } from "../../constants";
 
+const SEARCH_FIELDS = ["username", "email", "verified", "role", "name"];
+
 const UserComponent = () => {
-  const [itemsData, setItemsData] = useState([]);
+  const [itemsData, setItemsData] = useState([]); // All data fetched from server
+  const [tableData, setTableData] = useState([]); // Required for Search in table
   const [openModel, setOpenModel] = useState(false);
   const [userDetail, setUserDetail] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
 
   const getAll = async () => {
     try {
       const {data: { success, data }} = await Request.get(`/api/users/getAll`);
       if (success) {
         setItemsData(data);
+        setTableData(data);
       }
     } catch (err) {}
   };
@@ -26,7 +32,9 @@ const UserComponent = () => {
       
       if (success) {
         message.success(msg);
-        setItemsData(itemsData.filter(d => d._id !== record._id));
+        const newData = itemsData.filter(d => d._id !== record._id);
+        setItemsData(newData);
+        setTableData(newData);
       } else {
         message.error(msg);
       }
@@ -109,15 +117,56 @@ const UserComponent = () => {
 
   useEffect(() => getAll(), []);
 
+  /* Handle search */
+  const onSearch = (str = "") => {
+    const keyword = str.replace(/\s/g, "").toLowerCase();
+
+    if (searchKeyword !== keyword) {
+      setSearchKeyword(keyword);
+
+      if (!keyword) {
+        return setTableData(itemsData);
+      }
+
+      const reg = new RegExp(keyword);
+      const filteredData = itemsData.filter(obj => {
+        const text = SEARCH_FIELDS.reduce((acc, key) => {
+          acc += obj[key] || "";
+          return acc;
+        }, "");
+
+        return reg.test(text.replace(/\s/g, "").toLowerCase());
+      });
+      setTableData(filteredData);
+    }
+  };
+
+  /* Handle change in search input */
+  const onChange = e => {
+    const keyword = e && e.target && e.target.value;
+
+    if (!keyword) {
+      onSearch("");
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
         <h3>Users</h3>
-        <Button type="primary" onClick={() => setOpenModel(true)}>
-          + New Admin
-        </Button>
       </div>
-      <Table columns={columns} dataSource={itemsData} bordered />
+      <TableComponent
+        columns={columns}
+        dataSource={tableData}
+        bordered={true}
+        showSearch={true}
+        searchPlaceholder="Search for the users..."
+        onSearch={onSearch}
+        onChange={onChange}
+        showAddButton={true}
+        addButtonLabel="+ New Admin User"
+        buttonOnClick={() => setOpenModel(true)}
+      />
 
       {openModel && (
         <Modal

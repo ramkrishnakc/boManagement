@@ -4,6 +4,7 @@ import { Button, Modal, Table } from "antd";
 import { useReactToPrint } from "react-to-print";
 
 import Request from "../../library/request";
+import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 
 const getSubtotal = cartItems => cartItems.reduce((acc, curr) => acc + curr.total, 0);
@@ -13,17 +14,22 @@ const getTotal = (cartItems, taxRate) => {
   return subTotal + (taxRate / 100 * subTotal);
 };
 
+const SEARCH_FIELDS = ["customerName", "customerEmail", "customerNumber", "status"];
+
 const OrderComponent = () => {
   const componentRef = useRef();
-  const [itemsData, setItemsData] = useState([]);
+  const [itemsData, setItemsData] = useState([]); // All data fetched from server
+  const [tableData, setTableData] = useState([]); // Required for Search in table
   const [openModel, setOpenModel] = useState(false);
   const [bill, setBill] = useState(null);
+  const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   
   const getAll = async () => {
     try {
       const {data: { success, data }} = await Request.get(`/api/bills/getAll`);
       if (success) {
         setItemsData(data);
+        setTableData(data);
       }
     } catch (err) {}
   };
@@ -105,12 +111,55 @@ const OrderComponent = () => {
     content: () => componentRef.current,
   });
 
+  /* Handle search */
+  const onSearch = (str = "") => {
+    const keyword = str.replace(/\s/g, "").toLowerCase();
+
+    if (searchKeyword !== keyword) {
+      setSearchKeyword(keyword);
+
+      if (!keyword) {
+        return setTableData(itemsData);
+      }
+
+      const reg = new RegExp(keyword);
+      const filteredData = itemsData.filter(obj => {
+        const text = SEARCH_FIELDS.reduce((acc, key) => {
+          acc += obj[key] || "";
+          return acc;
+        }, "");
+
+        return reg.test(text.replace(/\s/g, "").toLowerCase());
+      });
+      setTableData(filteredData);
+    }
+  };
+
+  /* Handle change in search input */
+  const onChange = e => {
+    const keyword = e && e.target && e.target.value;
+
+    if (!keyword) {
+      onSearch("");
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
         <h3>Orders</h3>
       </div>
-      <Table columns={columns} dataSource={itemsData} bordered />
+      <TableComponent
+        columns={columns}
+        dataSource={tableData}
+        bordered={true}
+        showSearch={true}
+        searchPlaceholder="Search for the orders..."
+        onSearch={onSearch}
+        onChange={onChange}
+        showAddButton={false}
+        searchInlineStyle={{ marginRight: 0 }}
+      />
 
       {openModel && (
         <Modal

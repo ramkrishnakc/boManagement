@@ -1,0 +1,12 @@
+{
+  "ignore": [
+    "dist/",
+    "node_modules/",
+    "public/",
+    "client/",
+    "*.log",
+    "*.md"
+  ],
+  "watch": ["server.js", "server/"],
+  "ext": "js, css"
+}
