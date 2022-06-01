@@ -1,4 +1,8 @@
 const mongoose = require("mongoose");
+const { RECEIVED, PENDING, COMPLETED, CANCELED } = require("../controller/helper/lib");
+
+const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+const emailMsg = "Please fill a valid email address";
 
 const billSchema = mongoose.Schema({
   customerId: { type: String },
@@ -8,14 +12,8 @@ const billSchema = mongoose.Schema({
   customerEmail: {
     type: String,
     required: () => !this.customerId,
-    validate: [
-      email => (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/).test(email),
-      'Please fill a valid email address'
-    ],
-    match: [
-      /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/,
-      'Please fill a valid email address'
-    ]
+    validate: [email => emailReg.test(email), emailMsg],
+    match: [emailReg, emailMsg],
   },
   taxRate: { type: Number, default: 13 },
   paymentMode : { type: String, default: "online" },
@@ -32,8 +30,8 @@ const billSchema = mongoose.Schema({
   ],
   status: {
     type: String,
-    default: "received",
-    enum: ["received", "pending", "completed", "canceled"],
+    default: RECEIVED,
+    enum: [RECEIVED, PENDING, COMPLETED, CANCELED],
   },
 }, {
   timestamps : true,

@@ -1,10 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 import { Table } from "antd";
 
 import Request from "../../library/request";
 import DefaultLayout from "../../components/DefaultLayout";
-import { SHOW_LOADER } from "../../constants";
 import SimplePieChart from "./piechart";
 import SimpleLineChart from "./lineChart";
 import {
@@ -20,27 +18,30 @@ const getLatestData = data => ([
   {
     books: `${data.bookNew} | ${data.bookTotal}`,
     users: `${data.userUnverified} | ${data.userNew} | ${data.userTotal}`,
-    orders: `${data.orderProcessed} | ${data.orderPending} | ${data.orderReceived}`,
+    orders: `${data.orderProcessed} | ${data.orderPending} | ${data.orderReceived} | ${data.orderCancelled}`,
   },
   {
     books: (
       <SimplePieChart data={[
-        { name: "New", value: data.bookNew },
-        { name: "Existing", value: data.bookTotal - data.bookNew },
+        { name: `New(${data.bookNew})`, value: data.bookNew },
+        {
+          name: `Existing(${data.bookTotal - data.bookNew})`,
+          value: data.bookTotal - data.bookNew
+        },
       ]}
     />),
     users: (
       <SimplePieChart data={[
-        { name: "New", value: data.userNew },
-        { name: "Existing", value: data.userTotal - data.userNew - data.userUnverified },
-        { name: "Unverified", value: data.userUnverified },
+        { name: `New(${data.userNew})`, value: data.userNew },
+        { name: `Unverified(${data.userUnverified})`, value: data.userUnverified },
       ]}
     />),
     orders: <SimplePieChart data={[
-      { name: "Processed", value: data.orderProcessed },
-      { name: "Pending", value: data.orderPending },
-      { name: "Received", value: data.orderReceived }
-    ]} />,
+      { name: `Processed(${data.orderProcessed})`, value: data.orderProcessed },
+      { name: `Pending(${data.orderPending})`, value: data.orderPending },
+      { name: `Received(${data.orderReceived})`, value: data.orderReceived },
+      { name: `Cancelled(${data.orderCancelled})`, value: data.orderCancelled },
+    ].filter(d => d.value)} />,
   }
 ]);
 
@@ -62,7 +63,7 @@ const getBooksByCategory = data => ([{
 }]);
 
 const getSummaryData = data => {
-  const lineKeys = ["book", "user", "order", "revenue"];
+  const lineKeys = ["book", "user", "order"];
   return [{
     summary: (
       <SimpleLineChart data={data} dataKey="day" lineKeys={lineKeys} />
@@ -72,24 +73,18 @@ const getSummaryData = data => {
 
 const DashboardComponent = () => {
   const [dashboardData, setDashboardData] = useState(DASHBOARD_INIT);
-  const dispatch = useDispatch();
 
   const getData = async () => {
     try {
-      dispatch({ type: SHOW_LOADER, payload: true });
       const {data: { success, data }} = await Request.get(`/api/dashboard/getData`);
-      dispatch({ type: SHOW_LOADER });
 
       if (success) {
         setDashboardData({
           ...dashboardData,
-          data,
+          ...data,
         });
       }
-    } catch (err) {
-      dispatch({ type: SHOW_LOADER });
-      console.log(err);
-    }
+    } catch (err) {}
   };
 
   useEffect(() => getData(), []);
@@ -115,10 +110,18 @@ const DashboardComponent = () => {
         className="ant-table-custom"
       />
       <br />
-      <p>Top 10 books by purchase order: <sub>(On basis of 48 hours sales. Revenue is on basis of any state of item order)</sub></p>
+      <p>Top 5 books by purchase order: <sub>(On basis of volume of book sales for 48 hours)</sub></p>
       <Table
         columns={TOP_BOOKS_COL}
-        dataSource={dashboardData.topTenBooks}
+        dataSource={dashboardData.topBooksByQty}
+        pagination={false}
+        className="ant-table-custom"
+      />
+      <br />
+      <p>Top 5 books by revenue: <sub>(On basis of revenue for 48 hours sales. Revenue is on basis of any state of item order)</sub></p>
+      <Table
+        columns={TOP_BOOKS_COL}
+        dataSource={dashboardData.topBooksByRevenue}
         pagination={false}
         className="ant-table-custom"
       />
