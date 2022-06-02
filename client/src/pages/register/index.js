@@ -1,17 +1,26 @@
 import React from 'react';
 import { Button, Col, Form, Input, message, Row } from "antd";
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Request from '../../library/request';
 import { REQUIRED } from "../../constants";
 import '../../resources/authentication.css';
 
 const RegisterComponent = () => {
+  const navigate = useNavigate();
 
   const onFinish = values => {
     Request
       .post('/api/users/signup' , values)
-      .then(res => message.success('Registration successful , please wait for verification'))
+      .then(res => {
+        const {data: { success }} = res;
+        if (success) {
+          message.success('Registration successful, please wait for verification.');
+          navigate("/");
+        } else {
+          message.error('Registration Failed, try again later.');
+        }
+      })
       .catch(() => {
         message.error('Something went wrong');
       });
@@ -22,9 +31,7 @@ const RegisterComponent = () => {
       <Row>
         <Col lg={8} xs={22}>
           <Form layout="vertical" onFinish={onFinish}>
-            <h1><b>Learn Nepal</b></h1>
-            <hr />
-            <h3>Register</h3>
+            <h3>Register</h3><hr /><br />
             <Form.Item
               name="username"
               label="Username"
@@ -71,7 +78,7 @@ const RegisterComponent = () => {
               ]}
             >
               <Input type='password'/>
-              <ul style={{ fontSize: "11px" }}>
+              <ul style={{ fontSize: "10px", padding: "0px 0px 0px 15px" }}>
                 <li>At least 8 characters long.</li>
                 <li>At least one uppercase letter.</li>
                 <li>At least one lowercase letter.</li>
@@ -80,11 +87,20 @@ const RegisterComponent = () => {
               </ul>
             </Form.Item>
 
-            <div className="d-flex justify-content-between align-items-center">
-              <Link to='/login'>Already Registered ? Click Here To Login</Link>
-              <Button htmlType="submit" type="primary">
-                Register
-              </Button>
+            <Button block htmlType="submit" type="primary">
+              Register
+            </Button>
+
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{ marginTop: "20px", fontSize: "12px" }}
+            >
+              <Link to="/">
+                <a href="/">Go to Home</a> 
+              </Link>
+              <Link to='/login'>
+                <a href="/login">Already Registered ? Click Here To Login</a> 
+              </Link>
             </div>
           </Form>
         </Col>

@@ -10,14 +10,26 @@ import Order from "../pages/order";
 import User from "../pages/user";
 import Dashboard from "../pages/dashboard";
 import Profile from "../pages/profile";
+import Home from "../pages/home";
 
+/* validate admin user */
 const AdminRoute = ({ children }) => {
   const info = LocalStore.decodeToken();
   
-  if (info && info.role === "admin") {
+  if (info && info.role === "admin" && Date.now() < info.expiredAt) {
     return children;
   }
   return <Navigate to="/login" />;
+};
+
+/* validate normal user */
+const UserRoute = ({ children }) => {
+  const info = LocalStore.decodeToken();
+  
+  if (info && info.role === "user" && Date.now() < info.expiredAt) {
+    return children;
+  }
+  return <Navigate to="/" />;
 };
 
 const AllRoutes = () => {
@@ -75,7 +87,10 @@ const AllRoutes = () => {
           />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/about-us" element={<Home />} />
+          <Route path="/contact-us" element={<Home />} />
+          <Route path="/cart" element={<Home />} />
         </Routes>
       </BrowserRouter>
     </div>

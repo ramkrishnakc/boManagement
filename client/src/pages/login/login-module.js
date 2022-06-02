@@ -13,10 +13,11 @@ const loginReducer = (state = {...INITIAL_STATE}, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS: {
       LocalStore.set(action.payload);
+      const {iat, createdAt, expiredAt, ...rest} = LocalStore.decodeToken(action.payload);
       
       return {
         ...state,
-        ...LocalStore.decodeToken(action.payload),
+        ...rest,
         isLoggedIn: true,
       };
     }

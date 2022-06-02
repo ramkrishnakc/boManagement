@@ -3,3 +3,7 @@ node_modules
 **/node_modules
 /public
 *.log
+/client/src/Images
+*.rdb
+*.txt
+*-lock.json

@@ -46,11 +46,7 @@ const LoginComponent = () => {
       <Row>
         <Col lg={8} xs={22}>
           <Form layout="vertical" onFinish={onFinish}>
-            <h1>
-              <b>Learn Nepal</b>
-            </h1>
-            <hr />
-            <h3>Login</h3>
+            <h3>Login</h3><hr /><br />
 
             <Form.Item
               name="username"
@@ -67,13 +63,20 @@ const LoginComponent = () => {
               <Input type="password" />
             </Form.Item>
 
-            <div className="d-flex justify-content-between align-items-center">
-              <Link to="/register">
-                Not Yet Registered ? Click Here To Register
+            <Button block htmlType="submit" type="primary">
+              Login
+            </Button>
+
+            <div
+              className="d-flex justify-content-between align-items-center"
+              style={{ marginTop: "20px", fontSize: "12px" }}
+            >
+              <Link to="/">
+                <a href="/">Go to Home</a> 
               </Link>
-              <Button htmlType="submit" type="primary">
-                Login
-              </Button>
+              <Link to="/register">
+                <a href="/register">Not Yet Registered ? Click Here To Register</a>
+              </Link>
             </div>
           </Form>
         </Col>

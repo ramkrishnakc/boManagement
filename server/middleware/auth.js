@@ -23,9 +23,11 @@ const getPayload = async req => {
 
 const Auth = {
   generateToken: payload => {
+    const createdAt = Date.now();
     const data = {
       ...payload,
-      createdAt: Date.now(),
+      createdAt,
+      expiredAt: createdAt + config.tokenLife
     };
   
     return jwt.sign(data, config.tokenKey);

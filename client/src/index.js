@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import reportWebVitals from "./reportWebVitals";
 
 import AllRoutes from './library/routes';
 import Store from './library/reduxStore';
@@ -20,4 +19,3 @@ ReactDOM.render(
 if (module.hot) {
   module.hot.accept(); // eslint-disable-line no-undef
 }
-reportWebVitals();

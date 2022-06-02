@@ -60,7 +60,7 @@ const DefaultLayout = (props) => {
           </Menu>
         </div>
       </Sider>
-      <Layout className="site-layout">
+      <Layout className="site-layout default-admin-layout">
         <Header className="site-layout-background" style={{ padding: 10 }}>
           {React.createElement(
             sidbarCollapse ? MenuUnfoldOutlined : MenuFoldOutlined,
@@ -69,42 +69,36 @@ const DefaultLayout = (props) => {
               onClick: toggle,
             }
           )}
-          <div className="d-flex align-items-center">
-            <>
+          <div className="d-flex header-icons-right">
+            <div
+              className="d-flex align-items-center cart-div"
+              onClick={() => {
+                navigate("/profile");
+              }}
+            >
               <UserSwitchOutlined />
               <span
                 title="Navigate to user profile page"
-                className="d-flex cart-count"
-                style={{
-                  marginLeft: "1px",
-                  marginRight: "15px",
-                  fontSize: "12px",
-                }}
-                onClick={() => {
-                  navigate("/profile");
-                }}
+                className="d-flex cart-span"
               >
-                User profile
+                Profile
               </span>
-            </>
-            <>
+            </div>
+            <div
+              className="d-flex align-items-center cart-div"
+              onClick={() => {
+                dispatch({ type: LOG_OUT });
+                navigate("/");
+              }}
+            >
               <LoginOutlined />
               <span
                 title="Log out from application"
-                className="d-flex cart-count"
-                style={{
-                  marginLeft: "3px",
-                  marginRight: "10px",
-                  fontSize: "12px",
-                }}
-                onClick={() => {
-                  dispatch({ type: LOG_OUT });
-                  navigate("/login");
-                }}
+                className="d-flex cart-span log-out-span"
               >
-                Sign Out
+                Log Out
               </span>
-            </>
+            </div>
           </div>
         </Header>
         <Content
