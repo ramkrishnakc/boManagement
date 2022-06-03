@@ -1,3 +1,11 @@
+/* Get date before certain hours + minutes */
+const dateBefore = (hrs, min = 0) => {
+  const ts = Math.round(new Date().getTime() / 1000);
+  const tsBefore = ts - (hrs * 3600) - (min * 60);
+
+  return new Date(tsBefore * 1000);
+};
+
 const getMessage = (code, msg) => {
   if (msg) {
     return msg;
@@ -13,6 +21,7 @@ const getMessage = (code, msg) => {
   }
 };
 
+/* Respond with proper error code & message */
 const sendError = (res, code = 500, msg = "") => {
   return res.status(code)
     .json({
@@ -21,6 +30,7 @@ const sendError = (res, code = 500, msg = "") => {
     });
 };
 
+/* Respond success with data and message */
 const sendData = (res, data, message) => {
   const payload = { success: true };
 
@@ -51,6 +61,7 @@ const MONTHS = {
 };
 
 module.exports = {
+  dateBefore,
   sendError,
   sendData,
   RECEIVED: "received",

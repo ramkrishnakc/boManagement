@@ -54,7 +54,7 @@ const add = async (req, res) => {
       payload.description = description;
     }
     if (req.file && req.file.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/public/${req.file.filename}`;
+      payload.image = `/public/${req.file.filename}`;
     }
 
     const newItem = new CategoryModel(payload);

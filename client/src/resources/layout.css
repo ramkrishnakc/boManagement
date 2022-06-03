@@ -5,53 +5,37 @@
   cursor: pointer;
   transition: color 0.3s;
 }
-
 #components-layout-demo-custom-trigger .trigger:hover {
   color: #1890ff;
 }
-
 #components-layout-demo-custom-trigger .logo {
   height: 32px;
   margin: 16px;
   background: rgba(255, 255, 255, 0.3);
 }
-
 .site-layout .site-layout-background {
   background: #fff;
-  /* box-shadow: 0 0 3px #ccc; */
-  /* border-radius: 5px; */
-}
-
-.ant-layout-has-sider {
-  /* padding: 15px !important; */
 }
 .ant-layout-sider {
-  /* background: #3a4b5d!important; */
   background: #535a61!important;
-  /* border-radius: 10px !important; */
 }
 .ant-layout-sider-children {
-  /* padding-top: 15px; */
   height: 100vh;
 }
 .ant-layout-header{
-    /* margin: 0 10px !important; */
-    display: flex;
-    align-items: center;
-    /* border-radius: 5px; */
-    justify-content: space-between;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .anticon svg {
   height: 20px;
   width: 20px;
   font-size: 20px;
 }
-
 .logo {
   padding-top: 15px;
   padding-bottom: 15px;
 }
-
 .logo h3{
   color:white !important;
   font-size: 22px;
@@ -59,14 +43,8 @@
   text-align: center;
   padding-bottom: 0px !important;
 }
-
 .ant-menu-item-selected {
   background-color: #047979 !important;
-  /* border-top-right-radius: 8px;
-  border-bottom-right-radius: 8px; */
-}
-.cart-count{
-  cursor: pointer;
 }
 .spinner{
   z-index: 10;
@@ -79,14 +57,13 @@
   height: 100px;
   width: 100px;
 }
-.ant-layout-content {
+.default-admin-layout > .ant-layout-content {
   height: 80vh;
   overflow-y: scroll;
 }
 
 button {
-  /* background-color: rgb(15, 155, 15) !important; */
-  background-color: #3a4b5d !important;
+  background-color: #1890ff !important;
   color: white !important;
   border: none !important;
   box-shadow: none;
@@ -98,11 +75,9 @@ button {
 }
 .ant-table-thead th {
   background-color: #767d83 !important;
-  /* background-color: #3a4b5d !important; */
   color: white!important;
 }
 .ant-menu.ant-menu-dark {
-  /* background: #3a4b5d!important; */
   background: #535a61!important;
 }
 .ant-table-custom .ant-table {
@@ -127,8 +102,74 @@ button {
   background: #5f5d54;
 }
 .profile-col-1 {
-  margin-right: 15px;
+  margin-right: 20px;
 }
 .profile-col-2 {
-  margin-left: 15px;
+  margin-left: 25px;
+}
+
+.logobar {
+  margin-left: 20px;
+}
+.footer {
+  background-color: rgb(54, 59, 58);
+  color: antiquewhite;
+  padding-top: 10px;
+  position: relative;
+  top: 20px;
+}
+.footer h4 {
+  color: antiquewhite;
+}
+.foot-col {
+  padding-left: 20px;
+}
+.foot-col ul {
+  padding: 0px;
+}
+.foot-col li {
+  list-style-type: none;
+  text-align: left;
+}
+.contactfooter {
+  padding-right: 30px;
+}
+.sticky-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.m-10 {
+  margin: 10px;
+  padding: 10px;
+}
+.loginbutton {
+  padding-right: 10px;
+  margin-right: 20px;
+  border-radius: 35px;
+  text-align: center;
+  color: rgb(211, 155, 34);
+  position: relative;
+  left: 100px;
+  font-size: 20px;
+}
+.logintext {
+  position: relative;
+  bottom: 15px;
+}
+.header-icons-right {
+  color: rgb(211, 155, 34);
+  font-size: 12px;
+}
+.cart-div {
+  cursor: pointer;
+  color: rgb(211, 155, 34);
+  font-size: 12px;
+  margin-right: 15px;
+}
+.cart-span {
+  margin-left: 2px;
+}
+.log-out-span {
+  margin-right: 10px;
 }

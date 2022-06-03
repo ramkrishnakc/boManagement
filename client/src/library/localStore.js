@@ -19,12 +19,16 @@ const LocalStore = {
   },
 
   decodeToken: myToken => {
-    const token = myToken || LocalStore.get();
+    try {
+      const token = myToken || LocalStore.get();
 
-    if (token) {
-      return jwt(token);
+      if (token) {
+        return jwt(token);
+      }
+      return null;
+    } catch (err) {
+      return null;
     }
-    return null;
   },
 };
 

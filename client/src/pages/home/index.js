@@ -1,9 +1,9 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Row, Col } from "antd";
 
+import Request from "../../library/request";
 import SliderComponent from "../../components/Slider";
 import HomeLayout from "../../components/HomeLayout";
-import {recentBooks} from "./helper";
 import "../../resources/home.css";
 
 const STATIC_SLIDER_OPTIONS = {
@@ -24,7 +24,30 @@ const SLIDER_OPTIONS = {
   autoplaySpeed: 2000,
 };
 
-export default function newhome() {
+const HomeComponent = () => {
+  const [homeData, setHomeData] = useState({
+    recentBooks: [],
+    topBooks: [],
+    categories: [],
+  });
+
+  const getData = async () => {
+    try {
+      const {data: { success, data }} = await Request.get(`/api/home/getData`);
+
+      if (success) {
+        setHomeData({
+          ...homeData,
+          ...data,
+        });
+      }
+    } catch (err) {}
+  };
+
+  useEffect(() => {
+    getData()
+  }, []);
+
   return (
     <HomeLayout>
       <div className="back-image-div">
@@ -37,9 +60,9 @@ export default function newhome() {
           </Col>
           <Col span={12}>
             <h3>
-              Tell me and i forget,teach me and I may remember,involve me and i
+              Tell me and I forget, teach me and I may remember, involve me and I
               learn.<br></br>
-              Never stop learng because life never stop teaching.The structure
+              Never stop learng because life never stop teaching. The structure
               of your brain changes everytime you learn something new.
             </h3>
           </Col>
@@ -53,11 +76,10 @@ export default function newhome() {
         <SliderComponent
           showBtn
           showPrice
-          showDiscount
-          wrapperClass="myslider"
           btnLabel="Add to cart"
+          wrapperClass="myslider"
           settings={STATIC_SLIDER_OPTIONS}
-          items={recentBooks}
+          items={homeData.recentBooks}
         />
       </>
       {/* 2nd slider section */}
@@ -74,9 +96,13 @@ export default function newhome() {
             <Col span={4} />
           </Row>
           <SliderComponent
+            showBtn
+            showPrice
+            btnLabel="Add to cart"
+            h6Style={{ color: "white" }}
             wrapperClass="myslider"
             settings={SLIDER_OPTIONS}
-            items={recentBooks}
+            items={homeData.topBooks}
           />
         </div>
       </>
@@ -89,9 +115,11 @@ export default function newhome() {
           showName
           wrapperClass="myslider category-slider"
           settings={STATIC_SLIDER_OPTIONS}
-          items={recentBooks}
+          items={homeData.categories}
         />
       </>
     </HomeLayout>
   );
 }
+
+export default HomeComponent;

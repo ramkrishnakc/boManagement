@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 
 import LocalStore from "../../library/localStore";
 import Request from "../../library/request";
-import { SHOW_LOADER, LOGIN_SUCCESS } from "../../constants";
+import { LOGIN_SUCCESS } from "../../constants";
 import "../../resources/authentication.css";
 
 const LoginComponent = () => {
@@ -13,31 +13,43 @@ const LoginComponent = () => {
   const navigate = useNavigate();
 
   const onFinish = (values) => {
-    dispatch({ type: SHOW_LOADER, payload: true });
     Request
       .post("/api/users/login", values)
       .then(res => {
-        dispatch({ type: SHOW_LOADER });
-        const { success, data } = res.data;
+        const { success, data: token } = res.data;
 
         if (success) {
+          LocalStore.set(token);
+          const {iat, createdAt, expiredAt, ...payload} = LocalStore.decodeToken(token);
+          dispatch({ type: LOGIN_SUCCESS, payload });
           message.success("Login successful!!");
-          dispatch({ type: LOGIN_SUCCESS, payload: data });
-          
-          navigate("/dashboard");
+
+          /* Go to dashboard if 'admin' or home page for 'user' */
+          if (payload.role === "admin") {
+            navigate("/dashboard");
+          } else {
+            navigate("/");
+          }
         } else {
           message.error("Unsuccessful login attempt!!");
         }
       })
-      .catch(() => {
-        dispatch({ type: SHOW_LOADER });
+      .catch((err) => {
         message.error("Something went wrong!!");
       });
   };
 
   useEffect(() => {
-    if (LocalStore.get()) {
-      navigate("/dashboard");
+    /* Go to dashboard if 'admin' or home page for 'user' */
+    const payload = LocalStore.decodeToken();
+
+    if (payload) {
+      if (payload.role === "admin") {
+        navigate("/dashboard");
+      }
+      if (payload.role === "user") {
+        navigate("/");
+      }
     }
   }, []);
 

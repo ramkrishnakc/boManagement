@@ -55,7 +55,7 @@ const add = async (req, res) => {
     }, {});
 
     if (req.file && req.file.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/public/${req.file.filename}`;
+      payload.image = `/public/${req.file.filename}`;
     }
 
     const newItem = new BookModel(payload);

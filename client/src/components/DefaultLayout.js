@@ -1,5 +1,5 @@
 import React from "react";
-import { Layout, Menu } from "antd";
+import { Layout, Menu, message } from "antd";
 import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -89,6 +89,7 @@ const DefaultLayout = (props) => {
               onClick={() => {
                 dispatch({ type: LOG_OUT });
                 navigate("/");
+                message.success("Logged out successfully!!");
               }}
             >
               <LoginOutlined />

@@ -1,6 +1,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import noImage from "../resources/no-image.png";
 
 const SliderComponent = (props) => {
   return (
@@ -11,10 +12,14 @@ const SliderComponent = (props) => {
 
           return (
             <div key={item.name} className="slide-img-wrapper">
-              {props.showDiscount && dis && (<div className="discount-abs-div">({dis}% off)</div>)}
-              <img src={item.image} alt= {item.name} />
+              <img src={item.image || noImage} alt= {item.name} />
               {props.showName && (<h6>{item.name}</h6>)}
-              {props.showPrice && (<h6><strong>Price: {" "}</strong>Rs. {item.price}</h6>)}
+              {props.showPrice && (
+                <h6 style={props.h6Style}>
+                  <strong>Price: {" "}</strong>Rs. {item.price}
+                  {dis && (<span className="discount-span">{" "}({dis}% off)</span>)}
+                </h6>
+              )}
               {props.showBtn && <button onClick={props.btnClick}>{props.btnLabel}</button>}
             </div>
           );

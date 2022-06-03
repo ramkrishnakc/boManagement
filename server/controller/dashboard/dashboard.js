@@ -1,16 +1,17 @@
 const _ = require("lodash");
-const { sendData, sendError } = require("../helper/lib");
-const { BillModel, BookModel, CategoryModel, UserModel } = require("../../models");
-const { RECEIVED, PENDING, COMPLETED, CANCELED, DAYS, MONTHS } = require("../helper/lib");
 const { logger } = require("../../config");
-
-/* Get date before certain hours + minutes */
-const dateBefore = (hrs, min = 0) => {
-  const ts = Math.round(new Date().getTime() / 1000);
-  const tsBefore = ts - (hrs * 3600) - (min * 60);
-
-  return new Date(tsBefore * 1000);
-};
+const { BillModel, BookModel, CategoryModel, UserModel } = require("../../models");
+const {
+  dateBefore,
+  sendData,
+  sendError,
+  RECEIVED,
+  PENDING,
+  COMPLETED,
+  CANCELED,
+  DAYS,
+  MONTHS,
+} = require("../helper/lib");
 
 /* Return book count by category */
 const getBooksByCategory = async mDate => {

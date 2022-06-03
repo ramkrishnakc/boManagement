@@ -6,6 +6,7 @@ import Request from "../../library/request";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG, REQUIRED } from "../../constants";
+import noImage from "../../resources/no-image.png";
 
 const SEARCH_FIELDS = ["name"];
 
@@ -52,7 +53,7 @@ const CategoryComponent = () => {
     {
       title: "Image",
       dataIndex: "image",
-      render: img => <img src={img} alt="" height="60" width="60" />,
+      render: img => <img src={img || noImage} alt="" height="60" width="60" />,
     },
     {
       title: "No. of Books",
