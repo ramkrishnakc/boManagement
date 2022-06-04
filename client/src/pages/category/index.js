@@ -5,7 +5,7 @@ import { Button, Form, Input, message, Modal, Upload } from "antd";
 import Request from "../../library/request";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
-import { DEFAULT_ERR_MSG, REQUIRED } from "../../constants";
+import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
 const SEARCH_FIELDS = ["name"];
@@ -195,7 +195,7 @@ const CategoryComponent = () => {
             <Form.Item
               name="name"
               label="Name"
-              rules={[{ required: true, message: REQUIRED }]}
+              rules={[{ required: true, message: "" }]}
             >
               <Input />
             </Form.Item>

@@ -7,7 +7,7 @@ import Request from "../../library/request";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG, LOG_OUT } from "../../constants";
 
-const ProfileComponent = () => {
+const Profile = () => {
   const { id: userId } = useSelector(state => state.login);
   const [userInfo, setUserInfo] = useState({});
   const [dataFetched, setDataFetched] = useState(false);
@@ -63,7 +63,7 @@ const ProfileComponent = () => {
   };
 
   return (
-    <DefaultLayout>
+    <>
       <div className="d-flex justify-content-between">
         <h3>Profile</h3>
       </div>
@@ -78,21 +78,21 @@ const ProfileComponent = () => {
             <Form.Item
               name="name"
               label="Name"
-              rules={[{ required: true, message: "'Name' is required." }]}
+              rules={[{ required: true, message: "" }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               name="address"
               label="Address"
-              rules={[{ required: true, message: "'Address' is required." }]}
+              rules={[{ required: true, message: "" }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
               name="contactNum"
               label="Contact No."
-              rules={[{ required: true, message: "'Contact Number' is required." }]}
+              rules={[{ required: true, message: "" }]}
             >
               <Input />
             </Form.Item>
@@ -110,7 +110,7 @@ const ProfileComponent = () => {
             <Form.Item
               name="oldPassword"
               label="Old Password"
-              rules={[{ required: true, message: "'Old Password' is required." }]}
+              rules={[{ required: true, message: "" }]}
             >
               <Input type="password"/>
             </Form.Item>
@@ -118,19 +118,18 @@ const ProfileComponent = () => {
               name="password"
               label="New Password"
               rules={[
-                { required: true, message: "'Password' is required." },
-                { min: 5, message: "Pwd should be > 5 characters."},
+                { required: true, message: "" },
                 ({ getFieldValue }) => ({
                   validator(rule, value) {
+                    if (!value || getFieldValue("oldPassword") === value) {
+                      return Promise.reject("");
+                    }
+
                     const reg = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})');
-                    
-                    if (!value || reg.test(value)) {
-                      if (getFieldValue('oldPassword') !== value) {
-                        return Promise.reject('Use different Password than existing one.');
-                      }
+                    if (reg.test(value)) {
                       return Promise.resolve();
                     }
-                    return Promise.reject("Password criteria not matched.");
+                    return Promise.reject("");
                   },
                 }),
               ]}
@@ -166,12 +165,18 @@ const ProfileComponent = () => {
               <li>At least one lowercase letter.</li>
               <li>At least one digit.</li>
               <li>At least one special character.</li>
+              <li>Should be different than existing password.</li>
             </ul>
           </Form>
         </Col>
       </Row>}
-    </DefaultLayout>
+    </>
   );
 }
 
+const ProfileComponent = props => {
+  return props.hideWrapper
+    ? <Profile />
+    : (<DefaultLayout><Profile /></DefaultLayout>);
+};
 export default ProfileComponent;

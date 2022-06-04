@@ -209,8 +209,6 @@ const pwdUpdate = async (req, res) => {
     const user = await UserModel.findOne({ _id: ObjectId(req.params.id), verified: true });
     const email = res.locals && res.locals.payload.email;
 
-    console.log(hash.decrypt(user.password), req.body.oldPassword, user.email, email);
-
     /* Verify that only the exact user can change its own password */
     if (user && hash.decrypt(user.password) === req.body.oldPassword && user.email === email) {
       const item = await UserModel.findOneAndUpdate(
@@ -218,8 +216,6 @@ const pwdUpdate = async (req, res) => {
         { password: hash.encrypt(req.body.password) }
       );
 
-      console.log("Item ::: ", item);
-    
       if (item) {
         return sendData(res, null, "User Password updated successfully. Please login again.");
       }

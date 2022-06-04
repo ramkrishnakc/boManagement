@@ -1,4 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
+const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { BookModel } = require("../../models");
@@ -121,10 +122,80 @@ const remove = async (req, res) => {
   }
 };
 
+const search = async (req, res) => {
+  try {
+    const {
+      offset,
+      limit = 12,
+      keyword = "",
+      keyFields,
+      matchCriteria,
+      categoryCriteria = {},
+    } = req.body;
+
+    let matchObj = {};
+
+    if (!_.isEmpty(matchCriteria)) {
+      matchObj = matchCriteria;
+    }
+
+    if (Array.isArray(keyFields)) {
+      matchObj = keyFields.reduce((acc, key) => {
+        acc[key] = `/${keyword}/`;
+      }, {});
+    }
+
+    const searchCriteria = [
+      { $match: { ...matchObj }},
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          author: 1,
+          category: 1,
+          price: 1,
+          discount: 1,
+          image: 1,
+        }
+      },
+      {
+        $lookup: {
+          from: "categories",
+          let: { searchId: { $toObjectId: "$category" } },
+          pipeline: [
+            { $match: { $expr: { $eq: ["$_id", "$$searchId" ]}}},
+            { $project:{ _id: 0, name: 1 } },
+          ],
+          as: "category"
+        }
+      },
+      { $match: { ...categoryCriteria }},
+      /* Return total and paginated result */
+      {
+        $facet: {
+          results: [{ $skip: offset }, { $limit: limit }],
+          totalCount: [
+            {
+              $count: 'count'
+            }
+          ]
+        }
+      },
+    ];
+
+    const data = await BookModel.aggregate(searchCriteria);
+    return sendData(res, data[0]);
+  } catch (err) {
+    logger.error(err.stack);
+    return sendError(res);
+  }
+};
+
 module.exports = {
   getById,
   getAll,
   add,
   update,
   remove,
+  search,
 };

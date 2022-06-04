@@ -5,7 +5,7 @@ import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 import Request from "../../library/request";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
-import { DEFAULT_ERR_MSG, REQUIRED } from "../../constants";
+import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import "../../resources/modal.css";
 
@@ -244,21 +244,21 @@ const BookComponent = () => {
               <Form.Item
                 name="name"
                 label="Name"
-                rules={[{ required: true, message: REQUIRED }]}
+                rules={[{ required: true, message: "" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="author"
                 label="Author"
-                rules={[{ required: true, message: REQUIRED }]}
+                rules={[{ required: true, message: "" }]}
               >
                 <Input />
               </Form.Item>
               <Form.Item
                 name="language"
                 label="Language"
-                rules={[{ required: true, message: REQUIRED }]}
+                rules={[{ required: true, message: "" }]}
               >
                 <Select>
                   {LANG.map(d => <Select.Option value={d}>{d}</Select.Option>)}
@@ -267,7 +267,7 @@ const BookComponent = () => {
               <Form.Item
                 name="category"
                 label="Category"
-                rules={[{ required: true, message: REQUIRED }]}
+                rules={[{ required: true, message: "" }]}
               >
                 <Select>
                   {categories.map(d => <Select.Option value={d._id}>{d.name}</Select.Option>)}
@@ -289,7 +289,7 @@ const BookComponent = () => {
               <Form.Item
                 name="price"
                 label="Price"
-                rules={[{ required: true, message: REQUIRED }]}
+                rules={[{ required: true, message: "" }]}
               >
                 <Input type="number" />
               </Form.Item>

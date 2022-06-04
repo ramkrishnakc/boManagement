@@ -16,6 +16,7 @@ const Heading = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
+  const { loading } = useSelector(state => state.common); 
   const cartItems = [];
 
   useEffect(() => {
@@ -32,16 +33,24 @@ const Heading = (props) => {
 
   return (
     <Layout>
+      {loading && (
+        <div className="spinner">
+          <div class="spinner-border" role="status"></div>
+        </div>
+      )}
       <Header className="sticky-header" style={{ padding: 0 }}>
         <div className="logobar">
           <img src={Logo} alt="" height="44px" width="44px" />
         </div>
         <div className="d-flex align-items-center menu-items">
-          <Link to="/home" className="m-10">
+          <Link to="/" className="m-10">
             Home
           </Link>
-          <Link to="/store" className="m-10">
+          <Link to="/book-store" className="m-10">
             Books
+          </Link>
+          <Link to="/category-store" className="m-10">
+            Categories
           </Link>
           { isLoggedIn && (
             <Link to="/user-profile" className="m-10">
@@ -102,10 +111,11 @@ const Heading = (props) => {
           minHeight: "100vh",
           backgroundColor: "#eff0f3",
           scroll: "none",
+          ...props.contentStyle,
         }}
       >
         {props.children}
-        <Footer />
+        {!props.hideFooter && <Footer />}
       </Content>
     </Layout>
   );

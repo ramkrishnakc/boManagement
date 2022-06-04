@@ -6,10 +6,12 @@ import Login from "../pages/login";
 import Register from "../pages/register";
 import Book from "../pages/book";
 import Category from "../pages/category";
+import CategoryStore from "../pages/category/category-store";
 import Order from "../pages/order";
 import User from "../pages/user";
 import Dashboard from "../pages/dashboard";
 import Profile from "../pages/profile";
+import UserProfile from "../pages/profile/user-profile";
 import Home from "../pages/home";
 
 /* validate admin user */
@@ -85,11 +87,19 @@ const AllRoutes = () => {
               </AdminRoute>
             }
           />
+          <Route
+            path="/user-profile"
+            element={
+              <UserRoute>
+                <UserProfile />
+              </UserRoute>
+            }
+          />
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
-          <Route path="/about-us" element={<Home />} />
-          <Route path="/contact-us" element={<Home />} />
+          <Route path="/book-store" element={<Home />} />
+          <Route path="/category-store" element={<CategoryStore />} />
           <Route path="/cart" element={<Home />} />
         </Routes>
       </BrowserRouter>

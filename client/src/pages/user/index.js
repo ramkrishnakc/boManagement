@@ -5,7 +5,7 @@ import { Button, Form, Input, message, Modal } from "antd";
 import Request from "../../library/request";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
-import { DEFAULT_ERR_MSG, REQUIRED } from "../../constants";
+import { DEFAULT_ERR_MSG } from "../../constants";
 
 const SEARCH_FIELDS = ["username", "email", "verified", "role", "name"];
 
@@ -202,7 +202,7 @@ const UserComponent = () => {
                   name="username"
                   label="Username"
                   rules={[
-                    { required: true, message: REQUIRED },
+                    { required: true, message: "" },
                     { min: 5, message: "Minlength: 5" },
                   ]}
                 >
@@ -212,7 +212,7 @@ const UserComponent = () => {
                   name="email"
                   label="Email"
                   rules={[
-                    { required: true, message: REQUIRED },
+                    { required: true, message: "" },
                     () => ({
                       validator(rule, value) {
                         const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
@@ -230,7 +230,7 @@ const UserComponent = () => {
                   name="password"
                   label="Password"
                   rules={[
-                    { required: true, message: REQUIRED },
+                    { required: true, message: "" },
                     ({ getFieldValue }) => ({
                       validator(rule, value) {
                         const reg = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})');

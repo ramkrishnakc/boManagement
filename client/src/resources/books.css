@@ -1,0 +1,52 @@
+.item-div-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 20px 15px 20px 0px;
+}
+.item-div {
+  display: inline-block;
+  margin: 10px 0 0 2%;
+  flex-grow: 1;
+  width: calc(100% * (1/5) - 10px - 1px);
+  cursor: pointer;
+  text-align: center;
+  background: #d1dcdc;
+  padding: 10px;
+}
+.item-div h6 {
+  font-style: oblique;
+  text-align: center;
+  font-weight: bold;
+  padding-top: 10px;
+  font-size: 13px;
+}
+.item-img {
+  width: 100%;
+  height: 190px;
+  display: block;
+  padding: 15px;
+}
+.item-div button {
+  border-radius: 2px;
+}
+
+.bread-crumb {
+  padding: 15px 0px 0px 20px;
+  color:royalblue;
+}
+.bread-crumb .b-parent {
+  font-size: 32px;
+  cursor: pointer;
+}
+.bread-crumb .b-child {
+  font-size: 24px;
+}
+.hide-pointer {
+  cursor: default;
+}
+
+.b-paginate {
+  display: flex;
+  justify-content: center;
+  padding: 20px 0px 0px 0px;
+}
