@@ -7,7 +7,7 @@ import Request from "../../library/request";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG, LOG_OUT } from "../../constants";
 
-const Profile = () => {
+const Profile = props => {
   const { id: userId } = useSelector(state => state.login);
   const [userInfo, setUserInfo] = useState({});
   const [dataFetched, setDataFetched] = useState(false);
@@ -64,9 +64,13 @@ const Profile = () => {
 
   return (
     <>
-      <div className="d-flex justify-content-between">
-        <h3>Profile</h3>
-      </div>
+      {props.hideHeader
+        ? ""
+        : (
+          <div className="d-flex justify-content-between">
+            <h3>Profile</h3>
+          </div>
+        )}
       {dataFetched && <Row className="profile-row">
         <Col span={12} className="profile-col-1">
           <h5>Update Info:</h5><br />
@@ -176,7 +180,7 @@ const Profile = () => {
 
 const ProfileComponent = props => {
   return props.hideWrapper
-    ? <Profile />
+    ? <Profile hideHeader />
     : (<DefaultLayout><Profile /></DefaultLayout>);
 };
 export default ProfileComponent;

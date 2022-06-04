@@ -21,7 +21,9 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const items = await CategoryModel.find({}, { __v: 0, updatedAt: 0});
+    const items = await CategoryModel
+      .find({}, { __v: 0, updatedAt: 0})
+      .sort({createdAt: -1});
     const books = await BookModel.aggregate([
       { $group: { _id: "$category", count: { $sum: 1 } } },
     ]);

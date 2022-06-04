@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { Row, Col } from "antd";
 
 import Request from "../../library/request";
@@ -6,8 +8,6 @@ import SliderComponent from "../../components/Slider";
 import HomeLayout from "../../components/HomeLayout";
 import "../../resources/home.css";
 import { SET_CATEGORIES } from "../../constants";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
 
 const STATIC_SLIDER_OPTIONS = {
   dots: false,
@@ -30,6 +30,7 @@ const SLIDER_OPTIONS = {
 const HomeComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const { username } = useSelector(state => state.login);
 
   const [homeData, setHomeData] = useState({
     recentBooks: [],
@@ -63,7 +64,7 @@ const HomeComponent = () => {
             <h1>
               Welcome to <br></br>{" "}
             </h1>
-            <h2>Learn Nepal</h2>
+            <h2>Learn Nepal{username ? ` :: '${username}'` : ""}</h2>
           </Col>
           <Col span={12}>
             <h3>

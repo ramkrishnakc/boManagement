@@ -111,7 +111,7 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const items = await UserModel.find({}, {password: 0});
+    const items = await UserModel.find({}, {password: 0}).sort({createdAt: -1});
     return sendData(res, items);
   } catch (err) {
     logger.error(err.stack);

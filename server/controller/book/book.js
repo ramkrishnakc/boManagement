@@ -33,7 +33,9 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const items = await BookModel.find();
+    const items = await BookModel
+      .find({}, { protectdItems: 0 })
+      .sort({ createdAt: -1 });
     return sendData(res, items);
   } catch (err) {
     logger.error(err.stack);
