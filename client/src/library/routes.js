@@ -5,6 +5,7 @@ import LocalStore from "./localStore";
 import Login from "../pages/login";
 import Register from "../pages/register";
 import Book from "../pages/book";
+import BookStore from "../pages/book/book-store";
 import Category from "../pages/category";
 import CategoryStore from "../pages/category/category-store";
 import Order from "../pages/order";
@@ -98,7 +99,7 @@ const AllRoutes = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />
-          <Route path="/book-store" element={<Home />} />
+          <Route path="/book-store" element={<BookStore />} />
           <Route path="/category-store" element={<CategoryStore />} />
           <Route path="/cart" element={<Home />} />
         </Routes>

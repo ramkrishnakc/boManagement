@@ -141,7 +141,7 @@ const search = async (req, res) => {
       matchObj = { ...matchCriteria };
     }
 
-    if (Array.isArray(keyFields)) {
+    if (Array.isArray(keyFields) && keyFields.length) {
       const orCriteria = keyFields.map(key =>({[key]: new RegExp(keyword, "i") }));
 
       matchObj = {
