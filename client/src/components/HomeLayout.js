@@ -108,7 +108,6 @@ const Heading = (props) => {
       <Content
         className="site-layout-background"
         style={{
-          minHeight: "100vh",
           backgroundColor: "#eff0f3",
           scroll: "none",
           ...props.contentStyle,

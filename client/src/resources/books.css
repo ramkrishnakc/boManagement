@@ -30,19 +30,31 @@
   border-radius: 2px;
 }
 
+.category-header {
+  display: flex;
+  justify-content: space-between;
+}
+.category-header .search-wrapper {
+  padding: 25px 15px 0px 20px;
+}
 .bread-crumb {
   padding: 15px 0px 0px 20px;
   color:royalblue;
 }
 .bread-crumb .b-parent {
   font-size: 32px;
-  cursor: pointer;
 }
 .bread-crumb .b-child {
   font-size: 24px;
 }
 .hide-pointer {
   cursor: default;
+}
+.has-link:hover {
+  font-size: 33px;
+  color: rgb(96, 83, 206);
+  cursor: pointer;
+  text-decoration: underline;
 }
 
 .b-paginate {

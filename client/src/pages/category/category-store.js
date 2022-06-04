@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Pagination, Button } from "antd";
+import { Pagination, Button, Input } from "antd";
 
 import Request from "../../library/request";
 import HomeLayout from "../../components/HomeLayout";
 import noImage from "../../resources/no-image.png";
 import "../../resources/books.css";
 import { SELECT_CATEGORY, SET_CATEGORIES, SET_SEARCH_OPTIONS, LIMIT } from "../../constants";
+
+const SearchInput = Input.Search;
 
 const Items = props => {
   if (!props.itemsData.length) {
@@ -55,6 +57,7 @@ const Category = () => {
   const dispatch = useDispatch();
   const [itemsData, setItemsData] = useState([]);
   const [showBook, setShowBook] = useState(false);
+  const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const { loading } = useSelector(state => state.common);
   const {
     all: allCategories,
@@ -62,13 +65,15 @@ const Category = () => {
     searchOpts,
   } = useSelector(state => state.category);
 
-  const getItems = async (myOffset) => {
+  const getItems = async (offset = 0, keyword = "") => {
     try {
       if (selected) {
         const searchPayload = {
-          offset: myOffset || 0,
+          offset,
           limit: LIMIT,
           matchCriteria: { category: selected._id },
+          keyword,
+          keyFields: keyword ? ["name", "author"] : undefined,
         };
 
         const {data: { success, data }} = await Request.post("/api/books/search", searchPayload);
@@ -80,6 +85,7 @@ const Category = () => {
           dispatch({
             type: SET_SEARCH_OPTIONS,
             payload: {
+              keyword,
               offset: searchPayload.offset + LIMIT,
               total: (totalCount && totalCount[0] && totalCount[0].count) || 0,
             },
@@ -110,8 +116,54 @@ const Category = () => {
   useEffect(() => getItems(), [selected]);
 
   const selectCategory = (payload = null) => {
-    dispatch({ type: SET_SEARCH_OPTIONS, payload: { offset: 0, total: 0 }});
+    setSearchKeyword("");
+    dispatch({
+      type: SET_SEARCH_OPTIONS,
+      payload: { keyword: "", offset: 0, total: 0 },
+    });
     dispatch({ type: SELECT_CATEGORY, payload });
+  };
+
+  /* Handle the search as per needed */
+  const onSearch = (str = "") => {
+    if (showBook) {
+      if (searchKeyword !== str) {
+        setSearchKeyword(str);
+        // Handle search for the Books
+        getItems(0, str);
+      }
+    } else {
+      const keyword = str.replace(/\s/g, "").toLowerCase();
+
+      // Handle filter for Categories
+      if (searchKeyword !== keyword) {
+        setSearchKeyword(keyword);
+  
+        if (!keyword) {
+          return setItemsData(allCategories);
+        }
+  
+        const reg = new RegExp(keyword);
+        const filteredData = itemsData.filter(obj => {
+          const text = ["name"].reduce((acc, key) => {
+            acc += obj[key] || "";
+            return acc;
+          }, "");
+  
+          return reg.test(text.replace(/\s/g, "").toLowerCase());
+        });
+        setItemsData(filteredData);
+      }
+    }
+  };
+
+  /* Handle the change in the search box */
+  const onChange = e => {
+    const keyword = e && e.target && e.target.value;
+
+    if (!keyword) {
+      onSearch("");
+    }
   };
 
   /* Add to cart should be implemented */
@@ -119,9 +171,28 @@ const Category = () => {
 
   return (
     <HomeLayout hideFooter>
-      <div className="bread-crumb">
-        <span className="b-parent" onClick={() => selectCategory()}>Categories</span>
-        {selected && <span className="b-child">{" "} / {" "}{selected.name}</span>}
+      <div className="category-header">
+        <div className="bread-crumb">
+          <span
+            className={`b-parent ${showBook ? "has-link" : "hide-pointer"}`}
+            onClick={() => showBook ? selectCategory() : (() => {})}
+          >
+            Categories
+          </span>
+          {selected && <span className="b-child">{" "} / {" "}{selected.name}</span>}
+        </div>
+        <div className="search-wrapper">
+          <SearchInput
+            placeholder = {
+              showBook
+              ? "Search book by name & author"
+              : "Search category by name"
+            }
+            onSearch={onSearch}
+            onChange={onChange}
+            style={{ width: 350 }}
+          />
+        </div>
       </div>
       {!loading && (
         <Items
@@ -133,16 +204,19 @@ const Category = () => {
           btnClick={addToCart}
           itemsData={itemsData}
           wrapperClass="item-div-wrapper"
-          selectItem={!showBook ? item => selectCategory(item) : () => {}}
+          selectItem={showBook ? (() => {}) : item => selectCategory(item)}
         />
       )}
-      {!loading && showBook && searchOpts.total > LIMIT && (
+      {showBook && searchOpts.total > LIMIT && (
         <div className="b-paginate">
           <Pagination
-            onChange={(page = 1) => getItems((page - 1) * LIMIT)}
+            onChange={
+              (page = 1) => getItems((page - 1) * LIMIT, searchKeyword)
+            }
             total={searchOpts.total}
             pageSize={LIMIT}
             showLessItems={true}
+            page={(searchOpts.offset / LIMIT) || 1}
           />
         </div>
       )}

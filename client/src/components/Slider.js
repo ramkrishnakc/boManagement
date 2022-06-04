@@ -1,6 +1,7 @@
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { Button } from "antd";
 import noImage from "../resources/no-image.png";
 
 const SliderComponent = (props) => {
@@ -20,7 +21,7 @@ const SliderComponent = (props) => {
                   {dis && (<span className="discount-span">{" "}({dis}% off)</span>)}
                 </h6>
               )}
-              {props.showBtn && <button onClick={props.btnClick}>{props.btnLabel}</button>}
+              {props.showBtn && <Button onClick={props.btnClick}>{props.btnLabel}</Button>}
             </div>
           );
         })}

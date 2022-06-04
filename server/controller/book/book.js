@@ -136,13 +136,16 @@ const search = async (req, res) => {
     let matchObj = {};
 
     if (!_.isEmpty(matchCriteria)) {
-      matchObj = matchCriteria;
+      matchObj = { ...matchCriteria };
     }
 
     if (Array.isArray(keyFields)) {
-      matchObj = keyFields.reduce((acc, key) => {
-        acc[key] = `/${keyword}/`;
-      }, {});
+      const orCriteria = keyFields.map(key =>({[key]: new RegExp(keyword, "i") }));
+
+      matchObj = {
+        ...matchObj,
+        $or: orCriteria
+      };
     }
 
     const searchCriteria = [
