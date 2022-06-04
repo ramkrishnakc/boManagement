@@ -39,7 +39,7 @@
 }
 .bread-crumb {
   padding: 15px 0px 0px 20px;
-  color:royalblue;
+  color: #009688;
 }
 .bread-crumb .b-parent {
   font-size: 32px;
@@ -51,10 +51,8 @@
   cursor: default;
 }
 .has-link:hover {
-  font-size: 33px;
-  color: rgb(96, 83, 206);
+  color:royalblue;
   cursor: pointer;
-  text-decoration: underline;
 }
 
 .b-paginate {

@@ -173,10 +173,14 @@ const search = async (req, res) => {
         }
       },
       { $match: { ...categoryCriteria }},
+      { $sort : { createdAt : -1 } },
       /* Return total and paginated result */
       {
         $facet: {
-          results: [{ $skip: offset }, { $limit: limit }],
+          results: [
+            { $skip: offset },
+            { $limit: limit }
+          ],
           totalCount: [
             {
               $count: 'count'

@@ -5,6 +5,9 @@ import Request from "../../library/request";
 import SliderComponent from "../../components/Slider";
 import HomeLayout from "../../components/HomeLayout";
 import "../../resources/home.css";
+import { SET_CATEGORIES } from "../../constants";
+import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const STATIC_SLIDER_OPTIONS = {
   dots: false,
@@ -25,6 +28,9 @@ const SLIDER_OPTIONS = {
 };
 
 const HomeComponent = () => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const [homeData, setHomeData] = useState({
     recentBooks: [],
     topBooks: [],
@@ -40,6 +46,7 @@ const HomeComponent = () => {
           ...homeData,
           ...data,
         });
+        dispatch({ type: SET_CATEGORIES, payload: data.categories || [] });
       }
     } catch (err) {}
   };
@@ -70,8 +77,12 @@ const HomeComponent = () => {
       </div>
       {/* 1st slider section */}
       <>
-        <div className="slider-heading-div">
-          <h2>Recently Added</h2>
+        <div
+          className="slider-heading-div"
+          onClick={() => navigate("/book-store")}
+          title="Go to book store"
+        >
+          Recently Added
         </div>
         <SliderComponent
           showBtn
@@ -108,8 +119,12 @@ const HomeComponent = () => {
       </>
       {/* 3rd slider section */}
       <>
-        <div className="slider-heading-div">
-          <h2>Available Categories</h2>
+        <div
+          className="slider-heading-div"
+          onClick={() => navigate("/category-store")}
+          title="Go to available categories page"
+        >
+          Available Categories
         </div>
         <SliderComponent
           showName

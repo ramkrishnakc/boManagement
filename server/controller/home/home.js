@@ -43,7 +43,7 @@ const getData = async (req, res) => {
         { $limit: 10 }
       ]),
       /* Get all categories */
-      CategoryModel.find({}, { _id: 1, name: 1, image: 1 }, {limit: 10}),
+      CategoryModel.find({}, { _id: 1, name: 1, image: 1 }),
     ];
 
     const [recentBooks, topBooks, categories] = await Promise.all(promises);

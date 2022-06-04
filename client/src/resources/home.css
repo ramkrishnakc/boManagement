@@ -17,7 +17,6 @@
 }
 .discount-span {
   color: orangered;
-  font-size: 16px;
 }
 .back-image-div {
   background: url("./background.jpg") no-repeat center center;
@@ -73,25 +72,16 @@
 .myslider h6 {
   padding-top: 10px;
 }
-.slider-heading-div h2 {
-  font-size: 40px;
+.slider-heading-div {
+  font-size: 35px;
   text-align: center;
   margin-top: 50px;
+  margin-bottom: 20px;
+  color: #009688;
 }
-.slider-heading-div h2::after {
-  content: "";
-  height: 3px;
-  width: 0;
-  background-color: #009688;
-  text-align: center;
-  position: absolute;
-  left: 480px;
-  transition: 1s;
-  margin-top: 50px;
-}
-.slider-heading-div h2:hover::after {
-  width: 350px;
-  text-align: center;
+.slider-heading-div:hover {
+  color: royalblue;
+  cursor: pointer;
 }
 .recent-slider {
   margin-top: 30px;
@@ -100,4 +90,3 @@
 .category-slider {
   padding-bottom: 30px;
 }
-
