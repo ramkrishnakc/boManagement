@@ -1,0 +1,22 @@
+.cart-item-wrapper {
+  padding: 20px;
+}
+.cart-item-wrapper button {
+  background: #001529!important;
+}
+.cart-subtotal-text {
+  font-size: 1.2rem;
+  padding: 10px 0px;
+}
+.cart-tax-text {
+  font-size: 1rem;
+  padding: 10px 0px;
+}
+.cart-total-text {
+  font-size: 1.5rem;
+  padding: 10px 0px;
+}
+.checkout-btn-wrapper-div {
+  display: flex;
+  padding: 10px 0px;
+}

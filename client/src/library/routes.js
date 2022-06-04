@@ -14,6 +14,7 @@ import Dashboard from "../pages/dashboard";
 import Profile from "../pages/profile";
 import UserProfile from "../pages/profile/user-profile";
 import Home from "../pages/home";
+import Cart from "../pages/cart";
 
 /* validate admin user */
 const AdminRoute = ({ children }) => {
@@ -101,7 +102,7 @@ const AllRoutes = () => {
           <Route path="/" element={<Home />} />
           <Route path="/book-store" element={<BookStore />} />
           <Route path="/category-store" element={<CategoryStore />} />
-          <Route path="/cart" element={<Home />} />
+          <Route path="/cart" element={<Cart />} />
         </Routes>
       </BrowserRouter>
     </div>

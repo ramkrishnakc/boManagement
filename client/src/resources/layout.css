@@ -60,13 +60,12 @@
 }
 
 button {
-  background-color: #1890ff !important;
   color: white !important;
   border: none !important;
   box-shadow: none;
   outline: none;
 }
-.ant-modal-close-x{
+.ant-modal-close-x {
   background-color: white !important;
   color: black !important;
 }
@@ -103,7 +102,7 @@ button {
 }
 .profile-col-2 ul li {
   font-size: 11px;
-  color: #1890ff;
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .logobar {

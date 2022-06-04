@@ -1,10 +1,15 @@
 import Slider from "react-slick";
+import { useDispatch } from "react-redux";
+import { Button } from "antd";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Button } from "antd";
+
+import { addToCart } from "../pages/cart/cart-module";
 import noImage from "../resources/no-image.png";
 
 const SliderComponent = (props) => {
+  const dispatch = useDispatch();
+
   return (
     <div className={props.wrapperClass}>
       <Slider {...props.settings}>
@@ -21,7 +26,12 @@ const SliderComponent = (props) => {
                   {dis && (<span className="discount-span">{" "}({dis}% off)</span>)}
                 </h6>
               )}
-              {props.showBtn && <Button onClick={props.btnClick}>{props.btnLabel}</Button>}
+              {
+                props.showBtn && (
+                  <Button onClick={() => dispatch(addToCart(item))}>
+                    {props.btnLabel}
+                  </Button>
+                )}
             </div>
           );
         })}

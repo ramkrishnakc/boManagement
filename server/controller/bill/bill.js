@@ -31,9 +31,9 @@ const getAll = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    const { customerName, customerPhoneNumber } = req.body;
+    const { customerAddress, customerName, customerNumber, customerEmail } = req.body;
 
-    if (!customerName || !customerPhoneNumber) {
+    if (!customerAddress || !customerName || !customerNumber || !customerEmail) {
       return sendError(res, 400);
     }
 

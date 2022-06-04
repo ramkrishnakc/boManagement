@@ -16,12 +16,7 @@ const Heading = (props) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
-  const { loading } = useSelector(state => state.common); 
-  const cartItems = [];
-
-  useEffect(() => {
-    localStorage.setItem("cartItems", JSON.stringify(cartItems));
-  }, [cartItems]);
+  const { common: { loading }, cart: { cartItems } } = useSelector(state => state);
 
   useEffect(() => {
     const payload = LocalStore.decodeToken();
@@ -81,7 +76,7 @@ const Heading = (props) => {
               title="Navigate to user profile page"
               className="d-flex cart-span"
             >
-              {cartItems.length}
+              {(cartItems || []).length}
             </span>
           </div>
           {isLoggedIn && (

@@ -244,14 +244,14 @@ const UserComponent = () => {
                   ]}
                 >
                   <Input type="password"/>
-                  <ul style={{ fontSize: "12px", color: "white" }}>
-                    <li>At least 8 characters long.</li>
-                    <li>At least one uppercase letter.</li>
-                    <li>At least one lowercase letter.</li>
-                    <li>At least one digit.</li>
-                    <li>At least one special character.</li>
-                  </ul>
                 </Form.Item>
+                <ul className="pwd-info-class">
+                  <li>At least 8 characters long.</li>
+                  <li>At least one uppercase letter.</li>
+                  <li>At least one lowercase letter.</li>
+                  <li>At least one digit.</li>
+                  <li>At least one special character.</li>
+                </ul>
     
                 <div className="d-flex justify-content-end">
                   <Button htmlType="submit" type="primary">

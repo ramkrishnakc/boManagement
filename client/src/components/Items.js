@@ -1,9 +1,13 @@
+import { useDispatch } from "react-redux";
 import { Button } from "antd";
 
 import noImage from "../resources/no-image.png";
 import "../resources/books.css";
+import { addToCart } from "../pages/cart/cart-module";
 
 const Items = props => {
+  const dispatch = useDispatch();
+
   if (!props.itemsData.length) {
     return (
       <div
@@ -42,7 +46,15 @@ const Items = props => {
                 {dis && (<span className="discount-span">{" "}({dis}% off)</span>)}
               </h6>
             )}
-            {props.showBtn && <Button block={true} onClick={props.btnClick}>{props.btnLabel}</Button>}
+            {
+              props.showBtn && (
+                <Button
+                  block={true}
+                  onClick={() => dispatch(addToCart(item))}
+                >
+                  {props.btnLabel}
+                </Button>
+              )}
           </div>
         );
       })}

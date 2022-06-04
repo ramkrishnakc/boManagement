@@ -9,6 +9,16 @@
   padding: 5px;
 }
 
+.bill-model-class .ant-modal-content,
+.bill-model-class .ant-modal-close-x,
+.bill-model-class .ant-modal-header {
+  background: #d1dcdc!important;
+}
+.ant-modal-header {
+  border-bottom: unset!important;
+  border-radius: unset!important;
+}
+
 /* -------------- FOR BOOK MODEL ------------------- */
 .book-model-class.ant-modal {
   top: 10px;
@@ -16,16 +26,15 @@
 .book-model-class .ant-modal-content,
 .book-model-class .ant-modal-close-x,
 .book-model-class .ant-modal-header {
-  background-color: #5f5d54!important;
+  background: #d1dcdc!important;
 }
 
 .book-model-class .ant-modal-close-x {
-  color: white!important;
   padding: 9px 20px 0px 0px;
   width: unset!important;
   height: unset!important;
   line-height: unset!important;
-  color:orange!important;
+  color: rgba(0, 0, 0, 0.7);
 }
 
 .book-model-class .ant-modal-header {
@@ -34,5 +43,16 @@
 }
 .book-model-class .ant-modal-title,
 .book-model-class label {
-  color:orange;
+  color: rgba(0, 0, 0, 0.7);
+}
+
+.pwd-info-class {
+  margin-top: -20px;
+  font-size: 11px;
+  color:rgba(0, 0, 0, 0.7);
+}
+
+.bill-model-class button,
+.book-model-class button {
+  background: #001529!important;
 }

@@ -3,6 +3,7 @@ import {combineReducers} from 'redux';
 import { TOGGLE_SIDEBAR, SHOW_LOADER} from "../constants";
 import loginReducer from '../pages/login/login-module';
 import categoryReducer from "../pages/category/category-module";
+import cartReducer from '../pages/cart/cart-module';
 
 const INITIAL_STATE = {
   loading: false,
@@ -29,6 +30,7 @@ const Reducer = combineReducers({
   common: commonReducer,
   login: loginReducer,
   category: categoryReducer,
+  cart: cartReducer,
 });
 
 export default Reducer;

@@ -52,10 +52,13 @@ const login = async (req, res) => {
 
     if (user && hash.decrypt(user.password) === password) {
       const token = Auth.generateToken({
-        id: user.id,
+        id: user._id,
         email:user.email,
         role: user.role,
         username: user.username,
+        name: user.name,
+        address: user.address,
+        contactNum: user.contactNum,
       });
       return sendData(res, token);
     }

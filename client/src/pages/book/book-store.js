@@ -65,9 +65,6 @@ const Book = () => {
     }
   };
 
-  /* Add to cart should be implemented */
-  const addToCart = () => {};
-
   return (
     <HomeLayout hideFooter>
       <div className="category-header">
@@ -90,7 +87,6 @@ const Book = () => {
           showAuthor
           showBtn
           btnLabel="Add to cart"
-          btnClick={addToCart}
           itemsData={itemsData}
           wrapperClass="item-div-wrapper"
           selectItem={() => {}}

@@ -11,7 +11,7 @@ const getData = async (req, res) => {
       /* Get recently added books */
       BookModel.find(
         { createdAt: { $gt: mDate } },
-        { _id: 1, name: 1, image: 1, discount: 1, price: 1, createdAt: 1 },
+        { _id: 1, name: 1, author: 1, image: 1, discount: 1, price: 1, createdAt: 1 },
         { limit: 10, sort: "createdAt" }
       ),
       /* Get popular books on basis of cart */
@@ -23,9 +23,9 @@ const getData = async (req, res) => {
           $lookup: {
             from: "books",
             let: { searchId: "$_id" },
-            pipeline:[
+            pipeline: [
               {$match: { $expr: { $eq: ["$_id", "$$searchId" ]}}},
-              {$project:{ _id: 0, name: 1, image: 1, price: 1, discount: 1}}
+              {$project:{ _id: 0, name: 1,  author: 1, image: 1, price: 1, discount: 1 }}
             ],
             as: "books"
           }
@@ -35,6 +35,7 @@ const getData = async (req, res) => {
           $project: {
             _id: 1,
             name: "$book.name",
+            author: "$book.author",
             image: "$book.image",
             discount: "$book.discount",
             price: "$book.price",

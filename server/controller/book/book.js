@@ -174,6 +174,18 @@ const search = async (req, res) => {
           as: "category"
         }
       },
+      { $unwind: "$category" },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          author: 1,
+          category: "$category.name",
+          price: 1,
+          discount: 1,
+          image: 1,
+        }
+      },
       { $match: { ...categoryCriteria }},
       { $sort : { createdAt : -1 } },
       /* Return total and paginated result */
