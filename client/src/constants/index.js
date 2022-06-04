@@ -9,4 +9,4 @@ export const SET_SEARCH_OPTIONS = "setSearchOptions";
 export const REQUIRED = "Required field!!";
 export const DEFAULT_ERR_MSG = "Something went wrong. Retry again later on.";
 
-export const LIMIT = 4;
+export const LIMIT = 16;

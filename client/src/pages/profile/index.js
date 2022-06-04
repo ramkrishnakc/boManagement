@@ -163,7 +163,7 @@ const Profile = props => {
                 SUBMIT
               </Button>
             </div>
-            <ul style={{ fontSize: "11px", color: "white" }}>
+            <ul>
               <li>At least 8 characters long.</li>
               <li>At least one uppercase letter.</li>
               <li>At least one lowercase letter.</li>

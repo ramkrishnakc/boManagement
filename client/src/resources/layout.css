@@ -13,11 +13,8 @@
   margin: 16px;
   background: rgba(255, 255, 255, 0.3);
 }
-.site-layout .site-layout-background {
-  background: #fff;
-}
 .ant-layout-sider {
-  background: #535a61!important;
+  background: #001529!important;
 }
 .ant-layout-sider-children {
   height: 100vh;
@@ -33,18 +30,18 @@
   font-size: 20px;
 }
 .logo {
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 21px;
+  padding-bottom: 2px;
 }
 .logo h3{
-  color:white !important;
+  color:rgba(255, 255, 255, 0.65)!important;
   font-size: 22px;
   font-weight: bold;
   text-align: center;
   padding-bottom: 0px !important;
 }
 .ant-menu-item-selected {
-  background-color: #047979 !important;
+  background-color: #047979!important;
 }
 .spinner{
   z-index: 10;
@@ -77,9 +74,6 @@ button {
   background-color: #767d83 !important;
   color: white!important;
 }
-.ant-menu.ant-menu-dark {
-  background: #535a61!important;
-}
 .ant-table-custom .ant-table {
   background-color: #5f5d54!important;
 }
@@ -95,17 +89,21 @@ button {
 }
 
 .profile-row h5, .profile-row label {
-  color: orange;
+  color:rgba(0, 0, 0, 0.7);
 }
 .profile-col-1, .profile-col-2 {
   padding: 10px 20px 20px 20px;
-  background: #5f5d54;
+  background: #d1dcdc;
 }
 .profile-col-1 {
   margin-right: 20px;
 }
 .profile-col-2 {
   margin-left: 25px;
+}
+.profile-col-2 ul li {
+  font-size: 11px;
+  color: #1890ff;
 }
 
 .logobar {
@@ -173,4 +171,13 @@ button {
 }
 .log-out-span {
   margin-right: 10px;
+}
+
+.default-header-layout {
+  padding: 10px;
+  background: #001529;
+  color: rgba(255, 255, 255, 0.65);
+}
+.default-admin-layout button {
+  background: #001529!important;
 }

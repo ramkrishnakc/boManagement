@@ -10,6 +10,7 @@ const UserProfile = () => {
         minHeight: "unset",
       }}
     >
+      <br />
       <ProfileComponent hideWrapper />
     </HomeLayout>
   );

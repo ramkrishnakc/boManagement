@@ -61,7 +61,7 @@ const DefaultLayout = (props) => {
         </div>
       </Sider>
       <Layout className="site-layout default-admin-layout">
-        <Header className="site-layout-background" style={{ padding: 10 }}>
+        <Header className="site-layout-background default-header-layout">
           {React.createElement(
             sidbarCollapse ? MenuUnfoldOutlined : MenuFoldOutlined,
             {
