@@ -2,7 +2,6 @@
   top: 5px;
   width: 100%!important;
   transform-origin: 85px 43px!important;
-  overflow-y: auto;
   height: -webkit-fill-available;
 }
 .bill-model-class .ant-modal-body {
@@ -45,7 +44,6 @@
 .book-model-class label {
   color: rgba(0, 0, 0, 0.7);
 }
-
 .pwd-info-class {
   margin-top: -20px;
   font-size: 11px;
@@ -55,4 +53,15 @@
 .bill-model-class button,
 .book-model-class button {
   background: #001529!important;
+}
+
+.bill-footer {
+  display: flex;
+  padding: 10px 20px;
+  justify-content: space-between;
+}
+
+.bill-model-class button.primary-btn {
+  background: #1890ff!important;
+  margin-right: 20px;
 }

@@ -4,14 +4,14 @@ const { logger } = require("../../config");
 const { BillModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const getById = async (req, res) => {
+const getByUserId = async (req, res) => {
   try {
     const { id } = req.params;
     if (!id) {
       return sendError(res, 400);
     }
 
-    const item = await BillModel.findOne({ _id: ObjectId(id) });
+    const item = await BillModel.findOne({ _id: ObjectId(id) }, { __v: 0 });
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
@@ -21,7 +21,7 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const items = await BillModel.find().sort({ createdAt: -1 });
+    const items = await BillModel.find({}, { __v: 0 }).sort({ createdAt: -1 });
     return sendData(res, items);
   } catch (err) {
     logger.error(err.stack);
@@ -53,12 +53,11 @@ const add = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await BillModel.findOneAndUpdate({ _id : ObjectId(id) } , req.body);
+    const item = await BillModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , req.body);
     if (item) {
       return sendData(res, null, "Item updated successfully");
     }
@@ -71,12 +70,11 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await BillModel.findOneAndDelete({ _id: ObjectId(id) });
+    const item = await BillModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
       return sendData(res, null, "Item removed successfully");
@@ -89,7 +87,7 @@ const remove = async (req, res) => {
 };
 
 module.exports = {
-  getById,
+  getByUserId,
   getAll,
   add,
   update,

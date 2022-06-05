@@ -13,5 +13,17 @@ export const EMPTY_CART = "emptyCart";
 export const REQUIRED = "Required field!!";
 export const DEFAULT_ERR_MSG = "Something went wrong. Retry again later on.";
 
+export const RECEIVED = "received";
+export const PENDING = "pending";
+export const COMPLETED = "completed";
+export const CANCELED = "canceled";
+
+export const STATUS_COLOR_MAP = {
+  [RECEIVED]: "blue",
+  [PENDING]: "orange",
+  [COMPLETED]: "green",
+  [CANCELED]: "red",
+};
+
 export const LIMIT = 16;
 export const TAX = 13;

@@ -10,19 +10,11 @@ import { Button, message, Table, Modal, Select, Form, Input } from "antd";
 
 import Request from "../../library/request";
 import { updateCart, removeFromCart, emptyCart } from "./cart-module";
+import { getRecordTotal, calculateTotal } from "../dashboard/helper";
 import HomeLayout from "../../components/HomeLayout";
 import { TAX } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import  "../../resources/cart.css";
-
-const calculateTotal = items => {
-  const subtotal = items.reduce((acc, { price, discount = 0, quantity = 1 }) => {
-    acc += Number(Number((price - (discount * price / 100)) * quantity).toFixed(2));
-    return acc;
-  }, 0);
-
-  return { subtotal, total: Number(subtotal + subtotal * TAX / 100 ).toFixed(2) };
-};
 
 const TotalSection = props => (
   <>
@@ -113,7 +105,7 @@ const CartPage = () => {
       title: "Total",
       dataIndex: "_id",
       render: (id, { price, discount = 0, quantity = 1 }) =>
-        `Rs. ${Number((price - (discount * price / 100)) * quantity).toFixed(2)}`,
+        `Rs. ${getRecordTotal({ price, discount, quantity })}`,
     },
     {
       title: "Actions",
@@ -153,7 +145,7 @@ const CartPage = () => {
         price,
         quantity,
         discount,
-        total: Number(Number((price - (discount * price / 100)) * quantity).toFixed(2)),
+        total: getRecordTotal({ price, discount, quantity }),
       })),
     };
 

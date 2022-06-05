@@ -23,6 +23,9 @@ const AdminRoute = ({ children }) => {
   if (info && info.role === "admin" && Date.now() < info.expiredAt) {
     return children;
   }
+  /* Remove old tokens and go to login */
+  LocalStore.clear();
+  LocalStore.clear("reduxState");
   return <Navigate to="/login" />;
 };
 
@@ -33,6 +36,9 @@ const UserRoute = ({ children }) => {
   if (info && info.role === "user" && Date.now() < info.expiredAt) {
     return children;
   }
+  /* Remove old tokens and go to home */
+  LocalStore.clear();
+  LocalStore.clear("reduxState");
   return <Navigate to="/" />;
 };
 

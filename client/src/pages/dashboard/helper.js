@@ -1,3 +1,5 @@
+import { TAX } from "../../constants";
+
 export const COLORS = [
   "#3DCC91",
   "#FFB366",
@@ -76,4 +78,16 @@ export const DASHBOARD_INIT = {
   topBooksByRevenue: [],
   weekData: [],
   yearData: [],
+};
+
+export const getRecordTotal = ({ price, quantity = 1, discount = 0}) =>
+  Number(Number((price - (discount * price / 100)) * quantity).toFixed(2));
+
+export const calculateTotal = (items = [], tax = TAX) => {
+  const subtotal = items
+    .reduce((
+      acc, { price, discount = 0, quantity = 1 }
+    ) => acc + getRecordTotal({ price, quantity, discount }), 0);
+
+  return { subtotal, total: Number(Number(subtotal + subtotal * tax / 100 ).toFixed(2)) };
 };
