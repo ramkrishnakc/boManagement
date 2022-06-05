@@ -10,6 +10,7 @@ node_modules
 *.rdb
 *.txt
 *-lock.json
+client/build
 
 # Local History for Visual Studio Code
 .history/

@@ -55,6 +55,10 @@ const Heading = (props) => {
               <Link to="/user-profile" className="m-10">
                 Profile
               </Link>
+            </>
+          )}
+          {!isLoggedIn && (
+            <>
               <Link to="/login" className="loginbutton ">
                 Login
               </Link>
