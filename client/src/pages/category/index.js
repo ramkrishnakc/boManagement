@@ -3,6 +3,7 @@ import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Upload } from "antd";
 
 import Request from "../../library/request";
+import Confirm from "../../components/Confirm";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
@@ -16,6 +17,7 @@ const CategoryComponent = () => {
   const [openModel, setOpenModel] = useState(false);
   const [editData, setEditData] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
+  const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
 
   const getAll = async () => {
     try {
@@ -37,6 +39,7 @@ const CategoryComponent = () => {
         const newData = itemsData.filter(d => d._id !== record._id);
         setItemsData(newData);
         setTableData(newData);
+        setOpenConfirm({});
       } else {
         message.error(msg);
       }
@@ -75,7 +78,14 @@ const CategoryComponent = () => {
               setOpenModel(true);
             }}
           />
-          <DeleteOutlined className="mx-2" onClick={() => deleteItem(record)} />
+          <DeleteOutlined
+            className="mx-2"
+            onClick={() => setOpenConfirm({
+              msg: "Do you want to remove this category?",
+              visible: true,
+              onOk: () => deleteItem(record),
+            })}
+          />
         </div>
       ),
     },
@@ -223,6 +233,14 @@ const CategoryComponent = () => {
             </div>
           </Form>
         </Modal>
+      )}
+      {confirmOpt.visible && (
+        <Confirm
+          visible={confirmOpt.visible}
+          onOk={confirmOpt.onOk}
+          msg={confirmOpt.msg}
+          onCancel={() => setOpenConfirm({})}
+        />
       )}
     </DefaultLayout>
   );

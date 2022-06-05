@@ -48,12 +48,13 @@ const Heading = (props) => {
             Categories
           </Link>
           { isLoggedIn && (
-            <Link to="/user-profile" className="m-10">
-              Profile
-            </Link>
-          )}
-          { !isLoggedIn && (
             <>
+              <Link to="/user-orders" className="m-10">
+                Orders
+              </Link>
+              <Link to="/user-profile" className="m-10">
+                Profile
+              </Link>
               <Link to="/login" className="loginbutton ">
                 Login
               </Link>

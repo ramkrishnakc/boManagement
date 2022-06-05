@@ -1,9 +1,20 @@
+# Node modules folder in client and server
 node_modules
 /node_modules
 **/node_modules
+
+# Extra files and folders
 /public
 *.log
 /client/src/Images
 *.rdb
 *.txt
 *-lock.json
+
+# Local History for Visual Studio Code
+.history/
+
+# Built Visual Studio Code Extensions
+*.vsix
+.vscode/*
+settings.json

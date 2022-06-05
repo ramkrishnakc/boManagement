@@ -30,7 +30,6 @@ const SLIDER_OPTIONS = {
 const HomeComponent = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const { username } = useSelector(state => state.login);
 
   const [homeData, setHomeData] = useState({
     recentBooks: [],
@@ -64,7 +63,7 @@ const HomeComponent = () => {
             <h1>
               Welcome to <br></br>{" "}
             </h1>
-            <h2>Learn Nepal{username ? ` :: '${username}'` : ""}</h2>
+            <h2>Learn Nepal</h2>
           </Col>
           <Col span={12}>
             <h3>

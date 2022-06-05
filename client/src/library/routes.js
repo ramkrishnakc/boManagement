@@ -9,6 +9,7 @@ import BookStore from "../pages/book/book-store";
 import Category from "../pages/category";
 import CategoryStore from "../pages/category/category-store";
 import Order from "../pages/order";
+import UserOrder from "../pages/order/user-order";
 import User from "../pages/user";
 import Dashboard from "../pages/dashboard";
 import Profile from "../pages/profile";
@@ -103,6 +104,15 @@ const AllRoutes = () => {
               </UserRoute>
             }
           />
+          <Route
+            path="/user-orders"
+            element={
+              <UserRoute>
+                <UserOrder />
+              </UserRoute>
+            }
+          />
+
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Home />} />

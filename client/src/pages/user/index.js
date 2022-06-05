@@ -3,6 +3,7 @@ import { DeleteOutlined, CheckCircleOutlined, EyeOutlined } from "@ant-design/ic
 import { Button, Form, Input, message, Modal } from "antd";
 
 import Request from "../../library/request";
+import Confirm from "../../components/Confirm";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
@@ -15,6 +16,7 @@ const UserComponent = () => {
   const [openModel, setOpenModel] = useState(false);
   const [userDetail, setUserDetail] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
+  const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
 
   const getAll = async () => {
     try {
@@ -35,6 +37,7 @@ const UserComponent = () => {
         const newData = itemsData.filter(d => d._id !== record._id);
         setItemsData(newData);
         setTableData(newData);
+        setOpenConfirm({});
       } else {
         message.error(msg);
       }
@@ -103,8 +106,16 @@ const UserComponent = () => {
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          {record.role !== "root" &&
-            <DeleteOutlined title="Remove" className="mx-2" onClick={() => deleteItem(record)} />
+          {record.username !== "root_user" &&
+            <DeleteOutlined
+              title="Remove"
+              className="mx-2"
+              onClick={() => setOpenConfirm({
+                msg: "Do you want to remove this user?",
+                visible: true,
+                onOk: () => deleteItem(record),
+              })}
+            />
           }
           <EyeOutlined title="Details" className="mx-2" onClick={() => showInfo(record)} />
           {!record.verified &&
@@ -262,6 +273,14 @@ const UserComponent = () => {
             )
           }
         </Modal>
+      )}
+      {confirmOpt.visible && (
+        <Confirm
+          visible={confirmOpt.visible}
+          onOk={confirmOpt.onOk}
+          msg={confirmOpt.msg}
+          onCancel={() => setOpenConfirm({})}
+        />
       )}
     </DefaultLayout>
   );

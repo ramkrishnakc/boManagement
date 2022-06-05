@@ -3,6 +3,7 @@ import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 
 import Request from "../../library/request";
+import Confirm from "../../components/Confirm";
 import TableComponent from "../../components/Table";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
@@ -21,6 +22,7 @@ const BookComponent = () => {
   const [editData, setEditData] = useState(null);
   const [itemDetail, setItemDetail] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
+  const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
 
   const getAll = async (reqType = "books") => {
     try {
@@ -51,6 +53,7 @@ const BookComponent = () => {
         const newData = itemsData.filter(d => d._id !== record._id);
         setItemsData(newData);
         setTableData(newData);
+        setOpenConfirm({});
       } else {
         message.error(msg);
       }
@@ -101,7 +104,14 @@ const BookComponent = () => {
               setOpenModel(true);
             }}
           />
-          <DeleteOutlined className="mx-2" onClick={() => deleteItem(record)} />
+          <DeleteOutlined
+            className="mx-2"
+            onClick={() => setOpenConfirm({
+              msg: "Do you want to remove this book?",
+              visible: true,
+              onOk: () => deleteItem(record),
+            })}
+          />
           <EyeOutlined title="Details" className="mx-2" onClick={() => showInfo(record)} />
         </div>
       ),
@@ -314,6 +324,14 @@ const BookComponent = () => {
             </Form>
           )}
         </Modal>
+      )}
+      {confirmOpt.visible && (
+        <Confirm
+          visible={confirmOpt.visible}
+          onOk={confirmOpt.onOk}
+          msg={confirmOpt.msg}
+          onCancel={() => setOpenConfirm({})}
+        />
       )}
     </DefaultLayout>
   );
