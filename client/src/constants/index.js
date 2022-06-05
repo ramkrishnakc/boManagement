@@ -25,5 +25,12 @@ export const STATUS_COLOR_MAP = {
   [CANCELED]: "red",
 };
 
+export const STATUS_NAME_MAP = {
+  [RECEIVED]: "SUBMITTED",
+  [PENDING]: "IN PROGRESS",
+  [COMPLETED]: "COMPLETED",
+  [CANCELED]: "CANCELED",
+};
+
 export const LIMIT = 16;
 export const TAX = 13;

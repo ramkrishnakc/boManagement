@@ -4,9 +4,9 @@ node_modules
 **/node_modules
 
 # Extra files and folders
+/dist
 /public
 *.log
-/client/src/Images
 *.rdb
 *.txt
 *-lock.json

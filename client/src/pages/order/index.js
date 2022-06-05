@@ -102,6 +102,10 @@ const OrderComponent = () => {
       dataIndex: "name",
     },
     {
+      title: "Author",
+      dataIndex: "author",
+    },
+    {
       title: "Price (Rs.)",
       dataIndex: "price",
       render: (id, record) => `Rs. ${record.price}`,

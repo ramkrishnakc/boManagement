@@ -4,21 +4,6 @@ const { logger } = require("../../config");
 const { BillModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const getByUserId = async (req, res) => {
-  try {
-    const { id } = req.params;
-    if (!id) {
-      return sendError(res, 400);
-    }
-
-    const item = await BillModel.findOne({ _id: ObjectId(id) }, { __v: 0 });
-    return sendData(res, item);
-  } catch (err) {
-    logger.error(err.stack);
-    return sendError(res);
-  }
-};
-
 const getAll = async (req, res) => {
   try {
     const items = await BillModel.find({}, { __v: 0 }).sort({ createdAt: -1 });
@@ -80,6 +65,30 @@ const remove = async (req, res) => {
       return sendData(res, null, "Item removed successfully");
     }
     return sendError(res, 404);
+  } catch (err) {
+    logger.error(err.stack);
+    return sendError(res);
+  }
+};
+
+const getByUserId = async (req, res) => {
+  try {
+    if (!req.params.id) {
+      return sendError(res, 400);
+    }
+    const id = res.locals && res.locals.payload.id;
+    /* Allow actual user to access his/her bills */
+    if (id !== req.params.id) {
+      return sendError(res, 400);
+    }
+
+    const item = await BillModel
+      .find(
+        { customerId: ObjectId(req.params.id) },
+        { cartItems: 1, createdAt: 1, status: 1, taxRate: 1, paymentMode: 1, _id: 1 },
+      )
+      .sort({ createdAt: -1 });
+    return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
     return sendError(res);

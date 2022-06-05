@@ -20,3 +20,14 @@
   display: flex;
   padding: 10px 0px;
 }
+
+.flex-div-right {
+  display: flex;
+  justify-content: flex-end;
+  padding: 20px 0px 30px 0px;
+}
+.m-right-20 {
+  margin-right: 20px;
+  font-size: 16px;
+  color:tomato;
+}
