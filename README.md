@@ -11,14 +11,14 @@
 
   - Install mongoDB (need version greater than 4.0.0, v5.0.8 is recommended)
     <Follow this link: https://www.mongodb.com/docs/manual/installation/>
-    - To run mongoDB: sudo systemcl start mongod
+    - To run mongoDB: `sudo systemcl start mongod`
 
-  - Go inside {project_root_folder}/client folder
-    - npm install
-    - npm run build (This command creates a production build of client)
+  - Go inside {project_root_folder} run : `npm run client-install`
+    - Or you can also go inside {project_root_folder}/client folder && run command: `npm install`
+  - This command creates a production build of client : `npm run build`
 
   - Go inside {project_root_folder}
-    - npm install
+    - `npm install`
 
   - Finally run application:
-    - npm run production
+    - `npm run production`
