@@ -27,7 +27,7 @@ const userSchema = mongoose.Schema({
   },
   name: { type: String },
   address: { type: String },
-  contactNum: { type: String, unique: true },
+  contactNum: { type: String },
 }, { timestamps : true });
 
 module.exports = mongoose.model("users", userSchema);

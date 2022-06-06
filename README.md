@@ -22,3 +22,8 @@
 
   - Finally run application:
     - `npm run production`
+
+  - Default User:
+    - root_user / changeme (Change this password on first login)
+
+  - (note:** We need a folder named "public" inside {project_root} so create this folder if it doesn't exist)
