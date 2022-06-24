@@ -47,6 +47,9 @@ const Heading = (props) => {
           <Link to="/category-store" className="m-10">
             Categories
           </Link>
+          <Link to="/institution-list" className="m-10">
+            Institutions
+          </Link>
           { isLoggedIn && (
             <>
               <Link to="/user-orders" className="m-10">

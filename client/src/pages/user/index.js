@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { DeleteOutlined, CheckCircleOutlined, EyeOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, Modal } from "antd";
+import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message, Modal, Radio, Select } from "antd";
 
 import Request from "../../library/request";
 import Confirm from "../../components/Confirm";
@@ -17,6 +17,8 @@ const UserComponent = () => {
   const [userDetail, setUserDetail] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
+  const [showSelect, setShowSelect] = useState(false);
+  const [institutions, setInstitutions] = useState([]);
 
   const getAll = async () => {
     try {
@@ -24,6 +26,15 @@ const UserComponent = () => {
       if (success) {
         setItemsData(data);
         setTableData(data);
+      }
+    } catch (err) {}
+  };
+
+  const getAllInstitutons = async () => {
+    try {
+      const {data: { success, data }} = await Request.get(`/api/institutions/getAll`);
+      if (success) {
+        setInstitutions(data);
       }
     } catch (err) {}
   };
@@ -46,20 +57,9 @@ const UserComponent = () => {
     }
   };
 
-  const onFinish = (data, editData) => {
-    const uriArr = ['', 'api', 'users'];
-    let method = "post";
-    let body = {};
-
-    if (editData) {
-      uriArr.push('verify', editData._id);
-      method = "put";
-    } else {
-      body = {...data, role: "admin"};
-      uriArr.push('add');
-    }
-    
-    Request[method](uriArr.join("/"), body)
+  const onFinish = data =>
+    Request
+      .post("/api/users/add", data)
       .then(res => {
         const { success, message: msg } = res.data;
 
@@ -72,7 +72,6 @@ const UserComponent = () => {
         }
       })
       .catch(() => message.error(DEFAULT_ERR_MSG));
-  };
 
   const showInfo = data => {
     setOpenModel(true);
@@ -118,15 +117,13 @@ const UserComponent = () => {
             />
           }
           <EyeOutlined title="Details" className="mx-2" onClick={() => showInfo(record)} />
-          {!record.verified &&
-            <CheckCircleOutlined title="Verify" className="mx-2" onClick={() => onFinish(null, record)} />
-          }
         </div>
       ),
     },
   ];
 
   useEffect(() => getAll(), []);
+  useEffect(() => getAllInstitutons(), []);
 
   /* Handle search */
   const onSearch = (str = "") => {
@@ -161,6 +158,15 @@ const UserComponent = () => {
     }
   };
 
+  /* Select institution */
+  const onRadioChange = e => {
+    if (e.target.value === "institution") {
+      setShowSelect(true);
+    } else {
+      setShowSelect(false);
+    }
+  };
+
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
@@ -175,7 +181,7 @@ const UserComponent = () => {
         onSearch={onSearch}
         onChange={onChange}
         showAddButton={true}
-        addButtonLabel="+ New Admin User"
+        addButtonLabel="+ New User"
         buttonOnClick={() => setOpenModel(true)}
       />
 
@@ -186,7 +192,7 @@ const UserComponent = () => {
             setUserDetail(null);
           }}
           visible={openModel}
-          title={userDetail ? "User Details" : "Add New Admin User"}
+          title={userDetail ? "User Details" : "Add New User"}
           footer={false}
           className="book-model-class"
         >
@@ -208,6 +214,12 @@ const UserComponent = () => {
               <Form
                 layout="vertical"
                 onFinish={onFinish}
+                initialValues={{
+                  username: "",
+                  email: "",
+                  password: "",
+                  role: "admin",
+                }}
               >
                 <Form.Item
                   name="username"
@@ -238,6 +250,29 @@ const UserComponent = () => {
                   <Input />
                 </Form.Item>
                 <Form.Item
+                  name="role"
+                  label="Role"
+                  rules={[
+                    { required: true, message: "" },
+                  ]}
+                >
+                  <Radio.Group onChange={onRadioChange}>
+                    <Radio value="admin">Admin</Radio>
+                    <Radio value="institution">Institution</Radio>
+                    <Radio value="writer">Writer</Radio>
+                    <Radio value="user">User</Radio>
+                  </Radio.Group>
+                </Form.Item>
+                {showSelect && (<Form.Item
+                  name="institution"
+                  label="Institution"
+                  rules={[{ required: true, message: "" }]}
+                >
+                  <Select>
+                    {institutions.map(d => <Select.Option value={d._id}>{d.name}</Select.Option>)}
+                  </Select>
+                </Form.Item>)}
+                <Form.Item
                   name="password"
                   label="Password"
                   rules={[
@@ -246,10 +281,10 @@ const UserComponent = () => {
                       validator(rule, value) {
                         const reg = new RegExp('(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,})');
                         
-                        if (!value || reg.test(value) || getFieldValue('username') !== value) {
+                        if (!value || (reg.test(value) && getFieldValue('username') !== value)) {
                           return Promise.resolve();
                         }
-                        return Promise.reject("Password criteria not matched.");
+                        return Promise.reject("");
                       },
                     }),
                   ]}

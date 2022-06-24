@@ -4,6 +4,7 @@ const billsRoute = require("../controller/bill");
 const categoryRoute = require("../controller/category");
 const DashboardRoute = require("../controller/dashboard");
 const HomeRoute = require("../controller/home");
+const InstitutionRoute = require("../controller/institution");
 
 const routes = (app) => {
   app.use("/api/users/", usersRoute);
@@ -12,6 +13,7 @@ const routes = (app) => {
   app.use("/api/category/", categoryRoute);
   app.use("/api/dashboard/", DashboardRoute);
   app.use("/api/home/", HomeRoute);
+  app.use("/api/institution/", InstitutionRoute);
 };
 
 module.exports = routes;

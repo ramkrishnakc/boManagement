@@ -3,17 +3,23 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const { config, logger, hash } = require("../../config");
 const { UserModel } = require("../../models");
 const Auth = require("../../middleware/auth");
+const Mail = require("../../middleware/mail");
 const { sendData, sendError } = require("../helper/lib");
 
 const saveUser = async payload => {
-  const newuser = new UserModel({
+  const data = {
     username: payload.username,
     password: hash.encrypt(payload.password),
     role: payload.role,
     email: payload.email,
     verified: payload.verified,
-  });
+  };
 
+  if (payload.verificationCode) {
+    data.verificationCode = payload.verificationCode;
+  }
+
+  const newuser = new UserModel(data);
   return await newuser.save();
 };
 
@@ -53,7 +59,7 @@ const login = async (req, res) => {
     if (user && hash.decrypt(user.password) === password) {
       const token = Auth.generateToken({
         id: user._id,
-        email:user.email,
+        email: user.email,
         role: user.role,
         username: user.username,
         name: user.name,
@@ -72,15 +78,39 @@ const login = async (req, res) => {
 /* Sign up request by normal users */
 const signup = async (req, res) => {
   try {
-    const { username, password, email} = req.body;
-    
+    const { username, password, email } = req.body;
+
     if (!username || !password || !email) {
       return sendError(res, 400);
     }
 
-    const item = await saveUser({ username, password, email, role: "user", verified: false});
+    const verificationCode = `vs_${Math.random() * 1000000}`;
+
+    const item = await saveUser({
+      username,
+      password,
+      email,
+      role: "user",
+      verified: false,
+      verificationCode,
+    });
+
     if (item) {
-      return res.send({ success: true, message: "User signup successful" });
+      /* Now send mail for the verification */
+      const bool = await Mail.sendVerifyEmail({
+        username,
+        email,
+        id: verificationCode,
+        protocol: req.protocol,
+        host: req.headers.host,
+      });
+
+      if (bool) {
+        return sendData(res, null, "User signup successful.");
+      }
+      /* Delete the data from DB, if mail is not sent */
+      await UserModel.findOneAndDelete({ _id: ObjectId(item._id) });
+      return sendError(res, 400, "Couldn't send verification email - something wrong.");
     }
     return sendError(res, 400);
   } catch (err) {
@@ -104,6 +134,9 @@ const getById = async (req, res) => {
         __v: 0,
         role: 0,
         username: 0,
+        institution: 0,
+        purchasedBooks: 0,
+        publishedBooks: 0,
       });
     return sendData(res, item);
   } catch (err) {
@@ -114,7 +147,13 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const items = await UserModel.find({}, {password: 0}).sort({createdAt: -1});
+    const items = await UserModel.find({}, {
+      password: 0,
+      institution: 0,
+      purchasedBooks: 0,
+      publishedBooks: 0,
+    }).sort({ createdAt: -1 });
+
     return sendData(res, items);
   } catch (err) {
     logger.error(err.stack);
@@ -125,16 +164,31 @@ const getAll = async (req, res) => {
 /* Add User by admin */
 const add = async (req, res) => {
   try {
-    const { username, password, email, role} = req.body;
+    const { username, password, email, role } = req.body;
 
     if (!username || !password || !email || !config.allowedRoles.includes(role)) {
       return sendError(res, 400);
     }
 
-    const item = await saveUser({ username, password, email, role, verified: true});
+    const item = await saveUser({ username, password, email, role, verified: true });
 
     if (item) {
-      return sendData(res, null, "User Added successfully");
+      /* Now send mail to provide the user details to concerned person */
+      const bool = await Mail.sendUserCreatedEmail({
+        email,
+        host: req.headers.host,
+        password,
+        protocol: req.protocol,
+        role,
+        username,
+      });
+
+      if (bool) {
+        return sendData(res, null, "User Added successfully.");
+      }
+      /* Delete the data from DB, if mail is not sent */
+      await UserModel.findOneAndDelete({ _id: ObjectId(item._id) });
+      return sendError(res, 400, "Couldn't send user info to the provided e-mail. Something went wrong.");
     }
     return sendError(res, 400);
   } catch (err) {
@@ -143,21 +197,22 @@ const add = async (req, res) => {
   }
 };
 
-/* Verify User by admin */
-const verify = async (req, res) => {
+/* Verify e-mail by actual user */
+const verifyEmail = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.query.vid) {
       return sendError(res, 400);
     }
-    const payload = { verified: true };
 
-    const item = await UserModel.findOneAndUpdate({ _id : ObjectId(id) }, payload);
-    
+    const item = await UserModel.findOneAndUpdate(
+      { verificationCode: req.query.vid, verified: false },
+      { verified: true, verificationCode: "" }
+    );
+
     if (item) {
-      return sendData(res, null, "User verified successfully");
+      return res.end(`User has been Successfully verified. Enjoy using ${config.appName}!!`);
     }
-    return sendError(res, 404);
+    return res.end("Couldn't verify the user. Bad request!!");
   } catch (err) {
     logger.error(err.stack);
     return sendError(res);
@@ -190,9 +245,9 @@ const update = async (req, res) => {
         }
         return acc;
       }, {});
-      
-      const item = await UserModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
-      
+
+      const item = await UserModel.findOneAndUpdate({ _id: ObjectId(req.params.id) }, payload);
+
       if (item) {
         return sendData(res, null, "User Info updated successfully");
       }
@@ -215,7 +270,7 @@ const pwdUpdate = async (req, res) => {
     /* Verify that only the exact user can change its own password */
     if (user && hash.decrypt(user.password) === req.body.oldPassword && user.email === email) {
       const item = await UserModel.findOneAndUpdate(
-        { _id : ObjectId(req.params.id) },
+        { _id: ObjectId(req.params.id) },
         { password: hash.encrypt(req.body.password) }
       );
 
@@ -237,9 +292,7 @@ const remove = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await UserModel.findOneAndDelete({
-      _id: ObjectId(id), role: { $in: [ "admin", "user" ] }
-    });
+    const item = await UserModel.findOneAndDelete({ _id: ObjectId(id) });
 
     if (item) {
       return sendData(res, null, "User removed successfully");
@@ -258,7 +311,7 @@ module.exports = {
   getById,
   getAll,
   add,
-  verify,
+  verifyEmail,
   update,
   pwdUpdate,
   remove,

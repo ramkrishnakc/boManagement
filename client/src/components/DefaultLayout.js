@@ -10,6 +10,7 @@ import {
   AppstoreAddOutlined,
   UserAddOutlined,
   ReadOutlined,
+  BankOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -45,11 +46,14 @@ const DefaultLayout = (props) => {
             <Menu.Item key="/dashboard" icon={<HomeOutlined />}>
               <Link to="/dashboard">Dashboard</Link>
             </Menu.Item>
+            <Menu.Item key="/books" icon={<ReadOutlined />}>
+              <Link to="/books">Books</Link>
+            </Menu.Item>
             <Menu.Item key="/categories" icon={<AppstoreAddOutlined />}>
               <Link to="/categories">Categories</Link>
             </Menu.Item>
-            <Menu.Item key="/books" icon={<ReadOutlined />}>
-              <Link to="/books">Books</Link>
+            <Menu.Item key="/institutions" icon={<BankOutlined />}>
+              <Link to="/institutions">Institutions</Link>
             </Menu.Item>
             <Menu.Item key="/orders" icon={<CopyOutlined />}>
               <Link to="/orders">Orders</Link>

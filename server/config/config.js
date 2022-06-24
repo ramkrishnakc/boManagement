@@ -1,7 +1,7 @@
 const dbName = 'dbLearnNepal';
 
 module.exports = {
-  allowedRoles: ["root", "admin", "user"],
+  allowedRoles: ["admin", "user", "institution", "writer"],
   /* Related to token */
   tokenKey: 'jf9sugsdngsd#^lgorit937=constdecrypt=',
   tokenLife: 4 * 60 * 60 * 1000, // should be in "ms"
@@ -15,4 +15,5 @@ module.exports = {
     socketTimeoutMS: 45000, // default: 30000, Close sockets after 45 seconds of inactivity
     family: 4, // Use IPv4, skip trying IPv6
   },
+  appName: "Learn Nepal",
 };

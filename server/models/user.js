@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { config } = require("../config");
 
 const userSchema = mongoose.Schema({
   username: {
@@ -10,8 +11,9 @@ const userSchema = mongoose.Schema({
     index: true,
   },
   password: { type: String, required: true },
-  role: { type: String, default: "user", enum: ["admin", "user"] },
+  role: { type: String, default: "user", enum: config.allowedRoles },
   verified: { type: Boolean, default: false },
+  verificationCode: { type: String },
   email: {
     type: String,
     unique: true,
@@ -28,6 +30,9 @@ const userSchema = mongoose.Schema({
   name: { type: String },
   address: { type: String },
   contactNum: { type: String },
+  institution: { type: String, required: () => !this.role === "institution" },
+  purchasedBooks: { type: Array },
+  publishedBooks: { type: Array },
 }, { timestamps : true });
 
 module.exports = mongoose.model("users", userSchema);

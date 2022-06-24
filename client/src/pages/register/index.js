@@ -1,27 +1,35 @@
 import React from 'react';
+import { useDispatch } from "react-redux";
 import { Button, Col, Form, Input, message, Row } from "antd";
 import { Link, useNavigate } from 'react-router-dom';
 
 import Request from '../../library/request';
+import { SHOW_LOADER } from '../../constants';
 import '../../resources/authentication.css';
 
 const RegisterComponent = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const onFinish = values => {
+    // Show loader
+    dispatch({ type: SHOW_LOADER, payload: true });
+
     Request
       .post('/api/users/signup' , values)
       .then(res => {
-        const {data: { success }} = res;
-        if (success) {
-          message.success('Registration successful, please wait for verification.');
+        if (res.data.success) {
+          message.success('Registration successful, please check your email for verification. Check spam if not in inbox.');
           navigate("/");
         } else {
           message.error('Registration Failed, try again later.');
         }
+
+        dispatch({ type: SHOW_LOADER });
       })
       .catch(() => {
         message.error('Something went wrong');
+        dispatch({ type: SHOW_LOADER });
       });
   };
 

@@ -6,10 +6,10 @@ const router = express.Router();
 
 router.post("/login", User.login);
 router.post("/signup", User.signup);
+router.get("/verify-email", User.verifyEmail);
 router.get("/getById/:id", Auth.authorizeToken, User.getById);
 router.get("/getAll", Auth.authorizeAdmin, User.getAll);
 router.post("/add", Auth.authorizeAdmin, User.add);
-router.put("/verify/:id", Auth.authorizeAdmin, User.verify);
 router.delete("/remove/:id", Auth.authorizeAdmin, User.remove);
 router.put("/update/:id", Auth.authorizeToken, User.update);
 router.put("/pwdUpdate/:id", Auth.authorizeToken, User.pwdUpdate);
