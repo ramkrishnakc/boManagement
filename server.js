@@ -1,3 +1,10 @@
+const fs = require("fs");
+
+/* Load the env file */
+if (fs.existsSync(".env")) {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const cors = require("cors");
 const helmet = require("helmet");
@@ -32,7 +39,7 @@ const startServer = async () => {
       });
     }
 
-    app.get("/", (req, res) => res.send("Hello World! from home api"));
+    app.get("/", (req, res) => res.send("Hello from Learn Nepal!!"));
     app.listen(port, () => logger.info(`Node JS Server Running at port ${port}`));
 
   } catch (err) {
