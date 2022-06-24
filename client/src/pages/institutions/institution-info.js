@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
+import { SELECT_INST_MENU } from "../../constants";
 import HomeLayout from "../../components/HomeLayout";
 import Request from "../../library/request";
 
@@ -35,7 +37,8 @@ const getComponent = (key, infoObj) => {
 
 const InstitutionInfo = () => {
   const { id } = useParams();
-  const [selected, setSelected] = useState("about");
+  const dispatch = useDispatch();
+  const { selectedMenu } = useSelector(state => state.institution);
   const [infoObj, setInfoObj] = useState({});
 
   const getById = async () => {
@@ -48,10 +51,10 @@ const InstitutionInfo = () => {
     } catch(err) {}
   };
 
-  const getClass = key => selected === key ? "l-10 l-10-selected" : "l-10";
+  const getClass = key => selectedMenu === key ? "l-10 l-10-selected" : "l-10";
 
   const handleMenuClick = key => {
-    setSelected(key);
+    dispatch({ type: SELECT_INST_MENU, payload: key });
   };
 
   useEffect(() => getById(), []);
@@ -81,7 +84,7 @@ const InstitutionInfo = () => {
           </div>
         </div>
         <div className="l-child">
-          {getComponent(selected, infoObj)}
+          {getComponent(selectedMenu, infoObj)}
         </div>
       </div>
     </HomeLayout>

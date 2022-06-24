@@ -20,30 +20,19 @@ import Institution from "../pages/institutions";
 import InstitutionList from "../pages/institutions/institution-list";
 import InstitutionInfo from "../pages/institutions/institution-info";
 
-/* validate admin user */
-const AdminRoute = ({ children }) => {
+/* Protect routes on basis of allowed role */
+const ProtectedRoute = ({ ChildComponent, role }) => {
   const info = LocalStore.decodeToken();
   
-  if (info && info.role === "admin" && Date.now() < info.expiredAt) {
-    return children;
+  if (info && role === info.role && Date.now() < info.expiredAt) {
+    return <ChildComponent />;
   }
+
+  const redirect = role === "user" ? "/" : "/login";
   /* Remove old tokens and go to login */
   LocalStore.clear();
   LocalStore.clear("reduxState");
-  return <Navigate to="/login" />;
-};
-
-/* validate normal user */
-const UserRoute = ({ children }) => {
-  const info = LocalStore.decodeToken();
-  
-  if (info && info.role === "user" && Date.now() < info.expiredAt) {
-    return children;
-  }
-  /* Remove old tokens and go to home */
-  LocalStore.clear();
-  LocalStore.clear("reduxState");
-  return <Navigate to="/" />;
+  return <Navigate to={`${redirect}`} />;
 };
 
 const AllRoutes = () => {
@@ -53,75 +42,39 @@ const AllRoutes = () => {
         <Routes>
           <Route
             path="/dashboard"
-            element={
-              <AdminRoute>
-                <Dashboard />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={Dashboard} role="admin" />}
           />
           <Route
             path="/books"
-            element={
-              <AdminRoute>
-                <Book />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={Book} role="admin" />}
           />
           <Route
             path="/institutions"
-            element={
-              <AdminRoute>
-                <Institution />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={Institution} role="admin" />}
           />
           <Route
             path="/categories"
-            element={
-              <AdminRoute>
-                <Category />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={Category} role="admin" />}
           />
            <Route
             path="/orders"
-            element={
-              <AdminRoute>
-                <Order />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={Order} role="admin" />}
           />
           <Route
             path="/users"
-            element={
-              <AdminRoute>
-                <User />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={User} role="admin" />}
           />
           <Route
             path="/profile"
-            element={
-              <AdminRoute>
-                <Profile />
-              </AdminRoute>
-            }
+            element={<ProtectedRoute ChildComponent={Profile} role="admin" />}
           />
           <Route
             path="/user-profile"
-            element={
-              <UserRoute>
-                <UserProfile />
-              </UserRoute>
-            }
+            element={<ProtectedRoute ChildComponent={UserProfile} role="user" />}
           />
           <Route
             path="/user-orders"
-            element={
-              <UserRoute>
-                <UserOrder />
-              </UserRoute>
-            }
+            element={<ProtectedRoute ChildComponent={UserOrder} role="user" />}
           />
 
           <Route path="/register" element={<Register />} />

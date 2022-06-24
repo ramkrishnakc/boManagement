@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { Button, Col, Form, Input, message, Row } from "antd";
+import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { Button, Col, Form, Input, message, Row } from "antd";
 
 import LocalStore from "../../library/localStore";
 import Request from "../../library/request";
@@ -9,6 +9,7 @@ import { LOGIN_SUCCESS } from "../../constants";
 import "../../resources/authentication.css";
 
 const LoginComponent = () => {
+  const { loading } = useSelector(state => state.common);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -35,7 +36,7 @@ const LoginComponent = () => {
         }
       })
       .catch((err) => {
-        message.error("Something went wrong!!");
+        message.error("Something went wrong. Probably, invalid username | password !!");
       });
   };
 
@@ -55,7 +56,12 @@ const LoginComponent = () => {
 
   return (
     <div className="authentication">
-      <Row>
+      {loading && (
+        <div className="spinner">
+          <div class="spinner-border" role="status"></div>
+        </div>
+      )}
+      {!loading && (<Row>
         <Col lg={8} xs={22}>
           <Form layout="vertical" onFinish={onFinish}>
             <h3>Login</h3><hr /><br />
@@ -92,7 +98,7 @@ const LoginComponent = () => {
             </div>
           </Form>
         </Col>
-      </Row>
+      </Row>)}
     </div>
   );
 }

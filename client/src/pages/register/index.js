@@ -1,20 +1,16 @@
 import React from 'react';
-import { useDispatch } from "react-redux";
-import { Button, Col, Form, Input, message, Row } from "antd";
+import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
+import { Button, Col, Form, Input, message, Row } from "antd";
 
 import Request from '../../library/request';
-import { SHOW_LOADER } from '../../constants';
 import '../../resources/authentication.css';
 
 const RegisterComponent = () => {
-  const dispatch = useDispatch();
+  const { loading } = useSelector(state => state.common);
   const navigate = useNavigate();
 
   const onFinish = values => {
-    // Show loader
-    dispatch({ type: SHOW_LOADER, payload: true });
-
     Request
       .post('/api/users/signup' , values)
       .then(res => {
@@ -24,18 +20,20 @@ const RegisterComponent = () => {
         } else {
           message.error('Registration Failed, try again later.');
         }
-
-        dispatch({ type: SHOW_LOADER });
       })
       .catch(() => {
         message.error('Something went wrong');
-        dispatch({ type: SHOW_LOADER });
       });
   };
 
   return (
     <div className='authentication'>
-      <Row>
+      {loading && (
+        <div className="spinner">
+          <div class="spinner-border" role="status"></div>
+        </div>
+      )}
+      {!loading && (<Row>
         <Col lg={8} xs={22}>
           <Form layout="vertical" onFinish={onFinish}>
             <h3>Register</h3><hr /><br />
@@ -114,7 +112,7 @@ const RegisterComponent = () => {
             </div>
           </Form>
         </Col>
-      </Row>
+      </Row>)}
     </div>
   )
 }

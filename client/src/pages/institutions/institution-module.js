@@ -1,16 +1,16 @@
-import { SELECT_INSTITUTION, SET_INSTITUTIONS } from "../../constants";
+import { SELECT_INST_MENU, SET_INSTITUTIONS } from "../../constants";
 
 const INITIAL_STATE = {
-  selected: null,
+  selectedMenu: "about",
   all: [],
 };
 
 const InstitutionReducer = (state = {...INITIAL_STATE}, action) => {
   switch (action.type) {
-    case SELECT_INSTITUTION: {
+    case SELECT_INST_MENU: {
       return {
         ...state,
-        selected: action.payload,
+        selectedMenu: action.payload,
       };
     }
 

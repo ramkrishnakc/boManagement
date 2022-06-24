@@ -10,6 +10,7 @@ export const REMOVE_FROM_CART = "removeFromCart";
 export const UPDATE_CART = "updateCart";
 export const EMPTY_CART = "emptyCart";
 export const SELECT_INSTITUTION = "selectInstitution";
+export const SELECT_INST_MENU = "selectInstitutionMenu";
 export const SET_INSTITUTIONS = "setInstitutions";
 
 export const REQUIRED = "Required field!!";
