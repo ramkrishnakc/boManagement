@@ -9,6 +9,7 @@ import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
+const TextArea = Input.TextArea;
 const SEARCH_FIELDS = ["name"];
 
 const CategoryComponent = () => {
@@ -223,7 +224,7 @@ const CategoryComponent = () => {
               </Upload>
             </Form.Item>
             <Form.Item name="description" label="Description">
-              <Input type="textArea" />
+              <TextArea rows={4} />
             </Form.Item>
 
             <div className="d-flex justify-content-end">

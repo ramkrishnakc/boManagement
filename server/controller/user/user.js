@@ -19,6 +19,10 @@ const saveUser = async payload => {
     data.verificationCode = payload.verificationCode;
   }
 
+  if (payload.institution) {
+    data.institution = payload.institution;
+  }
+
   const newuser = new UserModel(data);
   return await newuser.save();
 };
@@ -65,6 +69,7 @@ const login = async (req, res) => {
         name: user.name,
         address: user.address,
         contactNum: user.contactNum,
+        institution: user.institution
       });
       return sendData(res, token);
     }
@@ -164,13 +169,19 @@ const getAll = async (req, res) => {
 /* Add User by admin */
 const add = async (req, res) => {
   try {
-    const { username, password, email, role } = req.body;
+    const { username, password, email, role, institution } = req.body;
 
-    if (!username || !password || !email || !config.allowedRoles.includes(role)) {
+    if (
+      !username ||
+      !password ||
+      !email ||
+      !config.allowedRoles.includes(role) ||
+      (role === "institution" && !institution)
+    ) {
       return sendError(res, 400);
     }
 
-    const item = await saveUser({ username, password, email, role, verified: true });
+    const item = await saveUser({username, password, email, role, institution, verified: true });
 
     if (item) {
       /* Now send mail to provide the user details to concerned person */

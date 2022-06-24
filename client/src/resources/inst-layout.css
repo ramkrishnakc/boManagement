@@ -1,0 +1,19 @@
+.ql-snow.ql-toolbar button, .ql-snow .ql-toolbar button {
+  background: none!important;
+  margin-right: 1px!important;
+}
+.ql-container.ql-snow {
+  min-height: 200px;
+}
+
+.html-wrapper {
+  margin-top: 20px;
+}
+.html-info {
+  margin-bottom: 10px;
+  font-size: 12px;
+  color: green;
+}
+.html-btn {
+  margin-top: 20px;
+}

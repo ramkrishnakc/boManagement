@@ -1,9 +1,10 @@
 import React from "react";
 import { Layout, Menu, message } from "antd";
 import {
+  DashboardOutlined,
+  BlockOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  HomeOutlined,
   CopyOutlined,
   LoginOutlined,
   UserSwitchOutlined,
@@ -11,6 +12,10 @@ import {
   UserAddOutlined,
   ReadOutlined,
   BankOutlined,
+  TeamOutlined,
+  CopyrightOutlined,
+  NotificationOutlined,
+  PictureOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -21,7 +26,7 @@ import "../resources/layout.css";
 const { Header, Sider, Content } = Layout;
 
 const DefaultLayout = (props) => {
-  const { loading, sidbarCollapse } = useSelector(state => state.common);
+  const { common: { loading, sidbarCollapse }, login: { role } } = useSelector(state => state);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const toggle = () => {dispatch({ type: TOGGLE_SIDEBAR, payload: !sidbarCollapse })};
@@ -43,24 +48,52 @@ const DefaultLayout = (props) => {
             mode="inline"
             defaultSelectedKeys={window.location.pathname}
           >
-            <Menu.Item key="/dashboard" icon={<HomeOutlined />}>
-              <Link to="/dashboard">Dashboard</Link>
-            </Menu.Item>
-            <Menu.Item key="/books" icon={<ReadOutlined />}>
-              <Link to="/books">Books</Link>
-            </Menu.Item>
-            <Menu.Item key="/categories" icon={<AppstoreAddOutlined />}>
-              <Link to="/categories">Categories</Link>
-            </Menu.Item>
-            <Menu.Item key="/institutions" icon={<BankOutlined />}>
-              <Link to="/institutions">Institutions</Link>
-            </Menu.Item>
-            <Menu.Item key="/orders" icon={<CopyOutlined />}>
-              <Link to="/orders">Orders</Link>
-            </Menu.Item>
-            <Menu.Item key="/users" icon={<UserAddOutlined />}>
-              <Link to="/users">Users</Link>
-            </Menu.Item>
+            {/* Menu for the "ADMIN" users */}
+            {role === "admin" && (<>
+              <Menu.Item key="/dashboard" icon={<DashboardOutlined />}>
+                <Link to="/dashboard">Dashboard</Link>
+              </Menu.Item>
+              <Menu.Item key="/books" icon={<ReadOutlined />}>
+                <Link to="/books">Books</Link>
+              </Menu.Item>
+              <Menu.Item key="/categories" icon={<AppstoreAddOutlined />}>
+                <Link to="/categories">Categories</Link>
+              </Menu.Item>
+              <Menu.Item key="/institutions" icon={<BankOutlined />}>
+                <Link to="/institutions">Institutions</Link>
+              </Menu.Item>
+              <Menu.Item key="/orders" icon={<CopyOutlined />}>
+                <Link to="/orders">Orders</Link>
+              </Menu.Item>
+              <Menu.Item key="/users" icon={<UserAddOutlined />}>
+                <Link to="/users">Users</Link>
+              </Menu.Item>
+            </>)}
+
+            {/* Menu for the Institutions i.e school & colleges */}
+            {role === "institution" && (<>
+              <Menu.Item key="/inst-about" icon={<BankOutlined />}>
+                <Link to="/inst-about">About Us</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-team" icon={<TeamOutlined />}>
+                <Link to="/inst-team">Our Team</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-departments" icon={<BlockOutlined />}>
+                <Link to="/inst-departments">Programs</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-events" icon={<PictureOutlined />}>
+                <Link to="/inst-events">Events</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-notices" icon={<NotificationOutlined />}>
+                <Link to="/inst-notices">Notices</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-contact" icon={<CopyrightOutlined />}>
+                <Link to="/inst-contact">Contact Us</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-users" icon={<UserAddOutlined />}>
+                <Link to="/inst-users">Admins</Link>
+              </Menu.Item>
+            </>)}
           </Menu>
         </div>
       </Sider>

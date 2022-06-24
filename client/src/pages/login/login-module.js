@@ -3,6 +3,7 @@ import { LOGIN_SUCCESS, LOG_OUT } from "../../constants";
 
 const INITIAL_STATE = {
   isLoggedIn: false,
+  institution: null,
   username: null,
   address: null,
   number: null,

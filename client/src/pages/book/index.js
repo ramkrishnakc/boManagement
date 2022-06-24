@@ -10,6 +10,7 @@ import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import "../../resources/modal.css";
 
+const TextArea = Input.TextArea;
 const LANG = ["English", "Nepali", "Hindi", "Others"];
 const SEARCH_FIELDS = ["name", "author", "language", "category"];
 
@@ -310,7 +311,7 @@ const BookComponent = () => {
                 <Input type="number" />
               </Form.Item>
               <Form.Item name="description" label="Description">
-                <Input type="textArea" />
+                <TextArea rows={2} />
               </Form.Item>
               <Form.Item name="publshed" label="Published Year">
                 <Input />
