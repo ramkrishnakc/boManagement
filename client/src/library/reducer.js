@@ -4,6 +4,7 @@ import { TOGGLE_SIDEBAR, SHOW_LOADER} from "../constants";
 import loginReducer from '../pages/login/login-module';
 import categoryReducer from "../pages/category/category-module";
 import cartReducer from '../pages/cart/cart-module';
+import institutionReducer from '../pages/institutions/institution-module';
 
 const INITIAL_STATE = {
   loading: false,
@@ -31,6 +32,7 @@ const Reducer = combineReducers({
   login: loginReducer,
   category: categoryReducer,
   cart: cartReducer,
+  institution: institutionReducer,
 });
 
 export default Reducer;

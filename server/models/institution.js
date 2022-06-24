@@ -8,7 +8,7 @@ const institutionSchema = mongoose.Schema({
     index: true,
   },
   image: { type: String, required: true },
-  about: { type: String, required: true },
+  about: { type: String },
   contact: {
     address: { type: String },
     phone: { type: String },

@@ -2,19 +2,10 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
-const { BookModel } = require("../../models");
+const { InstitutionModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = [
-  "name",
-  "discount",
-  "price",
-  "author",
-  "category",
-  "language",
-  "published",
-  "description",
-];
+const allowedFields = ["name"];
 
 const getById = async (req, res) => {
   try {
@@ -23,7 +14,7 @@ const getById = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await BookModel.findOne({ _id: ObjectId(id) });
+    const item = await InstitutionModel.findOne({ _id: ObjectId(id) });
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
@@ -33,8 +24,8 @@ const getById = async (req, res) => {
 
 const getAll = async (req, res) => {
   try {
-    const items = await BookModel
-      .find({}, { protectdItems: 0 })
+    const items = await InstitutionModel
+      .find({}, { name: 1, image: 1 })
       .sort({ createdAt: -1 });
     return sendData(res, items);
   } catch (err) {
@@ -45,7 +36,7 @@ const getAll = async (req, res) => {
 
 const add = async (req, res) => {
   try {
-    if (!req.body.name || !req.body.price || !req.body.author || !req.body.category) {
+    if (!req.body.name) {
       return sendError(res, 400);
     }
 
@@ -61,12 +52,13 @@ const add = async (req, res) => {
       payload.image = `/public/${req.file.filename}`;
     }
 
-    const newItem = new BookModel(payload);
+    const newItem = new InstitutionModel(payload);
     const item = await newItem.save();
 
     if (item) {
-      logger.info("Item added successfully");
-      return sendData(res, null, "Item added successfully");
+      const msg = `Institution ${payload.name} added successfully`;
+      logger.info(msg);
+      return sendData(res, null, msg);
     }
     return sendError(res, 400);
   } catch (err) {
@@ -91,10 +83,10 @@ const update = async (req, res) => {
     }, {});
 
     if (req.file && req.file.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/public/${req.file.filename}`;
+      payload.image = `/public/${req.file.filename}`;
     }
 
-    const item = await BookModel.findOneAndUpdate({ _id : ObjectId(id) } , payload);
+    const item = await InstitutionModel.findOneAndUpdate({ _id : ObjectId(id) } , payload);
     if (item) {
       return sendData(res, null, "Item updated successfully");
     }
@@ -107,105 +99,17 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await BookModel.findOneAndDelete({ _id: ObjectId(id) });
-
+    const item = await InstitutionModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
     if (item) {
-      return sendData(res, null, "Item removed successfully");
+      const msg = `Institution with id: ${req.params.id} name: ${item.name} removed successfully`;
+      logger.info(msg);
+      return sendData(res, null, msg);
     }
     return sendError(res, 404);
-  } catch (err) {
-    logger.error(err.stack);
-    return sendError(res);
-  }
-};
-
-const search = async (req, res) => {
-  try {
-    const {
-      offset,
-      limit = 12,
-      keyword = "",
-      keyFields,
-      matchCriteria,
-      categoryCriteria = {},
-    } = req.body;
-
-    let matchObj = {};
-
-    if (!_.isEmpty(matchCriteria)) {
-      matchObj = { ...matchCriteria };
-    }
-
-    if (Array.isArray(keyFields) && keyFields.length) {
-      const orCriteria = keyFields.map(key =>({[key]: new RegExp(keyword, "i") }));
-
-      matchObj = {
-        ...matchObj,
-        $or: orCriteria
-      };
-    }
-
-    const searchCriteria = [
-      { $match: { ...matchObj }},
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          author: 1,
-          category: 1,
-          price: 1,
-          discount: 1,
-          image: 1,
-        }
-      },
-      {
-        $lookup: {
-          from: "categories",
-          let: { searchId: { $toObjectId: "$category" } },
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_id", "$$searchId" ]}}},
-            { $project:{ _id: 0, name: 1 } },
-          ],
-          as: "category"
-        }
-      },
-      { $unwind: "$category" },
-      {
-        $project: {
-          _id: 1,
-          name: 1,
-          author: 1,
-          category: "$category.name",
-          price: 1,
-          discount: 1,
-          image: 1,
-        }
-      },
-      { $match: { ...categoryCriteria }},
-      { $sort : { createdAt : -1 } },
-      /* Return total and paginated result */
-      {
-        $facet: {
-          results: [
-            { $skip: offset },
-            { $limit: limit }
-          ],
-          totalCount: [
-            {
-              $count: 'count'
-            }
-          ]
-        }
-      },
-    ];
-
-    const data = await BookModel.aggregate(searchCriteria);
-    return sendData(res, data[0]);
   } catch (err) {
     logger.error(err.stack);
     return sendError(res);
@@ -218,5 +122,4 @@ module.exports = {
   add,
   update,
   remove,
-  search,
 };

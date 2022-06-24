@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom'
 import { Layout, message } from "antd";
 import { ShoppingCartOutlined, LoginOutlined } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
@@ -13,6 +14,7 @@ import "../resources/layout.css";
 const { Header, Content } = Layout;
 
 const Heading = (props) => {
+  const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [isLoggedIn, setLoggedIn] = useState(false);
@@ -26,6 +28,15 @@ const Heading = (props) => {
     }
   }, []);
 
+  const getClass = (arr = []) => {
+    const p = location.pathname.split("/")[1];
+
+    if (!p) {
+      return arr.includes("home") ? "m-10 m-10-selected" : "m-10";
+    }
+    return arr.includes(p) ? "m-10 m-10-selected" : "m-10";
+  };
+
   return (
     <Layout>
       {loading && (
@@ -38,24 +49,24 @@ const Heading = (props) => {
           <img src={Logo} alt="" height="44px" width="44px" />
         </div>
         <div className="d-flex align-items-center menu-items">
-          <Link to="/" className="m-10">
+          <Link to="/" className={getClass(["home"])}>
             Home
           </Link>
-          <Link to="/book-store" className="m-10">
+          <Link to="/book-store" className={getClass(["book-store"])}>
             Books
           </Link>
-          <Link to="/category-store" className="m-10">
+          <Link to="/category-store" className={getClass(["category-store"])}>
             Categories
           </Link>
-          <Link to="/institution-list" className="m-10">
+          <Link to="/institution-list" className={getClass(["institution-list", "institution-info"])}>
             Institutions
           </Link>
           { isLoggedIn && (
             <>
-              <Link to="/user-orders" className="m-10">
+              <Link to="/user-orders" className={getClass(["user-orders"])}>
                 Orders
               </Link>
-              <Link to="/user-profile" className="m-10">
+              <Link to="/user-profile" className={getClass(["user-profile"])}>
                 Profile
               </Link>
             </>

@@ -63,8 +63,9 @@ const add = async (req, res) => {
     const item = await newItem.save();
 
     if (item) {
-      logger.info("Item added successfully");
-      return sendData(res, null, "Item added successfully");
+      const msg = `Category ${name} added successfully.`
+      logger.info(msg);
+      return sendData(res, null, msg);
     }
     return sendError(res, 400);
   } catch (err) {
@@ -94,8 +95,11 @@ const update = async (req, res) => {
     }
 
     const item = await CategoryModel.findOneAndUpdate({ _id : ObjectId(id) } , payload);
+
     if (item) {
-      return sendData(res, null, "Item updated successfully");
+      const msg = `Category with id: ${req.params.id}, name: ${item.name} updated successfully.`
+      logger.info(msg);
+      return sendData(res, null, msg);
     }
     return sendError(res, 404);
   } catch (err) {
@@ -106,15 +110,16 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await CategoryModel.findOneAndDelete({ _id: ObjectId(id) });
+    const item = await CategoryModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
-      return sendData(res, null, "Item removed successfully");
+      const msg = `Category with id: ${req.params.id}, name: ${item.name} removed successfully.`
+      logger.info(msg);
+      return sendData(res, null, msg);
     }
     return sendError(res, 404);
   } catch (err) {

@@ -85,14 +85,17 @@ const sendUserCreatedEmail = async ({
     to: email,
     subject: `Your account has been created at ${config.appName}`,
     html: `
-      <h3>Hello from ${config.appName}<h3>
-      <p>Your account has been created at <span style="color:orange; font-size:20px">${config.appName}</span>.</p>
-      <p>Username: ${username}</p>
-      <p>Password: ${password}</p>
-      <p>Role: ${role.toUppercase()}</p>
-
       <p>
-        We suggest you to change your password after your first login.
+        Hello from <span style="color:orange; font-size:20px">${config.appName}</span>.
+        Your account has been created at <span style="color:orange; font-size:20px">${config.appName}</span>.
+        Please find the details below:
+      </p>
+      <p>Username: <span style="color:green; font-size:12px">${username}</span></p>
+      <p>Password: <span style="color:green; font-size:12px">${password}</span></p>
+      <p>Role: <span style="color:green; font-size:12px">${role.toUpperCase()}</span></p>
+
+      <p>We suggest you to change your password after your first login.</p>
+      <p>
         <a
           style="display: inline-block; background-color: #f44336; color: white; padding: 14px 25px; text-align: center; text-decoration: none;"
           target="_blank"

@@ -32,7 +32,7 @@ const UserComponent = () => {
 
   const getAllInstitutons = async () => {
     try {
-      const {data: { success, data }} = await Request.get(`/api/institutions/getAll`);
+      const {data: { success, data }} = await Request.get(`/api/institution/getAll`);
       if (success) {
         setInstitutions(data);
       }

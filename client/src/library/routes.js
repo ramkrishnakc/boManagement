@@ -16,6 +16,9 @@ import Profile from "../pages/profile";
 import UserProfile from "../pages/profile/user-profile";
 import Home from "../pages/home";
 import Cart from "../pages/cart";
+import Institution from "../pages/institutions";
+import InstitutionList from "../pages/institutions/institution-list";
+import InstitutionInfo from "../pages/institutions/institution-info";
 
 /* validate admin user */
 const AdminRoute = ({ children }) => {
@@ -61,6 +64,14 @@ const AllRoutes = () => {
             element={
               <AdminRoute>
                 <Book />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/institutions"
+            element={
+              <AdminRoute>
+                <Institution />
               </AdminRoute>
             }
           />
@@ -119,6 +130,8 @@ const AllRoutes = () => {
           <Route path="/book-store" element={<BookStore />} />
           <Route path="/category-store" element={<CategoryStore />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/institution-list" element={<InstitutionList />} />
+          <Route path="/institution-info/:id" element={<InstitutionInfo />} />
         </Routes>
       </BrowserRouter>
     </div>
