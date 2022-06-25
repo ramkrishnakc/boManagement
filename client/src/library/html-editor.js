@@ -7,12 +7,19 @@ Quill.register('modules/imageResize', ImageResize);
 
 const HTMLEditor = props => {
   const modules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, 4, 5, false] }],
-      ['bold', 'italic', 'underline','strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+   toolbar: [
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      ['bold', 'italic', 'underline', 'strike'],
+      ['blockquote', 'code-block'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'script': 'sub'}, { 'script': 'super' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }],
+      [{ 'direction': 'rtl' }],
+      [{ 'color': [] }, { 'background': [] }],
+      [{ 'font': [] }],
+      [{ 'align': [] }],
       ['link', 'image'],
-      ['clean']
+      ['clean'],
     ],
     clipboard: {
       matchVisual: false
@@ -25,9 +32,13 @@ const HTMLEditor = props => {
  
   const formats = [
     'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent',
-    'link', 'image'
+    'bold', 'italic', 'underline', 'strike',
+    'blockquote', 'code-block',
+    'list', 'script', 'indent', 'direction',
+    'color', 'background',
+    'font',
+    'align',
+    'link', 'image', 'clean'
   ];
 
   return (

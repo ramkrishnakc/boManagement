@@ -22,8 +22,8 @@ router.delete("/remove/:id", Auth.authorizeAdmin, institution.remove);
 
 /* -------------------- Allowed Only for "Intitution" Users --------------------------- */
 router.get("/getByRefId-about/:refId", Auth.authorizeInstitution, about.getByRefId);
-router.post("/add-about/:refId", Auth.authorizeInstitution, Upload.single("file"), about.add);
-router.put("/update-about/:refId/:id", Auth.authorizeInstitution, Upload.single("file"), about.update);
+router.post("/add-about/:refId", Auth.authorizeInstitution, Upload.any("files"), about.add);
+router.put("/update-about/:refId/:id", Auth.authorizeInstitution, Upload.any("files"), about.update);
 
 router.get("/getByRefId-activity/:refId", Auth.authorizeInstitution, activity.getByRefId);
 router.post("/add-activity/:refId", Auth.authorizeInstitution, activity.add);

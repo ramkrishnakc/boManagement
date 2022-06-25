@@ -17,7 +17,10 @@ const getByRefId = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await InstAboutModel.findOne({ refId });
+    const item = await InstAboutModel.findOne(
+      { refId: req.params.refId },
+      { _id: 1, text: 1, images: 1, html: 1 }
+    );
 
     return sendData(res, item);
   } catch (err) {
@@ -36,13 +39,16 @@ const add = async (req, res) => {
 
     const payload = _.pick(req.body, allowedFields);
 
+    if (req.files) {
+      payload.images = req.files.map(d => `/public/${d.filename}`);
+    }
+
     const newItem = new InstAboutModel({refId: req.params.refId,  ...payload });
     const item = await newItem.save();
 
     if (item) {
-      const msg = `About info added for college: ${req.params.refId}.`;
-      logger.info(msg);
-      return sendData(res, null, msg);
+      await InstitutionModel.findOneAndUpdate({ _id : ObjectId(req.params.refId) } , { about: item._id });
+      return sendData(res, null, "About information saved successfully.");
     }
     return sendError(res, 400);
   } catch (err) {
@@ -51,8 +57,32 @@ const add = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
-  
+
+const update = async (req, res, next) => {
+  try {
+    if (!req.params.refId ||
+      !req.params.id ||
+      req.params.refId !== _.get(res, "locals.payload.institution")
+    ) {
+      return sendError(res, 400);
+    }
+
+    const payload = _.pick(req.body, allowedFields);
+
+    if (req.files) {
+      payload.images = req.files.map(d => `/public/${d.filename}`);
+    }
+
+    const item = await InstAboutModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
+
+    if (item) {
+      return sendData(res, null, "About information updated successfully");
+    }
+    return sendError(res, 400);
+  } catch (err) {
+    logger.error(err.stack);
+    return sendError(res);
+  }
 };
 
 module.exports = {
