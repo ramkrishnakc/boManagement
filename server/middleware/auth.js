@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const _ = require("lodash");
+
 const { config } = require("../config");
 
 const getPayload = async req => {
@@ -35,7 +37,18 @@ const Auth = {
 
   authorizeToken: async (req, res, next) => {
     const payload = await getPayload(req);
-    if (payload && ["admin", "user"].includes(payload.role)) {
+
+    if (config.allowedRoles.includes(_.get(payload, "role"))) {
+      res.locals.payload = payload;
+      return next();
+    }
+    return res.status(401).json({ error: "Unauthorized access" });
+  },
+
+  authorizeRole: async (role, req, res, next) => {
+    const payload = await getPayload(req);
+
+    if (_.get(payload, "role") === role) {
       res.locals.payload = payload;
       return next();
     }
@@ -43,21 +56,19 @@ const Auth = {
   },
 
   authorizeAdmin: async (req, res, next) => {
-    const payload = await getPayload(req);
-    if (payload && payload.role === "admin") {
-      res.locals.payload = payload;
-      return next();
-    }
-    return res.status(401).json({ error: "Unauthorized access" });
+    return Auth.authorizeRole("admin", req, res, next);
   },
 
   authorizeUser: async (req, res, next) => {
-    const payload = await getPayload(req);
-    if (payload && payload.role === "user") {
-      res.locals.payload = payload;
-      return next();
-    }
-    return res.status(401).send({ error: "Unauthorized access" });
+    return Auth.authorizeRole("user", req, res, next);
+  },
+
+  authorizeInstitution: async (req, res, next) => {
+    return Auth.authorizeRole("institution", req, res, next);
+  },
+
+  authorizeWriter: async (req, res, next) => {
+    return Auth.authorizeRole("writer", req, res, next);
   },
 };
 

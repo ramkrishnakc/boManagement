@@ -1,5 +1,5 @@
-const InstProgram = () => {
+const InstDepartment = () => {
   return "ProgramDisplay...";
 };
 
-export default InstProgram;
+export default InstDepartment;

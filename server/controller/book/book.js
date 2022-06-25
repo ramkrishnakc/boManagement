@@ -18,12 +18,11 @@ const allowedFields = [
 
 const getById = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await BookModel.findOne({ _id: ObjectId(id) });
+    const item = await BookModel.findOne({ _id: ObjectId(req.params.id) });
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
@@ -57,8 +56,9 @@ const add = async (req, res) => {
       return acc;
     }, {});
 
-    if (req.file && req.file.filename) {
-      payload.image = `/public/${req.file.filename}`;
+    const filename = _.get(req, "file.filename");
+    if (filename) {
+      payload.image = `/public/${filename}`;
     }
 
     const newItem = new BookModel(payload);
@@ -77,8 +77,7 @@ const add = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
@@ -90,11 +89,12 @@ const update = async (req, res) => {
       return acc;
     }, {});
 
-    if (req.file && req.file.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/public/${req.file.filename}`;
+    const filename = _.get(req, "file.filename");
+    if (filename) {
+      payload.image = `/public/${filename}`;
     }
 
-    const item = await BookModel.findOneAndUpdate({ _id : ObjectId(id) } , payload);
+    const item = await BookModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
       return sendData(res, null, "Item updated successfully");
     }
@@ -107,12 +107,11 @@ const update = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await BookModel.findOneAndDelete({ _id: ObjectId(id) });
+    const item = await BookModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
       return sendData(res, null, "Item removed successfully");

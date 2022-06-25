@@ -1,4 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
+const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { CategoryModel, BookModel } = require("../../models");
@@ -6,12 +7,11 @@ const { sendData, sendError } = require("../helper/lib");
 
 const getById = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await CategoryModel.findOne({ _id: ObjectId(id) });
+    const item = await CategoryModel.findOne({ _id: ObjectId(req.params.id) });
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
@@ -55,8 +55,9 @@ const add = async (req, res) => {
     if (description) {
       payload.description = description;
     }
-    if (req.file && req.file.filename) {
-      payload.image = `/public/${req.file.filename}`;
+    const filename = _.get(req, "file.filename");
+    if (filename) {
+      payload.image = `/public/${filename}`;
     }
 
     const newItem = new CategoryModel(payload);
@@ -76,8 +77,7 @@ const add = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
@@ -90,11 +90,12 @@ const update = async (req, res) => {
     if (description) {
       payload.description = description;
     }
-    if (req.file && req.file.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/public/${req.file.filename}`;
+    const filename = _.get(req, "file.filename");
+    if (filename) {
+      payload.image = `/public/${filename}`;
     }
 
-    const item = await CategoryModel.findOneAndUpdate({ _id : ObjectId(id) } , payload);
+    const item = await CategoryModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
 
     if (item) {
       const msg = `Category with id: ${req.params.id}, name: ${item.name} updated successfully.`

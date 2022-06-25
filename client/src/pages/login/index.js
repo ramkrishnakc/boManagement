@@ -28,6 +28,8 @@ const LoginComponent = () => {
           /* Go to dashboard if 'admin' or home page for 'user' */
           if (payload.role === "admin") {
             navigate("/dashboard");
+          } else if (payload.role === "institution") {
+            navigate("/inst-about");
           } else {
             navigate("/");
           }
@@ -41,12 +43,15 @@ const LoginComponent = () => {
   };
 
   useEffect(() => {
-    /* Go to dashboard if 'admin' or home page for 'user' */
+    /* Go to dashboard if 'admin', about page if 'institution' or home page for 'user' */
     const payload = LocalStore.decodeToken();
 
     if (payload) {
       if (payload.role === "admin") {
         navigate("/dashboard");
+      }
+      if (payload.role === "institution") {
+        navigate("/inst-about");
       }
       if (payload.role === "user") {
         navigate("/");

@@ -1,4 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
+const _ = require("lodash");
 
 const { config, logger, hash } = require("../../config");
 const { UserModel } = require("../../models");
@@ -126,13 +127,12 @@ const signup = async (req, res) => {
 
 const getById = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
     const item = await UserModel.findOne(
-      { _id: ObjectId(id) },
+      { _id: ObjectId(req.params.id) },
       {
         password: 0,
         _id: 0,
@@ -245,10 +245,9 @@ const update = async (req, res) => {
     }
 
     const user = await UserModel.findOne({ _id: ObjectId(req.params.id), verified: true });
-    const email = res.locals && res.locals.payload.email;
 
     /* Verify that only the exact user can change its own password */
-    if (user && user.email === email) {
+    if (user && user.email === _.get(res, "locals.payload.email")) {
       const payload = allowedFields.reduce((acc, key) => {
         const val = req.body[key];
         if (val) {
@@ -276,10 +275,13 @@ const pwdUpdate = async (req, res) => {
       return sendError(res, 400);
     }
     const user = await UserModel.findOne({ _id: ObjectId(req.params.id), verified: true });
-    const email = res.locals && res.locals.payload.email;
 
     /* Verify that only the exact user can change its own password */
-    if (user && hash.decrypt(user.password) === req.body.oldPassword && user.email === email) {
+    if (
+      user &&
+      hash.decrypt(user.password) === req.body.oldPassword &&
+      user.email === _.get(res, "locals.payload.email")
+    ) {
       const item = await UserModel.findOneAndUpdate(
         { _id: ObjectId(req.params.id) },
         { password: hash.encrypt(req.body.password) }
@@ -298,12 +300,11 @@ const pwdUpdate = async (req, res) => {
 
 const remove = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await UserModel.findOneAndDelete({ _id: ObjectId(id) });
+    const item = await UserModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
       return sendData(res, null, "User removed successfully");

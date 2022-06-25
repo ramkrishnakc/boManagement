@@ -1,4 +1,5 @@
 const ObjectId = require("mongoose").Types.ObjectId;
+const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { BillModel } = require("../../models");
@@ -76,9 +77,8 @@ const getByUserId = async (req, res) => {
     if (!req.params.id) {
       return sendError(res, 400);
     }
-    const id = res.locals && res.locals.payload.id;
     /* Allow actual user to access his/her bills */
-    if (id !== req.params.id) {
+    if (_.get(res, "locals.payload.id") !== req.params.id) {
       return sendError(res, 400);
     }
 

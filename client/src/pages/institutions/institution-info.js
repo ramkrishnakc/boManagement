@@ -6,12 +6,12 @@ import { SELECT_INST_MENU } from "../../constants";
 import HomeLayout from "../../components/HomeLayout";
 import Request from "../../library/request";
 
-import About from "./inst-about";
-import Contact from "./inst-contact";
-import Department from "./inst-department";
-import Event from "./inst-event";
-import Notice from "./inst-notice";
-import Team from "./inst-team";
+import About from "./inst-about-display";
+import Contact from "./inst-contact-display";
+import Department from "./inst-department-display";
+import Event from "./inst-event-display";
+import Notice from "./inst-notice-display";
+import Team from "./inst-team-display";
 
 const getComponent = (key, infoObj) => {
   switch (key) {
