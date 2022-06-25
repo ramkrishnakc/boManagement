@@ -2,19 +2,27 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
-const { InstitutionModel } = require("../../models");
+const {
+  InstitutionModel,
+  InstAboutModel,
+  InstContactModel,
+  InstActivityModel,
+  InstDepartmentModel,
+  InstNoticeModel,
+  InstTeamModel,
+  UserModel,
+} = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = ["name"];
+const allowedFields = ["name", "about"];
 
 const getById = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const item = await InstitutionModel.findOne({ _id: ObjectId(id) });
+    const item = await InstitutionModel.findOne({ _id: ObjectId(req.params.id) });
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
@@ -40,13 +48,7 @@ const add = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const payload = allowedFields.reduce((acc, key) => {
-      const val = req.body[key];
-      if (val) {
-        acc[key] = val;
-      }
-      return acc;
-    }, {});
+    const payload = _.pick(req.body, allowedFields);
 
     if (req.file && req.file.filename) {
       payload.image = `/public/${req.file.filename}`;
@@ -69,26 +71,19 @@ const add = async (req, res) => {
 
 const update = async (req, res) => {
   try {
-    const { id } = req.params;
-    if (!id) {
+    if (!req.params.id) {
       return sendError(res, 400);
     }
 
-    const payload = allowedFields.reduce((acc, key) => {
-      const val = req.body[key];
-      if (val) {
-        acc[key] = val;
-      }
-      return acc;
-    }, {});
+    const payload = _.pick(req.body, allowedFields);
 
     if (req.file && req.file.filename) {
       payload.image = `/public/${req.file.filename}`;
     }
 
-    const item = await InstitutionModel.findOneAndUpdate({ _id : ObjectId(id) } , payload);
+    const item = await InstitutionModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
-      return sendData(res, null, "Item updated successfully");
+      return sendData(res, null, `Institution with id: ${req.params.id} updated successfully`);
     }
     return sendError(res, 404);
   } catch (err) {
@@ -105,6 +100,18 @@ const remove = async (req, res) => {
 
     const item = await InstitutionModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
     if (item) {
+      /* Delete the users and all info about the institution */
+      const promises = [
+        UserModel.deleteMany({ institution: req.params.id }),
+        InstAboutModel.deleteOne({ refId: req.params.id }),
+        InstContactModel.deleteOne({ refId: req.params.id }),
+        InstActivityModel.deleteMany({ refId: req.params.id }),
+        InstDepartmentModel.deleteMany({ refId: req.params.id }),
+        InstNoticeModel.deleteMany({ refId: req.params.id }),
+        InstTeamModel.deleteMany({ refId: req.params.id }),
+      ];
+      await Promise.all(promises);
+
       const msg = `Institution with id: ${req.params.id} name: ${item.name} removed successfully`;
       logger.info(msg);
       return sendData(res, null, msg);

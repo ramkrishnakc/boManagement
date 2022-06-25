@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const instContactSchema = mongoose.Schema({
-  refId: { type: String, required: true },
+  refId: { type: String, required: true, index: true },
   address: { type: String, required: true },
   phone: { type: String, required: true },
   alternateNumbers: [String],

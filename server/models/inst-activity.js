@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const instActivitySchema = mongoose.Schema({
-  refId: { type: String, required: true },
+  refId: { type: String, required: true, index: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   images: { type: Array },

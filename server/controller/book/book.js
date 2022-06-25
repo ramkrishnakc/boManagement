@@ -48,15 +48,9 @@ const add = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const payload = allowedFields.reduce((acc, key) => {
-      const val = req.body[key];
-      if (val) {
-        acc[key] = val;
-      }
-      return acc;
-    }, {});
-
+    const payload = _.pick(req.body, allowedFields);
     const filename = _.get(req, "file.filename");
+
     if (filename) {
       payload.image = `/public/${filename}`;
     }
@@ -81,15 +75,9 @@ const update = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const payload = allowedFields.reduce((acc, key) => {
-      const val = req.body[key];
-      if (val) {
-        acc[key] = val;
-      }
-      return acc;
-    }, {});
-
+    const payload = _.pick(req.body, allowedFields);
     const filename = _.get(req, "file.filename");
+
     if (filename) {
       payload.image = `/public/${filename}`;
     }
