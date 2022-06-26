@@ -5,7 +5,7 @@ const { logger } = require("../../config");
 const { InstNoticeModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = ["title", "description", "images", "html", "externalLinks"];
+const allowedFields = ["title", "description", "images", "externalLinks"];
 
 const projection = {
   _id: 1,
@@ -21,7 +21,11 @@ const getByRefId = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await InstNoticeModel.find({ refId: req.params.refId }, projection);
+    const item = await InstNoticeModel.find(
+      { refId: req.params.refId },
+      projection,
+      { sort: { "updatedAt": -1 } }
+    );
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);

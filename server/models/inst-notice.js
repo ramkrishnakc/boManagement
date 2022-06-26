@@ -6,7 +6,6 @@ const instNoticeSchema = mongoose.Schema({
   description: { type: String, required: true },
   images: { type: Array },
   externalLinks: { type: Array },
-  html: { type: String },
 }, { timestamps : true });
 
 module.exports = mongoose.model("instNotices", instNoticeSchema);

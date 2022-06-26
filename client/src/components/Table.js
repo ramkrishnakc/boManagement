@@ -1,6 +1,5 @@
-import { Table } from "antd";
 import React from "react";
-import { Input, Button } from "antd";
+import { Input, Button, Table } from "antd";
 
 const Search = Input.Search;
 

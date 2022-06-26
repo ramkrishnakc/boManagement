@@ -1,19 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { useDispatch, useSelector } from "react-redux";
 import { Layout, message } from "antd";
 import { ShoppingCartOutlined, LoginOutlined } from "@ant-design/icons";
-import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
-import Logo from "../resources/logo.png";
 
 import LocalStore from "../library/localStore";
 import { LOG_OUT } from "../constants";
 import Footer from "./Footer";
+import Logo from "../resources/logo.png";
 import "../resources/layout.css";
 
 const { Header, Content } = Layout;
 
-const Heading = (props) => {
+const Heading = props => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();

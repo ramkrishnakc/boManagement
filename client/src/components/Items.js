@@ -1,9 +1,9 @@
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 
+import { addToCart } from "../pages/cart/cart-module";
 import noImage from "../resources/no-image.png";
 import "../resources/books.css";
-import { addToCart } from "../pages/cart/cart-module";
 
 const Items = props => {
   const dispatch = useDispatch();

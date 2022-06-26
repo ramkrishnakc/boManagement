@@ -28,6 +28,9 @@
   background: #d1dcdc!important;
 }
 
+.book-model-class .ant-modal-body {
+  padding: 5px 24px;
+}
 .book-model-class .ant-modal-close-x {
   padding: 9px 20px 0px 0px;
   width: unset!important;

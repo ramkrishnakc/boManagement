@@ -5,7 +5,7 @@ const { logger } = require("../../config");
 const { InstActivityModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = ["name", "description", "images", "html", "externalLinks"];
+const allowedFields = ["title", "description", "images", "html", "externalLinks"];
 
 const projection = {
   _id: 1,
@@ -21,7 +21,11 @@ const getByRefId = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await InstActivityModel.find({ refId: req.params.refId }, projection);
+    const item = await InstActivityModel.find(
+      { refId: req.params.refId },
+      projection,
+      { sort: { "updatedAt": -1 } }
+    );
     return sendData(res, item);
   } catch (err) {
     logger.error(err.stack);
@@ -56,7 +60,7 @@ const add = async (req, res) => {
       payload.images = req.files.map(d => `/public/${d.filename}`);
     }
 
-    const newItem = new InstNoticeModel({refId: req.params.refId,  ...payload });
+    const newItem = new InstActivityModel({refId: req.params.refId,  ...payload });
     const item = await newItem.save();
 
     if (item) {

@@ -4,7 +4,7 @@ import { get } from "lodash";
 
 import Request from "../../library/request";
 import LocalStore from "../../library/localStore";
-import HTMLEditor from "../../library/html-editor";
+import HTMLEditor from "../../components/HtmlEditor";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import "../../resources/inst-layout.css";
@@ -138,7 +138,7 @@ const InstAbout = () => {
                     <div class="ant-form-item-control-input">
                       <div class="ant-form-item-control-input-content">
                         <div class="ant-input">
-                          Choose files
+                          Choose images
                         </div>
                       </div>
                     </div>

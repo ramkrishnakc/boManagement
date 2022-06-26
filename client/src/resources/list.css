@@ -1,0 +1,31 @@
+.list-items {
+  margin: 10px 0px;
+  display: flex;
+  flex-wrap: wrap;
+}
+.list-item {
+  margin-right: 10px;
+  margin-top: 10px;
+  display: flex;
+}
+.list-value {
+  border: 1px solid #009688;
+  padding: 2px 15px 2px 7px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 450px;
+}
+.list-btn {
+  background: #009688;
+  color: white;
+  cursor: pointer;
+  border-radius: 0px 5px 5px 0px;
+  padding: 0px 5px;
+}
+
+.list-btn .anticon svg {
+  height: 14px;
+  width: 14px;
+  font-size: 14px;
+}

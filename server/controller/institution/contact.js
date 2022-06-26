@@ -2,7 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
-const { InstAboutModel } = require("../../models");
+const { InstContactModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
 const allowedFields = ["address", "phone", "email", "website", "externalLinks", "gMap"];
@@ -13,7 +13,7 @@ const getByRefId = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await InstAboutModel.findOne(
+    const item = await InstContactModel.findOne(
       { refId: req.params.refId },
       { _id: 1, text: 1, images: 1, html: 1 }
     );
@@ -34,7 +34,7 @@ const add = async (req, res) => {
     }
 
     const payload = _.pick(req.body, allowedFields);
-    const newItem = new InstAboutModel({refId: req.params.refId,  ...payload });
+    const newItem = new InstContactModel({refId: req.params.refId,  ...payload });
     const item = await newItem.save();
 
     if (item) {
@@ -57,7 +57,7 @@ const update = async (req, res, next) => {
     }
 
     const payload = _.pick(req.body, allowedFields);
-    const item = await InstAboutModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
+    const item = await InstContactModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
 
     if (item) {
       return sendData(res, null, "Contact information updated successfully");

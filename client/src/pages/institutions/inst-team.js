@@ -129,7 +129,6 @@ const InstTeam = () => {
   };
 
   const onFinish = data => {
-    console.log("DATA ::: ", data);
     const uriArr = ['', 'api', 'institution'];
     let method = "post";
 
@@ -186,7 +185,7 @@ const InstTeam = () => {
         onSearch={onSearch}
         onChange={onChange}
         showAddButton={true}
-        addButtonLabel="+ New Memeber"
+        addButtonLabel="+ New"
         buttonOnClick={() => setOpenModel(true)}
       />
 
