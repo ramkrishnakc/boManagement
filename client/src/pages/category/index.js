@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { get } from "lodash";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Upload } from "antd";
 
@@ -114,8 +115,7 @@ const CategoryComponent = () => {
       }
     });
 
-    const file = data.image && data.image.file && data.image.file.originFileObj;
-
+    const file = get(data, "image.file.originFileObj");
     if (file) {
       formData.append("file", file);
     }
@@ -162,9 +162,7 @@ const CategoryComponent = () => {
 
   /* Handle change in search input */
   const onChange = e => {
-    const keyword = e && e.target && e.target.value;
-
-    if (!keyword) {
+    if (!get(e, "target.value")) {
       onSearch("");
     }
   };

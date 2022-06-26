@@ -4,7 +4,7 @@ const { dateBefore, sendData, sendError } = require("../helper/lib");
 
 const getData = async (req, res) => {
   try {
-    const hrs = req.query.hrs || 24 * 7 // Recent 7 days
+    const hrs = req.query.hrs || 24 * 30 // Recent 30 days
     const mDate = dateBefore(hrs);
 
     const promises = [
@@ -12,7 +12,7 @@ const getData = async (req, res) => {
       BookModel.find(
         { createdAt: { $gt: mDate } },
         { _id: 1, name: 1, author: 1, image: 1, discount: 1, price: 1, createdAt: 1 },
-        { limit: 10, sort: "createdAt" }
+        { limit: 10, sort: { "createdAt": -1 } }
       ),
       /* Get popular books on basis of cart */
       BillModel.aggregate([
@@ -50,7 +50,7 @@ const getData = async (req, res) => {
     const [recentBooks, topBooks, categories] = await Promise.all(promises);
     const data = {
       recentBooks,
-      topBooks,
+      topBooks: topBooks.length >= 10 ? topBooks : [...topBooks, ...recentBooks.slice(0, 5)],
       categories,
     };
     return sendData(res, data);

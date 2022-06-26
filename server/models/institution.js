@@ -8,12 +8,6 @@ const institutionSchema = mongoose.Schema({
     index: true,
   },
   image: { type: String, required: true },
-  about: { type: String },
-  contact: { type: String },
-  team: { type: Array },
-  programs: { type: Array },
-  activities: { type: Array },
-  notices: { type: Array },
 }, { timestamps : true });
 
 module.exports = mongoose.model("institutions", institutionSchema);

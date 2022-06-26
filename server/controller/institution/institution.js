@@ -2,6 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
+const { sendData, sendError } = require("../helper/lib");
 const {
   InstitutionModel,
   InstAboutModel,
@@ -12,9 +13,8 @@ const {
   InstTeamModel,
   UserModel,
 } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = ["name", "about"];
+const allowedFields = ["name"];
 
 const getById = async (req, res) => {
   try {
@@ -22,8 +22,12 @@ const getById = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await InstitutionModel.findOne({ _id: ObjectId(req.params.id) });
-    return sendData(res, item);
+    const data = await InstitutionModel.findOne(
+      { _id: ObjectId(req.params.id) },
+      { _id: 1, name: 1, image: 1 }
+    );
+
+    return sendData(res, data);
   } catch (err) {
     logger.error(err.stack);
     return sendError(res);
@@ -33,7 +37,7 @@ const getById = async (req, res) => {
 const getAll = async (req, res) => {
   try {
     const items = await InstitutionModel
-      .find({}, { name: 1, image: 1 })
+      .find({}, { _id: 1, name: 1, image: 1 })
       .sort({ createdAt: -1 });
     return sendData(res, items);
   } catch (err) {
@@ -83,7 +87,7 @@ const update = async (req, res) => {
 
     const item = await InstitutionModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
-      return sendData(res, null, `Institution with id: ${req.params.id} updated successfully`);
+      return sendData(res, null, "Institution info updated successfully");
     }
     return sendError(res, 404);
   } catch (err) {
@@ -114,7 +118,7 @@ const remove = async (req, res) => {
 
       const msg = `Institution with id: ${req.params.id} name: ${item.name} removed successfully`;
       logger.info(msg);
-      return sendData(res, null, msg);
+      return sendData(res, null, `Institution: ${item.name} removed successfully!!`);
     }
     return sendError(res, 404);
   } catch (err) {

@@ -37,3 +37,21 @@ export const STATUS_NAME_MAP = {
 
 export const LIMIT = 16;
 export const TAX = 13;
+
+export const STATIC_SLIDER_OPTIONS = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+};
+
+export const SLIDER_OPTIONS = {
+  dots: false,
+  infinite: true,
+  speed: 500,
+  slidesToShow: 3,
+  slidesToScroll: 1,
+  autoplay: true,
+  autoplaySpeed: 2000,
+};

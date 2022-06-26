@@ -16,3 +16,28 @@
 .html-btn {
   margin-top: 20px;
 }
+
+.team-div {
+  display: inline-block;
+  flex-grow: 1;
+  width: calc(100% * (1/4) - 10px - 1px);
+  text-align: center;
+  padding: 0px;
+  margin: 10px 10px 0px 0px;
+  background: linear-gradient(15deg, #454e4d, transparent);
+}
+.team-img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+  height: 120px;
+  padding: 10px 0px;
+}
+.ext-link {
+  color: brown;
+  text-decoration: underline;
+}
+.member-name {
+  color: seashell;
+}

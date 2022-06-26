@@ -2,14 +2,10 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
-const { InstitutionModel, InstAboutModel } = require("../../models");
+const { InstAboutModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = [
-  "text",
-  "images",
-  "html"
-];
+const allowedFields = ["text", "images", "html"];
 
 const getByRefId = async (req, res) => {
   try {
@@ -47,7 +43,6 @@ const add = async (req, res) => {
     const item = await newItem.save();
 
     if (item) {
-      await InstitutionModel.findOneAndUpdate({ _id : ObjectId(req.params.refId) } , { about: item._id });
       return sendData(res, null, "About information saved successfully.");
     }
     return sendError(res, 400);
@@ -56,7 +51,6 @@ const add = async (req, res) => {
     return sendError(res);
   }
 };
-
 
 const update = async (req, res, next) => {
   try {

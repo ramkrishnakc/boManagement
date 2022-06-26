@@ -1,31 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Row, Col } from "antd";
 
 import Request from "../../library/request";
 import SliderComponent from "../../components/Slider";
 import HomeLayout from "../../components/HomeLayout";
 import "../../resources/home.css";
-import { SET_CATEGORIES } from "../../constants";
-
-const STATIC_SLIDER_OPTIONS = {
-  dots: false,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 4,
-  slidesToScroll: 1,
-};
-
-const SLIDER_OPTIONS = {
-  dots: false,
-  infinite: true,
-  speed: 500,
-  slidesToShow: 3,
-  slidesToScroll: 1,
-  autoplay: true,
-  autoplaySpeed: 2000,
-};
+import { STATIC_SLIDER_OPTIONS, SLIDER_OPTIONS, SET_CATEGORIES } from "../../constants";
 
 const HomeComponent = () => {
   const dispatch = useDispatch();

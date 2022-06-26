@@ -13,25 +13,25 @@ import Event from "./inst-event-display";
 import Notice from "./inst-notice-display";
 import Team from "./inst-team-display";
 
-const getComponent = (key, infoObj) => {
+const getComponent = (key, refId) => {
   switch (key) {
     case "contact":
-      return <Contact infoObj={infoObj} />;
+      return <Contact refId={refId} />;
 
     case "program":
-      return <Department infoObj={infoObj} />;
+      return <Department refId={refId} />;
 
     case "evt":
-        return <Event infoObj={infoObj} />;
+        return <Event refId={refId} />;
     
     case "notice":
-      return <Notice infoObj={infoObj} />;
+      return <Notice refId={refId} />;
     
     case "team":
-      return <Team infoObj={infoObj} />;
+      return <Team refId={refId} />;
 
     default:
-      return <About infoObj={infoObj} />;
+      return <About refId={refId} />;
   }
 };
 
@@ -84,7 +84,7 @@ const InstitutionInfo = () => {
           </div>
         </div>
         <div className="l-child">
-          {getComponent(selectedMenu, infoObj)}
+          {getComponent(selectedMenu, infoObj._id)}
         </div>
       </div>
     </HomeLayout>
