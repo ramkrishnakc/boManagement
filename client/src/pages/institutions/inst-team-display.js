@@ -81,7 +81,12 @@ const InstTeamDisplay = ({ refId }) => {
             <div key={item.name} className="team-div">
               <img src={item.image || noImage} alt="" className="team-img" />
               <p className="member-name">{item.name}</p>
-              <p>{item.position} | {item.department}</p>
+              <p className="member-department">{item.position} | {item.department}</p>
+              {
+                item.about && (
+                  <p className="member-about">{item.about}</p>
+                )
+              }
               {item.website && (
                 <p>
                   Website: <a href={item.website} className="ext-link">{item.website}</a>

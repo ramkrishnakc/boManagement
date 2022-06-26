@@ -4,10 +4,9 @@ const instDepartmentSchema = mongoose.Schema({
   refId: { type: String, required: true, index: true },
   name: { type: String, required: true },
   image: { type: String, required: true },
-  course: { type: String },
+  course: { type: Array },
   about: { type: String, required: true },
-  fee: { type: String },
-  externalLinks: { type: String },
+  externalLinks: { type: Array },
   html: { type: String },
 }, { timestamps : true });
 

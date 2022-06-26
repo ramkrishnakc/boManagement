@@ -5,7 +5,7 @@ const instNoticeSchema = mongoose.Schema({
   title: { type: String, required: true },
   description: { type: String, required: true },
   images: { type: Array },
-  externalLinks: { type: String },
+  externalLinks: { type: Array },
   html: { type: String },
 }, { timestamps : true });
 

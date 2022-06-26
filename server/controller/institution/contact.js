@@ -2,14 +2,10 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
-const { InstitutionModel, InstAboutModel } = require("../../models");
+const { InstAboutModel } = require("../../models");
 const { sendData, sendError } = require("../helper/lib");
 
-const allowedFields = [
-  "text",
-  "images",
-  "html"
-];
+const allowedFields = ["address", "phone", "email", "website", "externalLinks", "gMap"];
 
 const getByRefId = async (req, res) => {
   try {
@@ -17,7 +13,10 @@ const getByRefId = async (req, res) => {
       return sendError(res, 400);
     }
 
-    const item = await InstAboutModel.findOne({ refId });
+    const item = await InstAboutModel.findOne(
+      { refId: req.params.refId },
+      { _id: 1, text: 1, images: 1, html: 1 }
+    );
 
     return sendData(res, item);
   } catch (err) {
@@ -35,14 +34,11 @@ const add = async (req, res) => {
     }
 
     const payload = _.pick(req.body, allowedFields);
-
     const newItem = new InstAboutModel({refId: req.params.refId,  ...payload });
     const item = await newItem.save();
 
     if (item) {
-      const msg = `About info added for college: ${req.params.refId}.`;
-      logger.info(msg);
-      return sendData(res, null, msg);
+      return sendData(res, null, "Contact information saved successfully.");
     }
     return sendError(res, 400);
   } catch (err) {
@@ -51,8 +47,26 @@ const add = async (req, res) => {
   }
 };
 
-const update = async (req, res) => {
-  
+const update = async (req, res, next) => {
+  try {
+    if (!req.params.refId ||
+      !req.params.id ||
+      req.params.refId !== _.get(res, "locals.payload.institution")
+    ) {
+      return sendError(res, 400);
+    }
+
+    const payload = _.pick(req.body, allowedFields);
+    const item = await InstAboutModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
+
+    if (item) {
+      return sendData(res, null, "Contact information updated successfully");
+    }
+    return sendError(res, 400);
+  } catch (err) {
+    logger.error(err.stack);
+    return sendError(res);
+  }
 };
 
 module.exports = {
