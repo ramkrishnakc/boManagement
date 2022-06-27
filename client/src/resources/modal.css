@@ -68,3 +68,10 @@
   background: #1890ff!important;
   margin-right: 20px;
 }
+
+.department-model-class.ant-modal {
+  top: 5px;
+  width: 75%!important;
+  transform-origin: 85px 43px!important;
+  height: -webkit-fill-available;
+}

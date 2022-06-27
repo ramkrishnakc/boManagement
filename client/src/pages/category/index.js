@@ -67,6 +67,9 @@ const CategoryComponent = () => {
     {
       title: "Description",
       dataIndex: "description",
+      render: data => (
+        <>{data.length <= 120 ? data : `${data.slice(0, 120)} .....`}</>
+      )
     },
     {
       title: "Actions",

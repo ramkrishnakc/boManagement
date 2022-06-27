@@ -63,6 +63,9 @@ const InstNotice = () => {
     {
       title: "Description",
       dataIndex: "description",
+      render: data => (
+        <>{data.length <= 120 ? data : `${data.slice(0, 120)} .....`}</>
+      )
     },
     {
       title: "Actions",
@@ -233,7 +236,7 @@ const InstNotice = () => {
                   <div class="ant-form-item-control-input">
                     <div class="ant-form-item-control-input-content">
                       <div class="ant-input">
-                        Choose images
+                        Choose files
                       </div>
                     </div>
                   </div>

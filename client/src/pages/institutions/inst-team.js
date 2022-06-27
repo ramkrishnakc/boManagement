@@ -8,8 +8,8 @@ import LocalStore from "../../library/localStore";
 import DefaultLayout from "../../components/DefaultLayout";
 import TableComponent from "../../components/Table";
 import Confirm from "../../components/Confirm";
-import noImage from "../../resources/no-image.png";
 import { DEFAULT_ERR_MSG } from "../../constants";
+import noImage from "../../resources/no-image.png";
 
 const TextArea = Input.TextArea;
 const SEARCH_FIELDS = ["name", "position", "department"];

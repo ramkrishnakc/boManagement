@@ -137,7 +137,7 @@ const InstAbout = () => {
                     <div class="ant-form-item-control-input">
                       <div class="ant-form-item-control-input-content">
                         <div class="ant-input">
-                          Choose images
+                          Choose files
                         </div>
                       </div>
                     </div>

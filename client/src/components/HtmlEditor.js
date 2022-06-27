@@ -46,7 +46,7 @@ const HTMLEditor = props => {
       theme="snow"
       modules={modules}
       formats={formats}
-      value={props.value}
+      value={props.value || ""}
       onChange={props.onChange}
     />
   );
