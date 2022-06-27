@@ -5,6 +5,7 @@ import { useParams } from "react-router-dom";
 import { SELECT_INST_MENU } from "../../constants";
 import HomeLayout from "../../components/HomeLayout";
 import Request from "../../library/request";
+import "../../resources/inst-layout.css";
 
 import About from "./inst-about-display";
 import Contact from "./inst-contact-display";
@@ -43,6 +44,9 @@ const InstitutionInfo = () => {
 
   const getById = async () => {
     try {
+      if (!id) {
+        return null;
+      }
       const {data: { success, data }} = await Request.get(`/api/institution/getById/${id}`);
 
       if (success) {

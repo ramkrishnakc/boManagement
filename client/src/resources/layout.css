@@ -195,34 +195,3 @@ button {
   padding: 10px!important;
   border-bottom: unset!important;
 }
-
-/* ---------- For styling menus -------------------------------- */
-.content-wrapper {
-  padding: 20px;
-}
-.l-header {
-  font-size: 24px;
-  color: #009688;
-  margin-bottom: 10px;
-}
-.l-10 {
-  background: #009688;
-  color: white;
-  cursor: pointer;
-  padding: 3px 12px;
-  margin-right: 25px;
-  border-radius: 15px;
-  font-size: 12px;
-}
-.l-10-selected {
-  background: rgb(211, 155, 34);
-}
-.m-10-selected {
-  font-size: 23px;
-  color: brown;
-}
-.l-child {
-  margin: 30px 0px 0px 0px;
-  padding: 20px 10px;
-  border: 1px dotted black;
-}

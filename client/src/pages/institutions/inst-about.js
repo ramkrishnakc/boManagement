@@ -7,7 +7,6 @@ import LocalStore from "../../library/localStore";
 import HTMLEditor from "../../components/HtmlEditor";
 import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
-import "../../resources/inst-layout.css";
 
 const { TextArea } = Input;
 
