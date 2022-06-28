@@ -3,12 +3,12 @@ const BookModel = require("./book");
 const CategoryModel = require("./category");
 const UserModel = require("./user");
 const InstitutionModel = require("./institution");
-const InstAboutModel = require("./inst-about");
-const InstContactModel = require("./inst-contact");
-const InstActivityModel = require("./inst-activity");
-const InstDepartmentModel = require("./inst-department");
-const InstNoticeModel = require("./inst-notice");
-const InstTeamModel = require("./inst-team");
+const InstAboutModel = require("./instAbout");
+const InstContactModel = require("./instContact");
+const InstActivityModel = require("./instActivity");
+const InstDepartmentModel = require("./instDepartment");
+const InstNoticeModel = require("./instNotice");
+const InstTeamModel = require("./instTeam");
 
 module.exports = {
   BillModel,

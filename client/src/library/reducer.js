@@ -1,7 +1,7 @@
 import {combineReducers} from 'redux';
 
 import { TOGGLE_SIDEBAR, SHOW_LOADER} from "../constants";
-import { login, category, cart, institution } from "../pages/index-reducer";
+import { login, category, cart, institution } from "../pages/indexReducer";
 
 const INITIAL_STATE = {
   loading: false,

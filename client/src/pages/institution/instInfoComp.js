@@ -5,7 +5,7 @@ import { useParams } from "react-router-dom";
 import { SELECT_INST_MENU } from "../../constants";
 import { HomeLayout } from "../../components";
 import { Request } from "../../library";
-import "../../resources/inst-layout.css";
+import "../../resources/instLayout.css";
 
 import About from "./instAboutInfoComp";
 import Contact from "./instContactInfoComp";
