@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import {
-  DeleteOutlined,
+  DeleteFilled,
   PlusCircleOutlined,
   MinusCircleOutlined,
 } from "@ant-design/icons";
@@ -111,7 +111,7 @@ const CartPage = () => {
       title: "Actions",
       dataIndex: "_id",
       render: (id, record) => (
-        <DeleteOutlined
+        <DeleteFilled
           onClick={(() => dispatch(removeFromCart(record._id)))}
         />
       ),

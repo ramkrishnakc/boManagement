@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import { Button, Form, Input, message, Modal, Upload, Col } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
 
 import { DEFAULT_ERR_MSG } from "../../constants";
-import { Confirm, DefaultLayout, ListComponent, TableComponent } from "../../components";
+import { Confirm, DefaultLayout, Header, ListComponent, TableComponent } from "../../components";
  import { LocalStore, Request } from "../../library";
 
 const TextArea = Input.TextArea;
@@ -68,7 +68,7 @@ const InstNotice = () => {
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          <EditOutlined
+          <EditFilled
             className="mx-2"
             onClick={() => {
               setLinks(record.externalLinks || []);
@@ -76,7 +76,7 @@ const InstNotice = () => {
               setOpenModel(true);
             }}
           />
-          <DeleteOutlined
+          <DeleteFilled
             className="mx-2"
             onClick={() => setOpenConfirm({
               msg: "Do you want to remove this information | notice?",
@@ -174,9 +174,7 @@ const InstNotice = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Informations & Notices</h3>
-      </div>
+      <Header title="Notices" />
       <TableComponent
         columns={columns}
         dataSource={tableData}

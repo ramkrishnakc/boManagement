@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { get } from "lodash";
 
 import { LocalStore, Request } from "../../library";
-import { DefaultLayout, HtmlEditor } from "../../components";
+import { DefaultLayout, Header, HtmlEditor } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 
 const { TextArea } = Input;
@@ -88,10 +88,7 @@ const InstAbout = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>About Us</h3>
-      </div>
-
+      <Header title="About Us" />
       <div>
         <Radio.Group value={formType} onChange={e => setFormType(e.target.value)}>
           <Radio value="text">Form</Radio>

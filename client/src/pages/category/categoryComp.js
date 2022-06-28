@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Upload } from "antd";
 
 import { Request } from "../../library";
-import { Confirm, DefaultLayout, TableComponent } from "../../components";
+import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
@@ -74,14 +74,14 @@ const CategoryComponent = () => {
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          <EditOutlined
+          <EditFilled
             className="mx-2"
             onClick={() => {
               setEditData(record);
               setOpenModel(true);
             }}
           />
-          <DeleteOutlined
+          <DeleteFilled
             className="mx-2"
             onClick={() => setOpenConfirm({
               msg: "Do you want to remove this category?",
@@ -170,9 +170,7 @@ const CategoryComponent = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Categories</h3>
-      </div>
+      <Header title="Categories" />
       <TableComponent
         columns={columns}
         dataSource={tableData}

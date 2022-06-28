@@ -1,10 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { MinusCircleOutlined, PlusCircleOutlined, DeleteFilled, EyeOutlined } from "@ant-design/icons";
 import { Button, Modal, Table, Checkbox, message } from "antd";
 import { useReactToPrint } from "react-to-print";
 
 import { Request } from "../../library";
-import { Confirm, DefaultLayout, TableComponent } from "../../components";
+import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
 import { CANCELED, COMPLETED, PENDING, RECEIVED, TAX, STATUS_COLOR_MAP } from "../../constants";
 import { calculateTotal, getRecordTotal } from "../dashboard/helper";
 
@@ -150,7 +150,7 @@ const OrderComponent = () => {
         dataIndex: "_id",
         render: (id, record) => (
           <div className="d-flex">
-            <DeleteOutlined
+            <DeleteFilled
               className="mx-2"
               onClick={() => removeCartItem(record.itemId)}
             />
@@ -248,9 +248,7 @@ const OrderComponent = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Orders</h3>
-      </div>
+      <Header title="Orders" />
       <TableComponent
         columns={columns}
         dataSource={tableData}

@@ -195,3 +195,15 @@ button {
   padding: 10px!important;
   border-bottom: unset!important;
 }
+
+.header-comp {
+  border-bottom: ridge #bbc3ca;
+  margin-bottom: 30px;
+}
+
+.ant-table-cell .anticon-delete {
+  color: rgb(218 88 88);
+}
+.ant-table-cell .anticon-edit {
+  color: rgb(106, 106, 243);
+}

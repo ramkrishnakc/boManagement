@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
-import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteFilled, EditFilled, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 
 import { Request } from "../../library";
-import { Confirm, DefaultLayout, TableComponent } from "../../components";
+import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import "../../resources/modal.css";
@@ -97,14 +97,14 @@ const BookComponent = () => {
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          <EditOutlined
+          <EditFilled
             className="mx-2"
             onClick={() => {
               setEditData(record);
               setOpenModel(true);
             }}
           />
-          <DeleteOutlined
+          <DeleteFilled
             className="mx-2"
             onClick={() => setOpenConfirm({
               msg: "Do you want to remove this book?",
@@ -201,9 +201,7 @@ const BookComponent = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Books</h3>
-      </div>
+      <Header title="Books" />
       <TableComponent
         columns={columns}
         dataSource={tableData}

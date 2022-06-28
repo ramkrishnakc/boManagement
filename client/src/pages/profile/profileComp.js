@@ -6,7 +6,7 @@ import { Button, Form, Input, message, Row, Col } from "antd";
 
 import { DEFAULT_ERR_MSG, LOG_OUT } from "../../constants";
 import { Request } from "../../library";
-import { DefaultLayout } from "../../components";
+import { DefaultLayout, Header } from "../../components";
 
 const Profile = props => {
   const userId = useSelector(state => get(state, "login.id"));
@@ -67,11 +67,8 @@ const Profile = props => {
     <>
       {props.hideHeader
         ? ""
-        : (
-          <div className="d-flex justify-content-between">
-            <h3>Profile</h3>
-          </div>
-        )}
+        : (<Header title="Profile" />)
+      }
       {dataFetched && <Row className="profile-row">
         <Col span={12} className="profile-col-1">
           <h5>Update Info:</h5><br />

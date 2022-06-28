@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
+import { DeleteFilled, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Radio, Select } from "antd";
 
 import { DEFAULT_ERR_MSG } from "../../constants";
 import { Request } from "../../library";
-import { Confirm, DefaultLayout, TableComponent } from "../../components";
+import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
 
 const SEARCH_FIELDS = ["username", "email", "verified", "role", "name"];
 
@@ -104,7 +104,7 @@ const UserComponent = () => {
       render: (id, record) => (
         <div className="d-flex">
           {record.username !== "root_user" &&
-            <DeleteOutlined
+            <DeleteFilled
               title="Remove"
               className="mx-2"
               onClick={() => setOpenConfirm({
@@ -167,9 +167,7 @@ const UserComponent = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Users</h3>
-      </div>
+      <Header title="Users" />
       <TableComponent
         columns={columns}
         dataSource={tableData}

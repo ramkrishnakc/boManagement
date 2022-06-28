@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import { Button, Form, Input, message, Modal, Upload } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteFilled, EditFilled } from "@ant-design/icons";
 
 import { LocalStore, Request } from "../../library";
-import { Confirm, DefaultLayout, TableComponent } from "../../components";
+import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
@@ -74,14 +74,14 @@ const InstTeam = () => {
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          <EditOutlined
+          <EditFilled
             className="mx-2"
             onClick={() => {
               setEditData(record);
               setOpenModel(true);
             }}
           />
-          <DeleteOutlined
+          <DeleteFilled
             className="mx-2"
             onClick={() => setOpenConfirm({
               msg: "Do you want to remove this team member info?",
@@ -170,9 +170,7 @@ const InstTeam = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Our Team</h3>
-      </div>
+      <Header title="Our Team" />
       <TableComponent
         columns={columns}
         dataSource={tableData}

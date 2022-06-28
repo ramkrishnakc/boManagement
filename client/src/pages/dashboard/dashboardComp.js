@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 
 import { Request } from "../../library";
-import { DefaultLayout } from "../../components";
+import { DefaultLayout, Header } from "../../components";
 import SimplePieChart from "./piechart";
 import SimpleLineChart from "./lineChart";
 import {
@@ -91,9 +91,7 @@ const DashboardComponent = () => {
 
   return (
     <DefaultLayout>
-      <div className="d-flex justify-content-between">
-        <h3>Dashboard</h3>
-      </div>
+      <Header title="Dashboard" />
       <p>Latest 48 hours Data: <sub>(shows latest info only, 'Total' refers all the total we have till now)</sub></p>
       <Table
         columns={LATEST_INFO_COL}

@@ -79,7 +79,7 @@ const DefaultLayout = (props) => {
                 <Link to="/inst-team">Our Team</Link>
               </Menu.Item>
               <Menu.Item key="/inst-departments" icon={<BlockOutlined />}>
-                <Link to="/inst-departments">Programs</Link>
+                <Link to="/inst-departments">Departments</Link>
               </Menu.Item>
               <Menu.Item key="/inst-events" icon={<PictureOutlined />}>
                 <Link to="/inst-events">Events</Link>
