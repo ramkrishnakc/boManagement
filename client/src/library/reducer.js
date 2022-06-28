@@ -1,17 +1,14 @@
 import {combineReducers} from 'redux';
 
 import { TOGGLE_SIDEBAR, SHOW_LOADER} from "../constants";
-import loginReducer from '../pages/login/login-module';
-import categoryReducer from "../pages/category/category-module";
-import cartReducer from '../pages/cart/cart-module';
-import institutionReducer from '../pages/institutions/institution-module';
+import { login, category, cart, institution } from "../pages/index-reducer";
 
 const INITIAL_STATE = {
   loading: false,
   sidbarCollapse: false,
 };
 
-const commonReducer = (state = { ...INITIAL_STATE }, action) => {
+const common = (state = { ...INITIAL_STATE }, action) => {
   switch (action.type) {
     case SHOW_LOADER: {
       return { ...state, loading: !!action.payload };
@@ -28,11 +25,11 @@ const commonReducer = (state = { ...INITIAL_STATE }, action) => {
 };
 
 const Reducer = combineReducers({
-  common: commonReducer,
-  login: loginReducer,
-  category: categoryReducer,
-  cart: cartReducer,
-  institution: institutionReducer,
+  common,
+  login,
+  category,
+  cart,
+  institution,
 });
 
 export default Reducer;

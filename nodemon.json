@@ -1,12 +1,16 @@
 {
   "ignore": [
+    ".git",
+    ".vscode",
     "dist/",
     "node_modules/",
     "public/",
     "client/",
     "*.log",
-    "*.md"
+    "*.md",
+    "*.json",
+    "*.txt"
   ],
   "watch": ["server.js", "server/"],
-  "ext": "js, css"
+  "ext": "js"
 }

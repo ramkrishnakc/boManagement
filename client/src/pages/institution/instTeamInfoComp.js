@@ -3,7 +3,7 @@ import { get } from "lodash";
 import { useSelector } from "react-redux";
 import { Input } from "antd";
 
-import Request from "../../library/request";
+import { Request } from "../../library";
 import noImage from "../../resources/no-image.png";
 
 const SearchInput = Input.Search;

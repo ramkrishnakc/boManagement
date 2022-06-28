@@ -2,11 +2,9 @@ import React, { useEffect, useState } from "react";
 import { DeleteOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Radio, Select } from "antd";
 
-import Request from "../../library/request";
-import Confirm from "../../components/Confirm";
-import TableComponent from "../../components/Table";
-import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG } from "../../constants";
+import { Request } from "../../library";
+import { Confirm, DefaultLayout, TableComponent } from "../../components";
 
 const SEARCH_FIELDS = ["username", "email", "verified", "role", "name"];
 

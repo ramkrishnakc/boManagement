@@ -1,20 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
-import { Button, Form, Input, message, Modal, Upload, Col } from "antd";
+import { Button, Form, Input, message, Modal, Upload } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-import Request from "../../library/request";
-import LocalStore from "../../library/localStore";
-import DefaultLayout from "../../components/DefaultLayout";
-import TableComponent from "../../components/Table";
-import Confirm from "../../components/Confirm";
-import ListComponent from "../../components/List";
 import { DEFAULT_ERR_MSG } from "../../constants";
+import { Confirm, DefaultLayout, HtmlEditor, ListComponent, TableComponent } from "../../components";
+import { LocalStore, Request } from "../../library";
+import noImage from "../../resources/no-image.png";
  
 const TextArea = Input.TextArea;
-const SEARCH_FIELDS = ["title"];
+const SEARCH_FIELDS = ["name"];
 
-const InstNotice = () => {
+const InstDepartment = () => {
   const refId = get(LocalStore.decodeToken(), "institution"); // Institution ID
   const [itemsData, setItemsData] = useState([]); // All data fetched from server
   const [tableData, setTableData] = useState([]); // Required for Search in table
@@ -23,10 +20,13 @@ const InstNotice = () => {
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
   const [links, setLinks] = useState([]);
+  const [htmlValue, setHtml] = useState(""); // HTML content in the HTML editor
 
   const getAll = async () => {
     try {
-      const {data: { success, data }} = await Request.get(`/api/institution/getByRefId-notice/${refId}`);
+      const {
+        data: { success, data },
+      } = await Request.get(`/api/institution/getByRefId-department/${refId}`);
 
       if (success && data) {
         setItemsData(data);
@@ -39,7 +39,7 @@ const InstNotice = () => {
     try {
       const {
         data: { success, message: msg },
-      } = await Request.delete(`/api/institution/remove-notice/${refId}/${record._id}`);
+      } = await Request.delete(`/api/institution/remove-department/${refId}/${record._id}`);
       
       if (success) {
         message.success(msg);
@@ -57,12 +57,17 @@ const InstNotice = () => {
 
   const columns = [
     {
-      title: "Title",
-      dataIndex: "title",
+      title: "Name",
+      dataIndex: "name",
     },
     {
-      title: "Description",
-      dataIndex: "description",
+      title: "Image",
+      dataIndex: "image",
+      render: img => <img src={img || noImage} alt="" height="60" width="60" />,
+    },
+    {
+      title: "About",
+      dataIndex: "about",
       render: data => (
         <>{data.length <= 120 ? data : `${data.slice(0, 120)} .....`}</>
       )
@@ -75,15 +80,22 @@ const InstNotice = () => {
           <EditOutlined
             className="mx-2"
             onClick={() => {
-              setLinks(record.externalLinks || []);
-              setEditData(record);
+              const { externalLinks, html, ...rest } = record;
+
+              if (html) {
+                setHtml(html);
+              }
+              if (externalLinks) {
+                setLinks(externalLinks);
+              }
+              setEditData(rest);
               setOpenModel(true);
             }}
           />
           <DeleteOutlined
             className="mx-2"
             onClick={() => setOpenConfirm({
-              msg: "Do you want to remove this information | notice?",
+              msg: "Do you want to remove this department | program?",
               visible: true,
               onOk: () => deleteItem(record),
             })}
@@ -129,13 +141,13 @@ const InstNotice = () => {
     let method = "post";
 
     if (editData) {
-      uriArr.push('update-notice', refId, editData._id);
+      uriArr.push('update-department', refId, editData._id);
       method = "put";
     } else {
-      uriArr.push('add-notice', refId);
+      uriArr.push('add-department', refId);
     }
 
-    const formKeys = Object.keys(data).filter(d => !["externalLinks", "images"].includes(d));
+    const formKeys = Object.keys(data).filter(d => !["externalLinks", "image"].includes(d));
     const formData = new FormData();
 
     formKeys.forEach(key => {
@@ -144,17 +156,18 @@ const InstNotice = () => {
       }
     });
 
-    const files = get(data, "images.fileList", []);
-    if (files.length) {
-      files.forEach(file => {
-        formData.append("files[]", file.originFileObj)
-      });
+    const file = get(data, "image.file.originFileObj");
+    if (file) {
+      formData.append("file", file);
     }
 
     if (links.length) {
       links.forEach(d => {
         formData.append("externalLinks[]", d)
       });
+    }
+    if (htmlValue) {
+      formData.append("html", htmlValue);
     }
     
     Request[method](uriArr.join("/"), formData)
@@ -166,6 +179,7 @@ const InstNotice = () => {
           setEditData(null);
           setOpenModel(false);
           setLinks([]);
+          setHtml("");
           getAll();
         } else {
           message.error(msg);
@@ -179,14 +193,14 @@ const InstNotice = () => {
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
-        <h3>Informations & Notices</h3>
+        <h3>Departments & Programs</h3>
       </div>
       <TableComponent
         columns={columns}
         dataSource={tableData}
         bordered={true}
         showSearch={true}
-        searchPlaceholder="Search for the information | notice..."
+        searchPlaceholder="Search for the department | program..."
         onSearch={onSearch}
         onChange={onChange}
         showAddButton={true}
@@ -204,11 +218,12 @@ const InstNotice = () => {
             setEditData(null);
             setOpenModel(false);
             setLinks([]);
+            setHtml("");
           }}
           visible={openModel}
-          title={`${editData ? "Edit" : "Add"} Notice | Information`}
+          title={`${editData ? "Edit" : "Add"}  Department | Program`}
           footer={false}
-          className="book-model-class"
+          className="department-model-class book-model-class"
         >
           <>
           <Form
@@ -217,46 +232,39 @@ const InstNotice = () => {
             onFinish={onFinish}
           >
             <Form.Item
-              name="title"
-              label="Title"
+              name="name"
+              label="Name"
               rules={[{ required: true, message: "" }]}
             >
               <Input />
             </Form.Item>
             <Form.Item
-              name="description"
-              label="Description"
+              name="about"
+              label="About"
               rules={[{ required: true, message: "" }]}
             >
               <TextArea rows={3} />
             </Form.Item>
-            <Form.Item name="images" label="Images">
-              <Upload multiple={true}>
+            <Form.Item
+              name="course"
+              label="Course Offered"
+              rules={[{ required: true, message: "" }]}
+            >
+              <TextArea rows={4} />
+            </Form.Item>
+            <Form.Item name="image" label="Image">
+              <Upload>
                 <div class="ant-col ant-form-item-control">
                   <div class="ant-form-item-control-input">
                     <div class="ant-form-item-control-input-content">
                       <div class="ant-input">
-                        Choose files
+                        Choose a file
                       </div>
                     </div>
                   </div>
                 </div>
               </Upload>
             </Form.Item>
-
-            {get(editData, "images[0]") && (<Col style={{marginBottom: "10px"}} span={11}>
-              {
-                editData.images.map(img => (
-                  <img
-                    key={img}
-                    src={img}
-                    alt=""
-                    style={{height: "50px", width: "50px", marginRight: "10px"}}
-                  />
-                ))
-              }
-            </Col>)}
-            
             <Form.Item name="externalLinks" label="ExternalLinks">
               <ListComponent
                 list={links}
@@ -264,6 +272,11 @@ const InstNotice = () => {
                 placeholder="Enter the external links"
               />
             </Form.Item>
+            <>
+              <label>HTML Editor</label>
+              <HtmlEditor value={htmlValue} onChange={setHtml} />
+              <br />
+            </>
             <div className="d-flex justify-content-end">
               <Button htmlType="submit" type="primary">
                 SAVE
@@ -285,4 +298,4 @@ const InstNotice = () => {
   );
 };
 
-export default InstNotice;
+export default InstDepartment;

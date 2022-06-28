@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button, Col, Form, Input, message, Row } from "antd";
 
-import Request from '../../library/request';
+import { Request } from '../../library';
 import '../../resources/authentication.css';
 
 const RegisterComponent = () => {

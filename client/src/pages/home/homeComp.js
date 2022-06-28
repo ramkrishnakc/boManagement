@@ -3,11 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Row, Col } from "antd";
 
-import Request from "../../library/request";
-import SliderComponent from "../../components/Slider";
-import HomeLayout from "../../components/HomeLayout";
-import "../../resources/home.css";
 import { STATIC_SLIDER_OPTIONS, SLIDER_OPTIONS, SET_CATEGORIES } from "../../constants";
+import { Request } from "../../library";
+import { HomeLayout, SliderComponent } from "../../components";
+import "../../resources/home.css";
 
 const HomeComponent = () => {
   const dispatch = useDispatch();

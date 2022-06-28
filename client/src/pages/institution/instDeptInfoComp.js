@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { get } from "lodash";
 import { useSelector } from "react-redux";
+import { Markup } from 'interweave';
+import { get } from "lodash";
 
-import Request from "../../library/request";
+import { Request } from "../../library";
 
-const InstEventDisplay = ({ refId }) => {
+const InstDepartmentDisplay = ({ refId }) => {
   const [items, setItems] = useState([]);
-  const { loading } = useSelector(state => state.common);
+  const loading = useSelector(state => get(state, "common.loading"));
 
   useEffect(() => {
     const getItems = async () => {
@@ -14,7 +15,7 @@ const InstEventDisplay = ({ refId }) => {
         if (refId) {
           const {
             data: { success, data },
-          } = await Request.get(`/api/institution/getByRefId-activity/${refId}`);
+          } = await Request.get(`/api/institution/getByRefId-department/${refId}`);
   
           if (success && data) {
             setItems(data);
@@ -31,13 +32,16 @@ const InstEventDisplay = ({ refId }) => {
       {!loading && (
         items.map(item => {
           const links = get(item, "externalLinks", []);
-          const imgs = get(item, "images", []);
  
           return (
             <div key={item.title} className="inst-notice">
               <div>
-                <h3>{item.title}</h3>
-                <p>{item.description}</p>
+                <h3>{item.name}</h3>
+                <p>{item.about}</p>
+                {item.image && (
+                  <img src={item.image} alt="" className="department-img" />
+                )}
+                <p>{item.course}</p>
                 {
                   links.length > 0 && (
                     <p>
@@ -51,17 +55,9 @@ const InstEventDisplay = ({ refId }) => {
                   )
                 }
               </div>
-              {
-                imgs.length > 0 && (
-                  <div className="notice-img-wrapper">
-                    {imgs.map(iPath => (
-                      <div>
-                        <img src={iPath} alt="" className="notice-img" />
-                      </div>
-                    ))}
-                  </div>
-                )
-              }
+              {item.html && (
+                <Markup content={item.html} />
+              )}
             </div>
           );
         })
@@ -70,4 +66,4 @@ const InstEventDisplay = ({ refId }) => {
   );
 }
 
-export default InstEventDisplay;
+export default InstDepartmentDisplay;

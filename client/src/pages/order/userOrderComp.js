@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { Table } from "antd";
 
-import Request from "../../library/request";
-import HomeLayout from "../../components/HomeLayout";
+import { Request } from "../../library";
+import { HomeLayout } from "../../components";
 import { STATUS_NAME_MAP, STATUS_COLOR_MAP } from "../../constants";
 import { calculateTotal } from "../dashboard/helper";
 

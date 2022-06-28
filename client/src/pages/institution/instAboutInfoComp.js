@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Markup } from 'interweave';
 
-import Request from "../../library/request";
-import SliderComponent from "../../components/Slider";
+import { Request } from "../../library";
+import { SliderComponent } from "../../components";
 import { SLIDER_OPTIONS } from "../../constants";
 
 /* Get Items to display in the SLIDER */

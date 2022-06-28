@@ -12,7 +12,7 @@ import "../resources/layout.css";
 
 const { Header, Content } = Layout;
 
-const Heading = props => {
+const HomeLayout = props => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -133,4 +133,4 @@ const Heading = props => {
   );
 };
 
-export default Heading;
+export default HomeLayout;

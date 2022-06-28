@@ -5,7 +5,7 @@ import 'react-quill/dist/quill.snow.css';
 
 Quill.register('modules/imageResize', ImageResize);
 
-const HTMLEditor = props => {
+const HtmlEditor = props => {
   const modules = {
    toolbar: [
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
@@ -52,4 +52,4 @@ const HTMLEditor = props => {
   );
 }
 
-export default HTMLEditor;
+export default HtmlEditor;

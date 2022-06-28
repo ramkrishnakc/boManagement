@@ -3,10 +3,8 @@ import { get } from "lodash";
 import { DeleteOutlined, EditOutlined, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 
-import Request from "../../library/request";
-import Confirm from "../../components/Confirm";
-import TableComponent from "../../components/Table";
-import DefaultLayout from "../../components/DefaultLayout";
+import { Request } from "../../library";
+import { Confirm, DefaultLayout, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import "../../resources/modal.css";

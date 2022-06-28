@@ -3,8 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Link, useNavigate } from "react-router-dom";
 import { Button, Col, Form, Input, message, Row } from "antd";
 
-import LocalStore from "../../library/localStore";
-import Request from "../../library/request";
+import { LocalStore, Request} from "../../library";
 import { LOGIN_SUCCESS } from "../../constants";
 import "../../resources/authentication.css";
 

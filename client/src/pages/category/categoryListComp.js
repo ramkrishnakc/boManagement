@@ -2,9 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Pagination, Input } from "antd";
 
-import Request from "../../library/request";
-import HomeLayout from "../../components/HomeLayout";
-import Items from "../../components/Items";
+import { Request } from "../../library";
+import { HomeLayout, Items } from "../../components";
 import { SELECT_CATEGORY, SET_CATEGORIES, SET_SEARCH_OPTIONS, LIMIT } from "../../constants";
 
 const SearchInput = Input.Search;

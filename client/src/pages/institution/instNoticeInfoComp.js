@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import { useSelector } from "react-redux";
 
-import Request from "../../library/request";
+import { Request } from "../../library";
 
 const InstNoticeDisplay = ({ refId }) => {
   const [items, setItems] = useState([]);

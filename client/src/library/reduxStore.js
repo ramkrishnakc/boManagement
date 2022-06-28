@@ -23,6 +23,5 @@ if (prevStoredState === null) {
 } else {
   prevStoredState = JSON.parse(prevStoredState);
 }
-const ReduxStore = CreateStore(prevStoredState);
 
-export default ReduxStore;
+export default CreateStore(prevStoredState);

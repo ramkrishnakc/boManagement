@@ -1,7 +1,7 @@
 import { useDispatch } from "react-redux";
 import { Button } from "antd";
 
-import { addToCart } from "../pages/cart/cart-module";
+import { addToCart } from "../pages/cart/cartModule";
 import noImage from "../resources/no-image.png";
 import "../resources/books.css";
 

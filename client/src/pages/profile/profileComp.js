@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { get } from "lodash";
 import { Button, Form, Input, message, Row, Col } from "antd";
 
-import Request from "../../library/request";
-import DefaultLayout from "../../components/DefaultLayout";
 import { DEFAULT_ERR_MSG, LOG_OUT } from "../../constants";
+import { Request } from "../../library";
+import { DefaultLayout } from "../../components";
 
 const Profile = props => {
-  const { id: userId } = useSelector(state => state.login);
+  const userId = useSelector(state => get(state, "login.id"));
   const [userInfo, setUserInfo] = useState({});
   const [dataFetched, setDataFetched] = useState(false);
   const navigate = useNavigate();

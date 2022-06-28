@@ -4,7 +4,7 @@ import { Button } from "antd";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
-import { addToCart } from "../pages/cart/cart-module";
+import { addToCart } from "../pages/cart/cartModule";
 import noImage from "../resources/no-image.png";
 
 const SliderComponent = (props) => {

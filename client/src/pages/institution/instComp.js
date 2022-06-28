@@ -1,29 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { get } from "lodash";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Upload } from "antd";
 
-import Request from "../../library/request";
-import Confirm from "../../components/Confirm";
-import TableComponent from "../../components/Table";
-import DefaultLayout from "../../components/DefaultLayout";
+import { Request } from "../../library";
+import { Confirm, DefaultLayout, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
-const TextArea = Input.TextArea;
 const SEARCH_FIELDS = ["name"];
 
-const CategoryComponent = () => {
+const InstitutionComponent = () => {
   const [itemsData, setItemsData] = useState([]); // All data fetched from server
   const [tableData, setTableData] = useState([]); // Required for Search in table
   const [openModel, setOpenModel] = useState(false);
-  const [editData, setEditData] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
 
   const getAll = async () => {
     try {
-      const {data: { success, data }} = await Request.get(`/api/category/getAll`);
+      const {data: { success, data }} = await Request.get(`/api/institution/getAll`);
 
       if (success) {
         setItemsData(data);
@@ -34,7 +29,7 @@ const CategoryComponent = () => {
 
   const deleteItem = async record => {
     try {
-      const {data: {success, message: msg}} = await Request.delete(`/api/category/remove/${record._id}`);
+      const {data: {success, message: msg}} = await Request.delete(`/api/institution/remove/${record._id}`);
       
       if (success) {
         message.success(msg);
@@ -61,32 +56,14 @@ const CategoryComponent = () => {
       render: img => <img src={img || noImage} alt="" height="60" width="60" />,
     },
     {
-      title: "No. of Books",
-      dataIndex: "bookCount",
-    },
-    {
-      title: "Description",
-      dataIndex: "description",
-      render: data => (
-        <>{data.length <= 120 ? data : `${data.slice(0, 120)} .....`}</>
-      )
-    },
-    {
       title: "Actions",
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          <EditOutlined
-            className="mx-2"
-            onClick={() => {
-              setEditData(record);
-              setOpenModel(true);
-            }}
-          />
           <DeleteOutlined
             className="mx-2"
             onClick={() => setOpenConfirm({
-              msg: "Do you want to remove this category?",
+              msg: "Do you want to remove this institution?",
               visible: true,
               onOk: () => deleteItem(record),
             })}
@@ -99,16 +76,6 @@ const CategoryComponent = () => {
   useEffect(() => getAll(), []);
 
   const onFinish = data => {
-    const uriArr = ['', 'api', 'category'];
-    let method = "post";
-
-    if (editData) {
-      uriArr.push('update', editData._id);
-      method = "put";
-    } else {
-      uriArr.push('add');
-    }
-
     const formKeys = Object.keys(data).filter(d => d !== "image");
     const formData = new FormData();
 
@@ -118,18 +85,19 @@ const CategoryComponent = () => {
       }
     });
 
-    const file = get(data, "image.file.originFileObj");
+    const file = data.image && data.image.file && data.image.file.originFileObj;
+
     if (file) {
       formData.append("file", file);
     }
     
-    Request[method](uriArr.join("/"), formData)
+    Request
+      .post("/api/institution/add", formData)
       .then(res => {
         const { success, message: msg } = res.data;
 
         if (success) {
           message.success(msg);
-          setEditData(null);
           setOpenModel(false);
           getAll();
         } else {
@@ -165,7 +133,9 @@ const CategoryComponent = () => {
 
   /* Handle change in search input */
   const onChange = e => {
-    if (!get(e, "target.value")) {
+    const keyword = e && e.target && e.target.value;
+
+    if (!keyword) {
       onSearch("");
     }
   };
@@ -173,34 +143,30 @@ const CategoryComponent = () => {
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
-        <h3>Categories</h3>
+        <h3>Institutions</h3>
       </div>
       <TableComponent
         columns={columns}
         dataSource={tableData}
         bordered={true}
         showSearch={true}
-        searchPlaceholder="Search for the category..."
+        searchPlaceholder="Search for the institution..."
         onSearch={onSearch}
         onChange={onChange}
         showAddButton={true}
-        addButtonLabel="+ New Category"
+        addButtonLabel="+ New Institution"
         buttonOnClick={() => setOpenModel(true)}
       />
 
       {openModel && (
         <Modal
-          onCancel={() => {
-            setEditData(null);
-            setOpenModel(false);
-          }}
+          onCancel={() => setOpenModel(false)}
           visible={openModel}
-          title={`${editData ? "Edit Category" : "Add New Category"}`}
+          title="Add New Institution"
           footer={false}
           className="book-model-class"
         >
           <Form
-            initialValues={editData}
             layout="vertical"
             onFinish={onFinish}
           >
@@ -224,9 +190,6 @@ const CategoryComponent = () => {
                 </div>
               </Upload>
             </Form.Item>
-            <Form.Item name="description" label="Description">
-              <TextArea rows={4} />
-            </Form.Item>
 
             <div className="d-flex justify-content-end">
               <Button htmlType="submit" type="primary">
@@ -248,4 +211,4 @@ const CategoryComponent = () => {
   );
 }
 
-export default CategoryComponent;
+export default InstitutionComponent;

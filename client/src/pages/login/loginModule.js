@@ -1,4 +1,4 @@
-import LocalStore from "../../library/localStore";
+import { LocalStore } from "../../library";
 import { LOGIN_SUCCESS, LOG_OUT } from "../../constants";
 
 const INITIAL_STATE = {

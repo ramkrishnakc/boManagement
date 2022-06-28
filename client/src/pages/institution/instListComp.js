@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { Input } from "antd";
 
-import Request from "../../library/request";
-import HomeLayout from "../../components/HomeLayout";
-import Items from "../../components/Items";
+import { Request } from "../../library";
+import { HomeLayout, Items } from "../../components";
 import { SET_INSTITUTIONS } from "../../constants";
 
 const SearchInput = Input.Search;

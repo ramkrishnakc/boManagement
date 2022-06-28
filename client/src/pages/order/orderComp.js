@@ -3,10 +3,8 @@ import { MinusCircleOutlined, PlusCircleOutlined, DeleteOutlined, EyeOutlined } 
 import { Button, Modal, Table, Checkbox, message } from "antd";
 import { useReactToPrint } from "react-to-print";
 
-import Request from "../../library/request";
-import Confirm from "../../components/Confirm";
-import TableComponent from "../../components/Table";
-import DefaultLayout from "../../components/DefaultLayout";
+import { Request } from "../../library";
+import { Confirm, DefaultLayout, TableComponent } from "../../components";
 import { CANCELED, COMPLETED, PENDING, RECEIVED, TAX, STATUS_COLOR_MAP } from "../../constants";
 import { calculateTotal, getRecordTotal } from "../dashboard/helper";
 

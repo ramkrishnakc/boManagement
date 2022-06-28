@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 
-import Request from "../../library/request";
-import DefaultLayout from "../../components/DefaultLayout";
+import { Request } from "../../library";
+import { DefaultLayout } from "../../components";
 import SimplePieChart from "./piechart";
 import SimpleLineChart from "./lineChart";
 import {

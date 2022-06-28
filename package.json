@@ -9,9 +9,16 @@
   },
   "nodemonConfig": {
     "ignore": [
-      "client/",
+      ".git",
+      ".vscode",
+      "dist/",
+      "node_modules/",
       "public/",
-      "node_modules/"
+      "client/",
+      "*.log",
+      "*.md",
+      "*.json",
+      "*.txt"
     ]
   },
   "scripts": {

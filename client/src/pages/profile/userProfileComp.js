@@ -1,5 +1,5 @@
-import ProfileComponent from "./index";
-import HomeLayout from "../../components/HomeLayout";
+import Profile from "./profileComp";
+import { HomeLayout } from "../../components";
 
 const UserProfile = () => {
   return (
@@ -11,7 +11,7 @@ const UserProfile = () => {
       }}
     >
       <br />
-      <ProfileComponent hideWrapper />
+      <Profile hideWrapper />
     </HomeLayout>
   );
 };

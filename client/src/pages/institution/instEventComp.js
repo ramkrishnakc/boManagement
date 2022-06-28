@@ -3,12 +3,8 @@ import { get } from "lodash";
 import { Button, Form, Input, message, Modal, Upload, Col } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
 
-import Request from "../../library/request";
-import LocalStore from "../../library/localStore";
-import DefaultLayout from "../../components/DefaultLayout";
-import TableComponent from "../../components/Table";
-import Confirm from "../../components/Confirm";
-import ListComponent from "../../components/List";
+import { LocalStore, Request } from "../../library";
+import { Confirm, DefaultLayout, ListComponent, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
  
 const TextArea = Input.TextArea;

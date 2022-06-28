@@ -2,10 +2,8 @@ import { Radio, Form, Button, Input, Col, Row, Upload, message } from "antd";
 import { useState, useEffect } from "react";
 import { get } from "lodash";
 
-import Request from "../../library/request";
-import LocalStore from "../../library/localStore";
-import HTMLEditor from "../../components/HtmlEditor";
-import DefaultLayout from "../../components/DefaultLayout";
+import { LocalStore, Request } from "../../library";
+import { DefaultLayout, HtmlEditor } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 
 const { TextArea } = Input;
@@ -104,7 +102,7 @@ const InstAbout = () => {
       {formType === "html" && (
         <div className="html-wrapper">
           <p className="html-info">HTML will be reflected in web-page as you design here.</p>
-          <HTMLEditor value={htmlValue} onChange={setHtml}/>
+          <HtmlEditor value={htmlValue} onChange={setHtml}/>
           <div className="html-btn">
             <Button onClick={htmlSave}>
               {editData ? "Update" : "Save"}

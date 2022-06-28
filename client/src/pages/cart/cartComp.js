@@ -8,10 +8,10 @@ import {
 } from "@ant-design/icons";
 import { Button, message, Table, Modal, Select, Form, Input } from "antd";
 
-import Request from "../../library/request";
-import { updateCart, removeFromCart, emptyCart } from "./cart-module";
+import { HomeLayout } from "../../components";
+import { Request } from "../../library";
+import { updateCart, removeFromCart, emptyCart } from "./cartModule";
 import { getRecordTotal, calculateTotal } from "../dashboard/helper";
-import HomeLayout from "../../components/HomeLayout";
 import { TAX } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import  "../../resources/cart.css";

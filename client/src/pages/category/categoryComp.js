@@ -1,39 +1,29 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
-import { Button, Form, Input, message, Modal, Upload, Col } from "antd";
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Form, Input, message, Modal, Upload } from "antd";
 
-import Request from "../../library/request";
-import LocalStore from "../../library/localStore";
-import DefaultLayout from "../../components/DefaultLayout";
-import TableComponent from "../../components/Table";
-import Confirm from "../../components/Confirm";
-import ListComponent from "../../components/List";
-import HTMLEditor from "../../components/HtmlEditor";
+import { Request } from "../../library";
+import { Confirm, DefaultLayout, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
- 
+
 const TextArea = Input.TextArea;
 const SEARCH_FIELDS = ["name"];
 
-const InstDepartment = () => {
-  const refId = get(LocalStore.decodeToken(), "institution"); // Institution ID
+const CategoryComponent = () => {
   const [itemsData, setItemsData] = useState([]); // All data fetched from server
   const [tableData, setTableData] = useState([]); // Required for Search in table
   const [openModel, setOpenModel] = useState(false);
   const [editData, setEditData] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
-  const [links, setLinks] = useState([]);
-  const [htmlValue, setHtml] = useState(""); // HTML content in the HTML editor
 
   const getAll = async () => {
     try {
-      const {
-        data: { success, data },
-      } = await Request.get(`/api/institution/getByRefId-department/${refId}`);
+      const {data: { success, data }} = await Request.get(`/api/category/getAll`);
 
-      if (success && data) {
+      if (success) {
         setItemsData(data);
         setTableData(data);
       }
@@ -42,9 +32,7 @@ const InstDepartment = () => {
 
   const deleteItem = async record => {
     try {
-      const {
-        data: { success, message: msg },
-      } = await Request.delete(`/api/institution/remove-department/${refId}/${record._id}`);
+      const {data: {success, message: msg}} = await Request.delete(`/api/category/remove/${record._id}`);
       
       if (success) {
         message.success(msg);
@@ -71,8 +59,12 @@ const InstDepartment = () => {
       render: img => <img src={img || noImage} alt="" height="60" width="60" />,
     },
     {
-      title: "About",
-      dataIndex: "about",
+      title: "No. of Books",
+      dataIndex: "bookCount",
+    },
+    {
+      title: "Description",
+      dataIndex: "description",
       render: data => (
         <>{data.length <= 120 ? data : `${data.slice(0, 120)} .....`}</>
       )
@@ -85,22 +77,14 @@ const InstDepartment = () => {
           <EditOutlined
             className="mx-2"
             onClick={() => {
-              const { externalLinks, html, ...rest } = record;
-
-              if (html) {
-                setHtml(html);
-              }
-              if (externalLinks) {
-                setLinks(externalLinks);
-              }
-              setEditData(rest);
+              setEditData(record);
               setOpenModel(true);
             }}
           />
           <DeleteOutlined
             className="mx-2"
             onClick={() => setOpenConfirm({
-              msg: "Do you want to remove this department | program?",
+              msg: "Do you want to remove this category?",
               visible: true,
               onOk: () => deleteItem(record),
             })}
@@ -109,6 +93,49 @@ const InstDepartment = () => {
       ),
     },
   ];
+
+  useEffect(() => getAll(), []);
+
+  const onFinish = data => {
+    const uriArr = ['', 'api', 'category'];
+    let method = "post";
+
+    if (editData) {
+      uriArr.push('update', editData._id);
+      method = "put";
+    } else {
+      uriArr.push('add');
+    }
+
+    const formKeys = Object.keys(data).filter(d => d !== "image");
+    const formData = new FormData();
+
+    formKeys.forEach(key => {
+      if (data[key]) {
+        formData.append(key, data[key]);
+      }
+    });
+
+    const file = get(data, "image.file.originFileObj");
+    if (file) {
+      formData.append("file", file);
+    }
+    
+    Request[method](uriArr.join("/"), formData)
+      .then(res => {
+        const { success, message: msg } = res.data;
+
+        if (success) {
+          message.success(msg);
+          setEditData(null);
+          setOpenModel(false);
+          getAll();
+        } else {
+          message.error(msg);
+        }
+      })
+      .catch(() => message.error(DEFAULT_ERR_MSG));
+  };
 
   /* Handle search */
   const onSearch = (str = "") => {
@@ -133,7 +160,7 @@ const InstDepartment = () => {
       setTableData(filteredData);
     }
   };
-  
+
   /* Handle change in search input */
   const onChange = e => {
     if (!get(e, "target.value")) {
@@ -141,80 +168,22 @@ const InstDepartment = () => {
     }
   };
 
-  const onFinish = data => {
-    const uriArr = ['', 'api', 'institution'];
-    let method = "post";
-
-    if (editData) {
-      uriArr.push('update-department', refId, editData._id);
-      method = "put";
-    } else {
-      uriArr.push('add-department', refId);
-    }
-
-    const formKeys = Object.keys(data).filter(d => !["externalLinks", "image"].includes(d));
-    const formData = new FormData();
-
-    formKeys.forEach(key => {
-      if (data[key]) {
-        formData.append(key, data[key]);
-      }
-    });
-
-    const file = get(data, "image.file.originFileObj");
-    if (file) {
-      formData.append("file", file);
-    }
-
-    if (links.length) {
-      links.forEach(d => {
-        formData.append("externalLinks[]", d)
-      });
-    }
-    if (htmlValue) {
-      formData.append("html", htmlValue);
-    }
-    
-    Request[method](uriArr.join("/"), formData)
-      .then(res => {
-        const { success, message: msg } = res.data;
-
-        if (success) {
-          message.success(msg);
-          setEditData(null);
-          setOpenModel(false);
-          setLinks([]);
-          setHtml("");
-          getAll();
-        } else {
-          message.error(msg);
-        }
-      })
-      .catch(() => message.error(DEFAULT_ERR_MSG));
-  };
-
-  useEffect(() => getAll(), []);
-
   return (
     <DefaultLayout>
       <div className="d-flex justify-content-between">
-        <h3>Departments & Programs</h3>
+        <h3>Categories</h3>
       </div>
       <TableComponent
         columns={columns}
         dataSource={tableData}
         bordered={true}
         showSearch={true}
-        searchPlaceholder="Search for the department | program..."
+        searchPlaceholder="Search for the category..."
         onSearch={onSearch}
         onChange={onChange}
         showAddButton={true}
-        addButtonLabel="+ New"
-        buttonOnClick={() => {
-          setOpenModel(true);
-          setEditData(null);
-          setLinks([]);
-        }}
+        addButtonLabel="+ New Category"
+        buttonOnClick={() => setOpenModel(true)}
       />
 
       {openModel && (
@@ -222,15 +191,12 @@ const InstDepartment = () => {
           onCancel={() => {
             setEditData(null);
             setOpenModel(false);
-            setLinks([]);
-            setHtml("");
           }}
           visible={openModel}
-          title={`${editData ? "Edit" : "Add"}  Department | Program`}
+          title={`${editData ? "Edit Category" : "Add New Category"}`}
           footer={false}
-          className="department-model-class book-model-class"
+          className="book-model-class"
         >
-          <>
           <Form
             initialValues={editData}
             layout="vertical"
@@ -242,20 +208,6 @@ const InstDepartment = () => {
               rules={[{ required: true, message: "" }]}
             >
               <Input />
-            </Form.Item>
-            <Form.Item
-              name="about"
-              label="About"
-              rules={[{ required: true, message: "" }]}
-            >
-              <TextArea rows={3} />
-            </Form.Item>
-            <Form.Item
-              name="course"
-              label="Course Offered"
-              rules={[{ required: true, message: "" }]}
-            >
-              <TextArea rows={4} />
             </Form.Item>
             <Form.Item name="image" label="Image">
               <Upload>
@@ -270,25 +222,16 @@ const InstDepartment = () => {
                 </div>
               </Upload>
             </Form.Item>
-            <Form.Item name="externalLinks" label="ExternalLinks">
-              <ListComponent
-                list={links}
-                setList={setLinks}
-                placeholder="Enter the external links"
-              />
+            <Form.Item name="description" label="Description">
+              <TextArea rows={4} />
             </Form.Item>
-            <>
-              <label>HTML Editor</label>
-              <HTMLEditor value={htmlValue} onChange={setHtml} />
-              <br />
-            </>
+
             <div className="d-flex justify-content-end">
               <Button htmlType="submit" type="primary">
                 SAVE
               </Button>
             </div>
           </Form>
-          </>
         </Modal>
       )}
       {confirmOpt.visible && (
@@ -301,6 +244,6 @@ const InstDepartment = () => {
       )}
     </DefaultLayout>
   );
-};
+}
 
-export default InstDepartment;
+export default CategoryComponent;

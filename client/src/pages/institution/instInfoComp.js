@@ -3,16 +3,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { SELECT_INST_MENU } from "../../constants";
-import HomeLayout from "../../components/HomeLayout";
-import Request from "../../library/request";
+import { HomeLayout } from "../../components";
+import { Request } from "../../library";
 import "../../resources/inst-layout.css";
 
-import About from "./inst-about-display";
-import Contact from "./inst-contact-display";
-import Department from "./inst-department-display";
-import Event from "./inst-event-display";
-import Notice from "./inst-notice-display";
-import Team from "./inst-team-display";
+import About from "./instAboutInfoComp";
+import Contact from "./instContactInfoComp";
+import Department from "./instDeptInfoComp";
+import Event from "./instEventInfoComp";
+import Notice from "./instNoticeInfoComp";
+import Team from "./instTeamInfoComp";
 
 const getComponent = (key, refId) => {
   switch (key) {
