@@ -23,3 +23,4 @@ export { default as Profile } from "./profile/profileComp";
 export { default as UserProfile } from "./profile/userProfileComp";
 export { default as Register } from "./register/registerComp";
 export { default as User } from "./user/userComp";
+export { default as InstUser } from "./user/userInstComp";

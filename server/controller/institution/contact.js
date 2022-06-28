@@ -7,16 +7,21 @@ const { sendData, sendError } = require("../helper/lib");
 
 const allowedFields = ["address", "phone", "email", "website", "externalLinks", "gMap"];
 
+const projection = {
+  _id: 1,
+  ...allowedFields.reduce((acc, curr) => {
+    acc[curr] = 1;
+    return acc;
+  }, {}),
+};
+
 const getByRefId = async (req, res) => {
   try {
     if (!req.params.refId) {
       return sendError(res, 400);
     }
 
-    const item = await InstContactModel.findOne(
-      { refId: req.params.refId },
-      { _id: 1, text: 1, images: 1, html: 1 }
-    );
+    const item = await InstContactModel.findOne({ refId: req.params.refId }, projection);
 
     return sendData(res, item);
   } catch (err) {

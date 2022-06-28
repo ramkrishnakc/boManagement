@@ -20,6 +20,7 @@ import {
   InstList,
   InstNotice,
   InstTeam,
+  InstUser,
   Order,
   Profile,
   Register,
@@ -138,6 +139,14 @@ const AppRoutes = () => {
           <Route
             path="/inst-contact"
             element={<ProtectedRoute ChildComponent={InstContact} role="institution" />}
+          />
+          <Route
+            path="/inst-user-profile"
+            element={<ProtectedRoute ChildComponent={Profile} role="institution" />}
+          />
+          <Route
+            path="/inst-users"
+            element={<ProtectedRoute ChildComponent={InstUser} role="institution" />}
           />
 
           {/* Routes that don't require any role */}

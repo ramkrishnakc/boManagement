@@ -1,9 +1,9 @@
-import { Form, Button, Input, Col, Row, Upload, message } from "antd";
+import { Form, Button, Input, Col, Row, message } from "antd";
 import { useState, useEffect } from "react";
 import { get } from "lodash";
 
 import { LocalStore, Request } from "../../library";
-import { DefaultLayout, Header } from "../../components";
+import { DefaultLayout, Header, ListComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 
 const { TextArea } = Input;
@@ -12,6 +12,8 @@ const InstContact = () => {
   const refId = get(LocalStore.decodeToken(), "institution"); // Institution ID
   const [editData, setEditData] = useState(null); // Set Edit Data for update
   const [loadForm, setLoadform] = useState(false); // Load form only after fetching DB data
+  const [numbers, setNumbers] = useState([]);
+  const [links, setLinks] = useState([]);
 
   const getData = async () => {
     try {
@@ -21,7 +23,14 @@ const InstContact = () => {
         } = await Request.get(`/api/institution/getByRefId-contact/${refId}`);
 
         if (success && data) {
-          setEditData(data);
+          const { externalLinks, phone, ...rest } = data;
+          if (externalLinks) {
+            setLinks(externalLinks);
+          }
+          if (phone) {
+            setNumbers(phone);
+          }
+          setEditData(rest);
         }
         setLoadform(true);
       }
@@ -46,7 +55,10 @@ const InstContact = () => {
 
       if (success) {
         message.success(msg);
-        await getData();
+        // Fetch data only after POST
+        if (!_id) {
+          await getData();
+        }
       } else {
         message.error(msg);
       }
@@ -56,18 +68,18 @@ const InstContact = () => {
   };
 
   const onFinish = data => {
-    const formData = new FormData();
-    formData.append("text", data.text);
+    const payload = {
+      ...data,
+    };
 
-    const files = get(data, "images.fileList", []);
-
-    if (files.length) {
-      files.forEach(file => {
-        formData.append("files[]", file.originFileObj)
-      });
+    if (links.length) {
+      payload.externalLinks = links;
+    }
+    if (numbers.length) {
+      payload.phone = numbers;
     }
 
-    return actualSave(formData, get(editData, "_id"));
+    return actualSave(payload, get(editData, "_id"));
   };
 
   useEffect(() => getData(), []);
@@ -84,27 +96,52 @@ const InstContact = () => {
               initialValues={editData}
             >
               <Form.Item
-                name="text"
-                label="About"
+                name="address"
+                label="Address"
                 rules={[{ required: true, message: "" }]}
               >
-                <TextArea rows={5} />
+                <TextArea rows={2} />
               </Form.Item>
               <Form.Item
-                name="images"
-                label="Images"
+                name="phone"
+                label="Contact Numbers"
+                rules={[
+                  () => ({
+                    validator() {
+                      if (numbers.length) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject("");
+                    },
+                  }),
+                ]}
               >
-                <Upload multiple={true}>
-                  <div class="ant-col ant-form-item-control">
-                    <div class="ant-form-item-control-input">
-                      <div class="ant-form-item-control-input-content">
-                        <div class="ant-input">
-                          Choose files
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Upload>
+                <ListComponent
+                  list={numbers}
+                  setList={setNumbers}
+                  placeholder="Enter contact numbers"
+                />
+              </Form.Item>
+              <Form.Item
+                name="email"
+                label="Email"
+                rules={[{ required: true, message: "" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item
+                name="website"
+                label="Website"
+                rules={[{ required: true, message: "" }]}
+              >
+                <Input />
+              </Form.Item>
+              <Form.Item name="externalLinks" label="ExternalLinks">
+                <ListComponent
+                  list={links}
+                  setList={setLinks}
+                  placeholder="Enter the external links"
+                />
               </Form.Item>
 
               <Button htmlType="submit" type="primary">
@@ -112,19 +149,6 @@ const InstContact = () => {
               </Button>
             </Form>
           </Col>
-          {get(editData, "images[0]") && (<Col span={11} className="profile-col-2">
-            <p>Uploaded Images:</p>
-            {
-              editData.images.map(img => (
-                <img
-                  key={img}
-                  src={img}
-                  alt=""
-                  style={{height: "80px", width: "80px", marginRight: "10px"}}
-                />
-              ))
-            }
-          </Col>)}
         </Row>
       )}
     </DefaultLayout>

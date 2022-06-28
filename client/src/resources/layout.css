@@ -197,7 +197,7 @@ button {
 }
 
 .header-comp {
-  border-bottom: ridge #bbc3ca;
+  border-bottom: 0.1px ridge #bbc3ca;
   margin-bottom: 30px;
 }
 

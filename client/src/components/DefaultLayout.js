@@ -110,7 +110,12 @@ const DefaultLayout = (props) => {
             <div
               className="d-flex align-items-center cart-div"
               onClick={() => {
-                navigate("/profile");
+                if (role === "admin") {
+                  navigate("/profile");
+                }
+                if (role === "institution") {
+                  navigate("/inst-user-profile");
+                }
               }}
             >
               <UserSwitchOutlined />

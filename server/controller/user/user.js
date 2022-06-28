@@ -142,6 +142,8 @@ const getById = async (req, res) => {
         institution: 0,
         purchasedBooks: 0,
         publishedBooks: 0,
+        createdAt: 0,
+        updatedAt: 0,
       });
     return sendData(res, item);
   } catch (err) {
@@ -157,6 +159,33 @@ const getAll = async (req, res) => {
       institution: 0,
       purchasedBooks: 0,
       publishedBooks: 0,
+    }).sort({ createdAt: -1 });
+
+    return sendData(res, items);
+  } catch (err) {
+    logger.error(err.stack);
+    return sendError(res);
+  }
+};
+
+const getInstUsers = async (req, res) => {
+  try {
+    if (
+      !req.params.refId ||
+      req.params.refId !== _.get(res, "locals.payload.institution")
+    ) {
+      return sendError(res, 400);
+    }
+
+    const items = await UserModel.find({ institution: req.params.refId }, {
+      role: 0,
+      password: 0,
+      institution: 0,
+      purchasedBooks: 0,
+      publishedBooks: 0,
+      __v: 0,
+      createdAt: 0,
+      updatedAt: 0,
     }).sort({ createdAt: -1 });
 
     return sendData(res, items);
@@ -206,6 +235,20 @@ const add = async (req, res) => {
     logger.error(err.stack);
     return sendError(res);
   }
+};
+
+const addInstUser = async (req, res) => {
+  if (
+    !req.params.refId ||
+    req.params.refId !== _.get(res, "locals.payload.institution")
+  ) {
+    return sendError(res, 400);
+  }
+
+  req.body.institution = req.params.refId;
+  req.body.role = "institution";
+
+  return add(req, res);
 };
 
 /* Verify e-mail by actual user */
@@ -316,15 +359,29 @@ const remove = async (req, res) => {
   }
 };
 
+const removeInstUser = async (req, res) => {
+  if (
+    !req.params.refId ||
+    req.params.refId !== _.get(res, "locals.payload.institution")
+  ) {
+    return sendError(res, 400);
+  }
+
+  return remove(req, res);
+};
+
 module.exports = {
   createDefaultUser,
   login,
   signup,
   getById,
   getAll,
+  getInstUsers,
   add,
+  addInstUser,
   verifyEmail,
   update,
   pwdUpdate,
   remove,
+  removeInstUser,
 };

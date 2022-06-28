@@ -1,47 +1,44 @@
 import React, { useEffect, useState } from "react";
 import { DeleteFilled, EyeOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, Modal, Radio, Select } from "antd";
+import { Button, Form, Input, message, Modal } from "antd";
 import { get } from "lodash";
 
 import { DEFAULT_ERR_MSG } from "../../constants";
 import { LocalStore, Request } from "../../library";
 import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
 
-const SEARCH_FIELDS = ["username", "email", "verified", "role", "name"];
+const SEARCH_FIELDS = ["username", "email"];
 
 const UserComponent = () => {
-  const userId = get(LocalStore.decodeToken(), "id");
+  const token = LocalStore.decodeToken();
+  const refId = get(token, "institution"); // Institution ID
+  const userId = get(token, "id");
   const [itemsData, setItemsData] = useState([]); // All data fetched from server
   const [tableData, setTableData] = useState([]); // Required for Search in table
   const [openModel, setOpenModel] = useState(false);
   const [userDetail, setUserDetail] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
-  const [showSelect, setShowSelect] = useState(false);
-  const [institutions, setInstitutions] = useState([]);
 
   const getAll = async () => {
     try {
-      const {data: { success, data }} = await Request.get(`/api/users/getAll`);
-      if (success) {
-        setItemsData(data);
-        setTableData(data);
-      }
-    } catch (err) {}
-  };
-
-  const getAllInstitutons = async () => {
-    try {
-      const {data: { success, data }} = await Request.get(`/api/institution/getAll`);
-      if (success) {
-        setInstitutions(data);
+      if (refId) {
+        const {
+          data: { success, data },
+        } = await Request.get(`/api/users/get-inst-users/${refId}`);
+        if (success) {
+          setItemsData(data);
+          setTableData(data);
+        }
       }
     } catch (err) {}
   };
 
   const deleteItem = async record => {
     try {
-      const {data: {success, message: msg}} = await Request.delete(`/api/users/remove/${record._id}`);
+      const {
+        data: { success, message: msg },
+      } = await Request.delete(`/api/users/remove-inst-user/${refId}/${record._id}`);
       
       if (success) {
         message.success(msg);
@@ -59,7 +56,7 @@ const UserComponent = () => {
 
   const onFinish = data =>
     Request
-      .post("/api/users/add", data)
+      .post(`/api/users/add-inst-user/${refId}`, data)
       .then(res => {
         const { success, message: msg } = res.data;
 
@@ -88,24 +85,11 @@ const UserComponent = () => {
       dataIndex: "email",
     },
     {
-      title: "Role",
-      dataIndex: "role",
-    },
-    {
-      title: "Verified",
-      dataIndex: "verified",
-      render: bool => (
-        <div className="d-flex">
-          {bool ? "Yes" : "No"}
-        </div>
-      )
-    },
-    {
       title: "Actions",
       dataIndex: "_id",
       render: (id, record) => (
         <div className="d-flex">
-          {record.username !== "root_user" && record._id !== userId &&
+          {record._id !== userId &&
             <DeleteFilled
               title="Remove"
               className="mx-2"
@@ -123,7 +107,6 @@ const UserComponent = () => {
   ];
 
   useEffect(() => getAll(), []);
-  useEffect(() => getAllInstitutons(), []);
 
   /* Handle search */
   const onSearch = (str = "") => {
@@ -151,19 +134,8 @@ const UserComponent = () => {
 
   /* Handle change in search input */
   const onChange = e => {
-    const keyword = e && e.target && e.target.value;
-
-    if (!keyword) {
+    if (!get(e, "target.value")) {
       onSearch("");
-    }
-  };
-
-  /* Select institution */
-  const onRadioChange = e => {
-    if (e.target.value === "institution") {
-      setShowSelect(true);
-    } else {
-      setShowSelect(false);
     }
   };
 
@@ -247,29 +219,6 @@ const UserComponent = () => {
                 >
                   <Input />
                 </Form.Item>
-                <Form.Item
-                  name="role"
-                  label="Role"
-                  rules={[
-                    { required: true, message: "" },
-                  ]}
-                >
-                  <Radio.Group onChange={onRadioChange}>
-                    <Radio value="admin">Admin</Radio>
-                    <Radio value="institution">Institution</Radio>
-                    <Radio value="writer">Writer</Radio>
-                    <Radio value="user">User</Radio>
-                  </Radio.Group>
-                </Form.Item>
-                {showSelect && (<Form.Item
-                  name="institution"
-                  label="Institution"
-                  rules={[{ required: true, message: "" }]}
-                >
-                  <Select>
-                    {institutions.map(d => <Select.Option value={d._id}>{d.name}</Select.Option>)}
-                  </Select>
-                </Form.Item>)}
                 <Form.Item
                   name="password"
                   label="Password"
