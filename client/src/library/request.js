@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { get } from "lodash";
 import LocalStore from './localStore';
 import ReduxStore from './reduxStore';
 import { SHOW_LOADER } from '../constants';
@@ -32,6 +33,13 @@ Request.interceptors.response.use(
     if (error && error.response && error.response.status === 401) {
       LocalStore.clear();
       LocalStore.clear("reduxState");
+
+      if (get(window, "location.href")) {
+        alert("Unauthorized request attempted. You will be logged out of the application.");
+        const url = window.location;
+        const baseUrl = url.protocol + "//" + url.host + "/login";
+        window.location.href = baseUrl;
+      }
     }
     console.log("Error :: ", error);
     return Promise.reject(error);

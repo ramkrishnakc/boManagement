@@ -1,9 +1,11 @@
 export { default as Book } from "./book/bookComp";
 export { default as BookList } from "./book/bookListComp";
+export { default as BookPublished } from "./book/publishedBookComp";
 export { default as Cart } from "./cart/cartComp";
 export { default as Category } from "./category/categoryComp";
 export { default as CategoryList } from "./category/categoryListComp";
 export { default as Dashboard } from "./dashboard/dashboardComp";
+export { default as WriterDashboard } from "./dashboard/writerDashboardComp";
 export { default as Home } from "./home/homeComp";
 
 export { default as Institution } from "./institution/instComp";

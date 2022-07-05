@@ -16,6 +16,7 @@ const bookSchema = mongoose.Schema({
   description: { type: String },
   image: { type: String },
   available: { type: Boolean, default: true },
+  pdf: { type: String },
 }, {
   timestamps : true,
 });

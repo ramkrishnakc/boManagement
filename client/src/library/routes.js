@@ -5,10 +5,12 @@ import LocalStore from "./localStore";
 import {
   Book,
   BookList,
+  BookPublished,
   Cart,
   Category,
   CategoryList,
   Dashboard,
+  WriterDashboard,
   Home,
   Login,
   Institution,
@@ -44,6 +46,9 @@ const ProtectedRoute = ({ ChildComponent, role }) => {
     if (info.role === "institution") {
       return <Navigate to="/inst-about" />;
     }
+    if (info.role === "writer") {
+      return <Navigate to="/writer-dashboard" />;
+    }
   }
 
   const redirect = role === "user" ? "/" : "/login";
@@ -64,10 +69,14 @@ const RenderPage = ({ ChildComponent }) => {
     if (info.role === "institution") {
       return <Navigate to="/inst-about" />;
     }
+    if (info.role === "writer") {
+      return <Navigate to="/writer-dashboard" />;
+    }
   }
 
   /* Remove old tokens if any */
   LocalStore.clear();
+  LocalStore.clear("reduxState");
   return <ChildComponent />;
 };
 
@@ -115,6 +124,21 @@ const AppRoutes = () => {
             path="/user-orders"
             element={<ProtectedRoute ChildComponent={UserOrder} role="user" />}
           />
+          {/* Routes that require "WRITER" role */}
+          <Route
+            path="/writer-profile"
+            element={<ProtectedRoute ChildComponent={Profile} role="writer" />}
+          />
+          <Route
+            exact
+            path="/writer-dashboard"
+            element={<ProtectedRoute ChildComponent={WriterDashboard} role="writer" />}
+          />
+          <Route
+            exact
+            path="/writer-books"
+            element={<ProtectedRoute ChildComponent={BookPublished} role="writer" />}
+          />
           {/* Routes that require "INSTITUTION" role */}
           <Route
             path="/inst-about"
@@ -148,7 +172,6 @@ const AppRoutes = () => {
             path="/inst-users"
             element={<ProtectedRoute ChildComponent={InstUser} role="institution" />}
           />
-
           {/* Routes that don't require any role */}
           <Route
             path="/register"

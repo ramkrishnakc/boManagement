@@ -1,3 +1,4 @@
+const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 const { logger } = require("../../config");
 const { BillModel, BookModel, CategoryModel, UserModel } = require("../../models");
@@ -185,10 +186,47 @@ const getData = async (req, res) => {
 
     return sendData(res, data);
   } catch (err) {
-    console.log(err);
     logger.error(err.stack);
     return sendError(res, 400);
   }
 };
 
-module.exports = { getData };
+const getWriterDashboard = async (req, res) => {
+  try {
+    const user = await UserModel.findOne(
+      { _id: ObjectId(req.params.userId) },
+      { publishedBooks: 1 }
+    );
+    const bookIds = _.get(user, "publishedBooks", []);
+
+    if (bookIds.length) {
+      const books = await BookModel
+        .find({_id: { $in: bookIds.map(id => ObjectId(id)) }}, { name: 1, _id: 1 })
+        .sort({ createdAt: -1 });
+      
+      const promises = books.map(book =>
+        UserModel.find({ purchasedBooks: { $elemMatch: { $eq: book._id } } }).count()
+      );
+      const users = await Promise.all(promises);
+
+      const data = {
+        books: books.map(({ name }, idx) => ({
+          name,
+          user: users[idx],
+          revenue: 0,
+        })),
+      };
+      return sendData(res, data);
+    }
+
+    return sendData(res, { books: [] });
+  } catch(err) {
+    logger.error(err.stack);
+    return sendError(res, 400);
+  }
+};
+
+module.exports = {
+  getData,
+  getWriterDashboard,
+};

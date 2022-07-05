@@ -70,6 +70,18 @@ const DefaultLayout = (props) => {
               </Menu.Item>
             </>)}
 
+            {/* Menu for the "Writer" users */}
+            {role === "writer" && (
+              <>
+                <Menu.Item key="/writer-dashboard" icon={<DashboardOutlined />}>
+                  <Link to="/writer-dashboard">Dashboard</Link>
+                </Menu.Item>
+                <Menu.Item key="/writer-books" icon={<ReadOutlined />}>
+                  <Link to="/writer-books">Books</Link>
+                </Menu.Item>
+              </>
+            )}
+
             {/* Menu for the Institutions i.e school & colleges */}
             {role === "institution" && (<>
               <Menu.Item key="/inst-about" icon={<BankOutlined />}>
@@ -115,6 +127,9 @@ const DefaultLayout = (props) => {
                 }
                 if (role === "institution") {
                   navigate("/inst-user-profile");
+                }
+                if (role === "writer") {
+                  navigate("/writer-profile");
                 }
               }}
             >

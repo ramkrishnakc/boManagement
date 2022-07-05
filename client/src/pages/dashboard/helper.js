@@ -91,3 +91,20 @@ export const calculateTotal = (items = [], tax = TAX) => {
 
   return { subtotal, total: Number(Number(subtotal + subtotal * tax / 100 ).toFixed(2)) };
 };
+
+export const BOOKS_BY_USERS = [
+  {
+    title: "Books",
+    dataIndex: "name",
+  },
+  {
+    title: "No. of Readers",
+    dataIndex: "user",
+    render: count => count > 0 ? count : 0,
+  },
+  {
+    title: "Revenue Generated (Rs.)",
+    dataIndex: "revenue",
+    render: count => count > 0 ? `RS. ${count}` : 0,
+  },
+];

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { get } from "lodash";
 import { DeleteFilled, EditFilled, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
@@ -11,9 +12,11 @@ import "../../resources/modal.css";
 
 const TextArea = Input.TextArea;
 const LANG = ["English", "Nepali", "Hindi", "Others"];
-const SEARCH_FIELDS = ["name", "author", "language", "category"];
+const SEARCH_FIELDS = ["name", "language", "category"];
 
 const BookComponent = () => {
+  const userId = useSelector(state => state.login.id);
+  const username = useSelector(state => state.login.username);
   const [itemsData, setItemsData] = useState([]); // All data fetched from server
   const [tableData, setTableData] = useState([]); // Required for Search in table
   const [categories, setCategories] = useState([]);
@@ -26,7 +29,14 @@ const BookComponent = () => {
 
   const getAll = async (reqType = "books") => {
     try {
-      const {data: { success, data }} = await Request.get(`/api/${reqType}/getAll`);
+      let uri;
+
+      if (reqType === "books") {
+        uri = `/api/${reqType}/getPublishedBooks/${userId}`;
+      } else {
+        uri = `/api/${reqType}/getAll`;
+      }
+      const {data: { success, data }} = await Request.get(uri);
 
       if (success) {
         if (reqType === "books") {
@@ -46,7 +56,9 @@ const BookComponent = () => {
 
   const deleteItem = async record => {
     try {
-      const {data: {success, message: msg}} = await Request.delete(`/api/books/remove/${record._id}`);
+      const {data: {success, message: msg}} = await Request.delete(
+        `/api/books/removePublishedBook/${userId}/${record._id}`
+      );
 
       if (success) {
         message.success(msg);
@@ -76,10 +88,6 @@ const BookComponent = () => {
       title: "Image",
       dataIndex: "image",
       render: img => <img src={img || noImage} alt="" height="60" width="60" />,
-    },
-    {
-      title: "Author",
-      dataIndex: "author",
     },
     {
       title: "Price",
@@ -126,10 +134,10 @@ const BookComponent = () => {
     let method = "post";
 
     if (editData) {
-      uriArr.push('update', editData._id);
+      uriArr.push('updatePublishedBook', userId, editData._id);
       method = "put";
     } else {
-      uriArr.push('add');
+      uriArr.push('publishBook', userId);
     }
 
     const formKeys = Object.keys(data).filter(d => !["image", "pdf"].includes(d));
@@ -140,6 +148,7 @@ const BookComponent = () => {
         formData.append(key, data[key]);
       }
     });
+    formData.append("author", username);
 
     const file = get(data, "image.file.originFileObj");
     if (file) {
@@ -160,7 +169,7 @@ const BookComponent = () => {
           newForm.append("pdf", pdfFile);
 
           /* Then, insert | update book resource to a separate collection */
-          await Request.post(`/api/books/uploadPdf/${refId}`, newForm);
+          await Request.post(`/api/books/publishPdf/${userId}/${refId}`, newForm);
         }
 
         message.success(get(resp1, "data.message"));
@@ -263,13 +272,6 @@ const BookComponent = () => {
               <Form.Item
                 name="name"
                 label="Name"
-                rules={[{ required: true, message: "" }]}
-              >
-                <Input />
-              </Form.Item>
-              <Form.Item
-                name="author"
-                label="Author"
                 rules={[{ required: true, message: "" }]}
               >
                 <Input />

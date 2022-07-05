@@ -29,6 +29,8 @@ const LoginComponent = () => {
             navigate("/dashboard");
           } else if (payload.role === "institution") {
             navigate("/inst-about");
+          } else if (payload.role === "writer") {
+            navigate("/writer-dashboard");
           } else {
             navigate("/");
           }
@@ -51,6 +53,9 @@ const LoginComponent = () => {
       }
       if (payload.role === "institution") {
         navigate("/inst-about");
+      }
+      if (payload.role === "writer") {
+        navigate("/writer-dashboard");
       }
       if (payload.role === "user") {
         navigate("/");

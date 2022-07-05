@@ -31,8 +31,8 @@ const userSchema = mongoose.Schema({
   address: { type: String },
   contactNum: { type: String },
   institution: { type: String, required: () => !this.role === "institution" },
-  purchasedBooks: { type: Array },
-  publishedBooks: { type: Array },
+  purchasedBooks: { type: Array, default: [] },
+  publishedBooks: { type: Array, default: [] },
 }, { timestamps : true });
 
 module.exports = mongoose.model("users", userSchema);

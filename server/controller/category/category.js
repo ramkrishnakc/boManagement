@@ -115,6 +115,14 @@ const remove = async (req, res) => {
       return sendError(res, 400);
     }
 
+    const book = await BookModel.findOne({ category: req.params.id });
+
+    if (book) {
+      const msg = "Category can't be deleted - Some books exist under this category.";
+      logger.info(msg);
+      return sendError(res, 400, msg);
+    }
+
     const item = await CategoryModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
