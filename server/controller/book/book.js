@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { BookModel, UserModel } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 
 const allowedFields = [
   "name",
@@ -93,6 +93,10 @@ const update = async (req, res) => {
 
     const item = await BookModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
+      /* Remove old image from the folder */
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       return sendData(res, { _id: req.params.id }, "Book info updated successfully!!");
     }
     return sendError(res, 404);
@@ -119,6 +123,10 @@ const remove = async (req, res) => {
     const item = await BookModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
+      /* Remove image from the folder */
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       /* Remove all the files associated with the book */
       const files = await global.bucket.find({ "metadata.refId": req.params.id }).toArray();
 

@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { InstActivityModel } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 
 const allowedFields = ["title", "description", "images", "html", "externalLinks"];
 
@@ -92,6 +92,9 @@ const update = async (req, res) => {
     const item = await InstActivityModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
+      if (Array.isArray(item.images) && item.images.length) {
+        removeFiles(item.images);
+      }
       const msg = `Activity | Event updated successfully!!`;
       logger.info(msg);
       return sendData(res, null, msg);
@@ -115,6 +118,9 @@ const remove = async (req, res) => {
     const item = await InstActivityModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
+      if (Array.isArray(item.images) && item.images.length) {
+        removeFiles(item.images);
+      }
       return sendData(res, null, "Activity | Event removed successfully!!");
     }
     return sendError(res, 404);

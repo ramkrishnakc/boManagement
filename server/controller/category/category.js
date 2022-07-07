@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { CategoryModel, BookModel } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 
 const getById = async (req, res) => {
   try {
@@ -98,6 +98,10 @@ const update = async (req, res) => {
     const item = await CategoryModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
 
     if (item) {
+      /* Remove old image from the folder */
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       const msg = `Category with id: ${req.params.id}, name: ${item.name} updated successfully.`
       logger.info(msg);
       return sendData(res, null, msg);
@@ -126,6 +130,10 @@ const remove = async (req, res) => {
     const item = await CategoryModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
+      /* Remove image from the folder */
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       const msg = `Category with id: ${req.params.id}, name: ${item.name} removed successfully.`
       logger.info(msg);
       return sendData(res, null, msg);

@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { InstDepartmentModel } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 
 const allowedFields = ["name", "image", "about", "course", "fee", "html", "externalLinks"];
 
@@ -92,6 +92,9 @@ const update = async (req, res) => {
     const item = await InstDepartmentModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       const msg = `Department info updated successfully!!`;
       logger.info(msg);
       return sendData(res, null, msg);
@@ -115,6 +118,9 @@ const remove = async (req, res) => {
     const item = await InstDepartmentModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       return sendData(res, null, "Department info removed successfully");
     }
     return sendError(res, 404);

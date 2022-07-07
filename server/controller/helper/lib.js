@@ -1,3 +1,22 @@
+const fs = require("fs");
+const path = require("path");
+const { logger } = require("../../config");
+
+/* Remove list of files from "Public" directory */
+const removeFiles = files => {
+  files.forEach(filePath => {
+    const pathToFile = path.resolve(__dirname, `../../..${filePath}`);
+
+    fs.unlink(pathToFile, function(err) {
+      if (err) {
+        logger.error(`Error while deleting file: ${pathToFile}: ${err.stack}`);
+      } else {
+        logger.info(`Successfully deleted file: ${pathToFile}.`);
+      }
+    });    
+  });
+};
+
 /* Get date before certain hours + minutes */
 const dateBefore = (hrs, min = 0) => {
   const ts = Math.round(new Date().getTime() / 1000);
@@ -61,6 +80,7 @@ const MONTHS = {
 };
 
 module.exports = {
+  removeFiles,
   dateBefore,
   sendError,
   sendData,

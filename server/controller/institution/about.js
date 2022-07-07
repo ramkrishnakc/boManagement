@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { InstAboutModel } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 
 const allowedFields = ["text", "images", "html"];
 
@@ -70,6 +70,9 @@ const update = async (req, res, next) => {
     const item = await InstAboutModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
 
     if (item) {
+      if (Array.isArray(item.images) && item.images.length) {
+        removeFiles(item.images);
+      }
       return sendData(res, null, "About information updated successfully");
     }
     return sendError(res, 400);

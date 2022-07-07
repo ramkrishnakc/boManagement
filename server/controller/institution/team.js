@@ -3,7 +3,7 @@ const _ = require("lodash");
 
 const { logger } = require("../../config");
 const { InstTeamModel } = require("../../models");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 
 const allowedFields = ["name", "position", "image", "about", "department", "website", "linkedIn"];
 const projection = {
@@ -91,6 +91,9 @@ const update = async (req, res) => {
     const item = await InstTeamModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       const msg = `Team member info updated successfully!!`;
       logger.info(msg);
       return sendData(res, null, msg);
@@ -114,6 +117,9 @@ const remove = async (req, res) => {
     const item = await InstTeamModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       return sendData(res, null, "Team member info removed successfully");
     }
     return sendError(res, 404);
