@@ -4,7 +4,7 @@ import { Button, Modal, Table } from "antd";
 import { useReactToPrint } from "react-to-print";
 
 import { Request } from "../../library";
-import { DefaultLayout, Header, TableComponent } from "../../components";
+import { TableComponent } from "../../components";
 import { TAX } from "../../constants";
 import { calculateTotal, getRecordTotal } from "../dashboard/helper";
 
@@ -136,8 +136,7 @@ const OrderComponent = () => {
   useEffect(() => getAll(), []); // Fetch all the bills
 
   return (
-    <DefaultLayout>
-      <Header title="Orders" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -212,7 +211,7 @@ const OrderComponent = () => {
           </div>
         </Modal>
       )}
-    </DefaultLayout>
+    </>
   );
 }
 

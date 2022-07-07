@@ -4,7 +4,7 @@ import { DeleteFilled, EditFilled, EyeOutlined } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
 
 import { Request } from "../../library";
-import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
+import { Confirm, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import "../../resources/modal.css";
@@ -213,8 +213,7 @@ const BookComponent = () => {
   };
 
   return (
-    <DefaultLayout>
-      <Header title="Books" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -370,7 +369,7 @@ const BookComponent = () => {
           onCancel={() => setOpenConfirm({})}
         />
       )}
-    </DefaultLayout>
+    </>
   );
 }
 

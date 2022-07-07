@@ -3,7 +3,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 
 import { SELECT_INST_MENU } from "../../constants";
-import { HomeLayout } from "../../components";
 import { Request } from "../../library";
 import "../../resources/instLayout.css";
 
@@ -64,7 +63,7 @@ const InstitutionInfo = () => {
   useEffect(() => getById(), []);
 
   return (
-    <HomeLayout hideFooter>
+    <>
       <div className="content-wrapper">
         <div className="l-header">{infoObj.name}</div>
         <div className="d-flex align-items-center">
@@ -91,7 +90,7 @@ const InstitutionInfo = () => {
           {getComponent(selectedMenu, infoObj._id)}
         </div>
       </div>
-    </HomeLayout>
+    </>
   );
 };
 

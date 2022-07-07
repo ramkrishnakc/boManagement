@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { Input } from "antd";
 
 import { Request } from "../../library";
-import { HomeLayout, Items } from "../../components";
+import { Items } from "../../components";
 import { SET_INSTITUTIONS } from "../../constants";
 
 const SearchInput = Input.Search;
@@ -63,7 +63,7 @@ const InstitutionList = () => {
   };
 
   return (
-    <HomeLayout hideFooter>
+    <>
       <div className="category-header">
         <div className="bread-crumb">
           <span className="b-parent hide-pointer">Institutions</span>
@@ -85,7 +85,7 @@ const InstitutionList = () => {
           selectItem={({ _id: id }) => navigate(`/institution-info/${id}`)}
         />
       )}
-    </HomeLayout>
+    </>
   );
 }
 

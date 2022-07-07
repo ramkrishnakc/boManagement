@@ -3,7 +3,7 @@ import { DeleteFilled } from "@ant-design/icons";
 import { Button, Form, Input, message, Modal, Upload } from "antd";
 
 import { Request } from "../../library";
-import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
+import { Confirm, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
@@ -141,8 +141,7 @@ const InstitutionComponent = () => {
   };
 
   return (
-    <DefaultLayout>
-      <Header title="Institutions" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -205,7 +204,7 @@ const InstitutionComponent = () => {
           onCancel={() => setOpenConfirm({})}
         />
       )}
-    </DefaultLayout>
+    </>
   );
 }
 

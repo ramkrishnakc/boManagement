@@ -17,10 +17,12 @@ export { default as InstTeam } from "./institution/instTeamComp";
 export { default as InstDepartment } from "./institution/instDeptComp";
 export { default as InstNotice } from "./institution/instNoticeComp";
 export { default as InstEvent } from "./institution/instEventComp";
+export { default as InstHome } from "./institution/instHomeComp";
 
 export { default as Login } from "./login/loginComp";
 export { default as Order } from "./order/orderComp";
 export { default as UserOrder } from "./order/userOrderComp";
+export { default as UserPurchase } from "./order/userPurchase";
 export { default as Profile } from "./profile/profileComp";
 export { default as UserProfile } from "./profile/userProfileComp";
 export { default as Register } from "./register/registerComp";

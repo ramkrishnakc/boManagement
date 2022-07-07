@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Pagination, Input } from "antd";
 
 import { Request } from "../../library";
-import { HomeLayout, Items } from "../../components";
+import { Items } from "../../components";
 import { SET_SEARCH_OPTIONS, LIMIT } from "../../constants";
 
 const SearchInput = Input.Search;
@@ -65,7 +65,7 @@ const Book = () => {
   };
 
   return (
-    <HomeLayout hideFooter>
+    <>
       <div className="category-header">
         <div className="bread-crumb">
           <span className="b-parent hide-pointer">Books</span>
@@ -104,7 +104,7 @@ const Book = () => {
           />
         </div>
       )}
-    </HomeLayout>
+    </>
   );
 }
 

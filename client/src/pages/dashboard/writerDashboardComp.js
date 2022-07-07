@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Table } from "antd";
 
 import { Request } from "../../library";
-import { DefaultLayout, Header } from "../../components";
 import noImage from "../../resources/no-image.png";
 
 const BOOKS_BY_USERS = [
@@ -53,8 +52,7 @@ const DashboardComponent = () => {
   const revenue = dashboardData.books.reduce((acc, curr) => acc + curr.revenue, 0);
 
   return (
-    <DefaultLayout>
-      <Header title="Dashboard" />
+    <>
       <p>Hello <b>{username}</b>,</p>
       <p><b>Total No. of Books Published:</b> {dashboardData.books.length}</p>
       {revenue > 0 && (
@@ -69,7 +67,7 @@ const DashboardComponent = () => {
         dataSource={dashboardData.books}
         pagination={false}
       />
-    </DefaultLayout>
+    </>
   );
 };
 

@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useDispatch, useSelector } from "react-redux";
 import { Layout, message } from "antd";
+import { get } from "lodash";
 import { ShoppingCartOutlined, LoginOutlined } from "@ant-design/icons";
 
 import LocalStore from "../library/localStore";
@@ -16,16 +17,9 @@ const HomeLayout = props => {
   const location = useLocation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [isLoggedIn, setLoggedIn] = useState(false);
+  const payload = LocalStore.decodeToken();
+  const isLoggedIn = get(payload, "role") === "user" && Date.now() < payload.expiredAt;
   const { common: { loading }, cart: { cartItems } } = useSelector(state => state);
-
-  useEffect(() => {
-    const payload = LocalStore.decodeToken();
-
-    if (payload && payload.role === "user") {
-      setLoggedIn(true);
-    }
-  }, []);
 
   const getClass = (arr = []) => {
     const p = location.pathname.split("/")[1];
@@ -62,6 +56,9 @@ const HomeLayout = props => {
           </Link>
           { isLoggedIn && (
             <>
+              <Link to="/user-purchases" className={getClass(["user-purchases"])}>
+                Purchases
+              </Link>
               <Link to="/user-orders" className={getClass(["user-orders"])}>
                 Orders
               </Link>
@@ -101,10 +98,9 @@ const HomeLayout = props => {
             <div
               className="d-flex align-items-center cart-div"
               onClick={() => {
+                message.info("Logged out successfully!!");
                 dispatch({ type: LOG_OUT });
                 navigate("/");
-                message.info("Logged out successfully!!");
-                setLoggedIn(false);
               }}
             >
               <LoginOutlined />
@@ -127,7 +123,7 @@ const HomeLayout = props => {
         }}
       >
         {props.children}
-        {!props.hideFooter && <Footer />}
+        {props.displayFooter && <Footer />}
       </Content>
     </Layout>
   );

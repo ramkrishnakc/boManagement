@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Pagination, Input } from "antd";
 
 import { Request } from "../../library";
-import { HomeLayout, Items } from "../../components";
+import { Items } from "../../components";
 import { SELECT_CATEGORY, SET_CATEGORIES, SET_SEARCH_OPTIONS, LIMIT } from "../../constants";
 
 const SearchInput = Input.Search;
@@ -122,7 +122,7 @@ const Category = () => {
   };
 
   return (
-    <HomeLayout hideFooter>
+    <>
       <div className="category-header">
         <div className="bread-crumb">
           <span
@@ -171,7 +171,7 @@ const Category = () => {
           />
         </div>
       )}
-    </HomeLayout>
+    </>
   );
 }
 

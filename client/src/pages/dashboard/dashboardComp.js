@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import { Table } from "antd";
 
 import { Request } from "../../library";
-import { DefaultLayout, Header } from "../../components";
 import SimplePieChart from "./piechart";
 import SimpleLineChart from "./lineChart";
 import {
@@ -61,8 +60,7 @@ const DashboardComponent = () => {
   useEffect(() => getData(), []);
 
   return (
-    <DefaultLayout>
-      <Header title="Dashboard" />
+    <>
       <p>Overview: <sub>(refers to total count we have till now)</sub></p>
       <Table
         columns={TOTAL_INFO_COL}
@@ -149,7 +147,7 @@ const DashboardComponent = () => {
         dataSource={getSummaryData(dashboardData.yearData)}
         pagination={false}
       />
-    </DefaultLayout>
+    </>
   );
 };
 

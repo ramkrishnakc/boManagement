@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { get } from "lodash";
 
 import { LocalStore, Request } from "../../library";
-import { DefaultLayout, Header, HtmlEditor } from "../../components";
+import { HtmlEditor } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 
 const { TextArea } = Input;
@@ -87,8 +87,7 @@ const InstAbout = () => {
   useEffect(() => getData(), []);
 
   return (
-    <DefaultLayout>
-      <Header title="About Us" />
+    <>
       <div>
         <Radio.Group value={formType} onChange={e => setFormType(e.target.value)}>
           <Radio value="text">Form</Radio>
@@ -160,7 +159,7 @@ const InstAbout = () => {
           </Col>)}
         </Row>
       )}
-    </DefaultLayout>
+    </>
   );
 };
 

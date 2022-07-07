@@ -6,9 +6,8 @@ import { Button, Form, Input, message, Row, Col } from "antd";
 
 import { DEFAULT_ERR_MSG, LOG_OUT } from "../../constants";
 import { Request } from "../../library";
-import { DefaultLayout, Header } from "../../components";
 
-const Profile = props => {
+const Profile = () => {
   const userId = useSelector(state => get(state, "login.id"));
   const [userInfo, setUserInfo] = useState({});
   const [dataFetched, setDataFetched] = useState(false);
@@ -65,10 +64,6 @@ const Profile = props => {
 
   return (
     <>
-      {props.hideHeader
-        ? ""
-        : (<Header title="Profile" />)
-      }
       {dataFetched && <Row className="profile-row">
         <Col span={12} className="profile-col-1">
           <h5>Update Info:</h5><br />
@@ -176,9 +171,4 @@ const Profile = props => {
   );
 }
 
-const ProfileComponent = props => {
-  return props.hideWrapper
-    ? <Profile hideHeader />
-    : (<DefaultLayout><Profile /></DefaultLayout>);
-};
-export default ProfileComponent;
+export default Profile;

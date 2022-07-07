@@ -4,7 +4,7 @@ import { Button, Form, Input, message, Modal, Upload } from "antd";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 
 import { DEFAULT_ERR_MSG } from "../../constants";
-import { Confirm, DefaultLayout, Header, HtmlEditor, ListComponent, TableComponent } from "../../components";
+import { Confirm, HtmlEditor, ListComponent, TableComponent } from "../../components";
 import { LocalStore, Request } from "../../library";
 import noImage from "../../resources/no-image.png";
  
@@ -191,8 +191,7 @@ const InstDepartment = () => {
   useEffect(() => getAll(), []);
 
   return (
-    <DefaultLayout>
-      <Header title="Departments" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -292,7 +291,7 @@ const InstDepartment = () => {
           onCancel={() => setOpenConfirm({})}
         />
       )}
-    </DefaultLayout>
+    </>
   );
 };
 

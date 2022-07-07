@@ -5,7 +5,7 @@ import { Row, Col } from "antd";
 
 import { STATIC_SLIDER_OPTIONS, SLIDER_OPTIONS, SET_CATEGORIES } from "../../constants";
 import { Request } from "../../library";
-import { HomeLayout, SliderComponent } from "../../components";
+import { SliderComponent } from "../../components";
 import "../../resources/home.css";
 
 const HomeComponent = () => {
@@ -37,7 +37,7 @@ const HomeComponent = () => {
   }, []);
 
   return (
-    <HomeLayout>
+    <>
       <div className="back-image-div">
         <Row>
           <Col span={12}>
@@ -114,7 +114,7 @@ const HomeComponent = () => {
           items={homeData.categories}
         />
       </>
-    </HomeLayout>
+    </>
   );
 }
 

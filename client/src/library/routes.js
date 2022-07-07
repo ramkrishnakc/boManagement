@@ -2,6 +2,7 @@ import "antd/dist/antd.css";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
 import LocalStore from "./localStore";
+import { Header, HomeLayout, DefaultLayout } from "../components";
 import {
   Book,
   BookList,
@@ -23,20 +24,35 @@ import {
   InstNotice,
   InstTeam,
   InstUser,
+  InstHome,
   Order,
   Profile,
   Register,
   User,
   UserOrder,
+  UserPurchase,
   UserProfile,
 } from "../pages";
 
 /* Protect routes on basis of allowed role */
-const ProtectedRoute = ({ ChildComponent, role }) => {
+const ProtectedRoute = ({ ChildComponent, displayFooter, role, title }) => {
   const info = LocalStore.decodeToken();
   
   if (info && role === info.role && Date.now() < info.expiredAt) {
-    return <ChildComponent />;
+    if (info.role === "user") {
+      return (
+        <HomeLayout displayFooter={displayFooter}>
+          <ChildComponent />
+        </HomeLayout>
+      );
+    }
+
+    return (
+      <DefaultLayout>
+        <Header title={title} />
+        <ChildComponent />
+      </ DefaultLayout>
+    );
   }
 
   if (info && Date.now() < info.expiredAt) {
@@ -59,7 +75,7 @@ const ProtectedRoute = ({ ChildComponent, role }) => {
 };
 
 /* Redirect to logged-in pages */
-const RenderPage = ({ ChildComponent }) => {
+const RenderPage = ({ ChildComponent, hideHeader, displayFooter }) => {
   const info = LocalStore.decodeToken();
 
   if (info && info.role) {
@@ -82,7 +98,15 @@ const RenderPage = ({ ChildComponent }) => {
     }
   }
 
-  return <ChildComponent />;
+  if (hideHeader) {
+    return (<ChildComponent />);
+  }
+
+  return (
+    <HomeLayout displayFooter={displayFooter} >
+      <ChildComponent />
+    </HomeLayout>
+  );
 };
 
 /* All routes used in the application front-end */
@@ -94,27 +118,27 @@ const AppRoutes = () => {
           {/* Routes that require "ADMIN" role */}
           <Route
             path="/dashboard"
-            element={<ProtectedRoute ChildComponent={Dashboard} role="admin" />}
+            element={<ProtectedRoute title="Dashboard" ChildComponent={Dashboard} role="admin" />}
           />
           <Route
             path="/books"
-            element={<ProtectedRoute ChildComponent={Book} role="admin" />}
+            element={<ProtectedRoute title="Books" ChildComponent={Book} role="admin" />}
           />
           <Route
             path="/institutions"
-            element={<ProtectedRoute ChildComponent={Institution} role="admin" />}
+            element={<ProtectedRoute title="Institutions" ChildComponent={Institution} role="admin" />}
           />
           <Route
             path="/categories"
-            element={<ProtectedRoute ChildComponent={Category} role="admin" />}
+            element={<ProtectedRoute title="Categories" ChildComponent={Category} role="admin" />}
           />
            <Route
             path="/orders"
-            element={<ProtectedRoute ChildComponent={Order} role="admin" />}
+            element={<ProtectedRoute title="Orders" ChildComponent={Order} role="admin" />}
           />
           <Route
             path="/users"
-            element={<ProtectedRoute ChildComponent={User} role="admin" />}
+            element={<ProtectedRoute title="Users" ChildComponent={User} role="admin" />}
           />
           <Route
             path="/profile"
@@ -129,66 +153,74 @@ const AppRoutes = () => {
             path="/user-orders"
             element={<ProtectedRoute ChildComponent={UserOrder} role="user" />}
           />
+          <Route
+            path="/user-purchases"
+            element={<ProtectedRoute ChildComponent={UserPurchase} role="user" />}
+          />
           {/* Routes that require "WRITER" role */}
           <Route
             path="/writer-profile"
-            element={<ProtectedRoute ChildComponent={Profile} role="writer" />}
+            element={<ProtectedRoute title="Profile" ChildComponent={Profile} role="writer" />}
           />
           <Route
             exact
             path="/writer-dashboard"
-            element={<ProtectedRoute ChildComponent={WriterDashboard} role="writer" />}
+            element={<ProtectedRoute title="Dashboard" ChildComponent={WriterDashboard} role="writer" />}
           />
           <Route
             exact
             path="/writer-books"
-            element={<ProtectedRoute ChildComponent={BookPublished} role="writer" />}
+            element={<ProtectedRoute title="Books" ChildComponent={BookPublished} role="writer" />}
           />
           {/* Routes that require "INSTITUTION" role */}
           <Route
+            path="/inst-home"
+            element={<ProtectedRoute title="Home" ChildComponent={InstHome} role="institution" />}
+          />
+          <Route
             path="/inst-about"
-            element={<ProtectedRoute ChildComponent={InstAbout} role="institution" />}
+            element={<ProtectedRoute title="About Us" ChildComponent={InstAbout} role="institution" />}
           />
           <Route
             path="/inst-team"
-            element={<ProtectedRoute ChildComponent={InstTeam} role="institution" />}
+            element={<ProtectedRoute title="Our Team" ChildComponent={InstTeam} role="institution" />}
           />
           <Route
             path="/inst-departments"
-            element={<ProtectedRoute ChildComponent={InstDepartment} role="institution" />}
+            element={<ProtectedRoute title="Departments" ChildComponent={InstDepartment} role="institution" />}
           />
           <Route
             path="/inst-events"
-            element={<ProtectedRoute ChildComponent={InstEvent} role="institution" />}
+            element={<ProtectedRoute title="Events" ChildComponent={InstEvent} role="institution" />}
           />
           <Route
             path="/inst-notices"
-            element={<ProtectedRoute ChildComponent={InstNotice} role="institution" />}
+            element={<ProtectedRoute title="Notices" ChildComponent={InstNotice} role="institution" />}
           />
           <Route
             path="/inst-contact"
-            element={<ProtectedRoute ChildComponent={InstContact} role="institution" />}
+            element={<ProtectedRoute title="Contact Us" ChildComponent={InstContact} role="institution" />}
           />
           <Route
             path="/inst-user-profile"
-            element={<ProtectedRoute ChildComponent={Profile} role="institution" />}
+            element={<ProtectedRoute title="Profile" ChildComponent={Profile} role="institution" />}
           />
           <Route
             path="/inst-users"
-            element={<ProtectedRoute ChildComponent={InstUser} role="institution" />}
+            element={<ProtectedRoute title="Users" ChildComponent={InstUser} role="institution" />}
           />
           {/* Routes that don't require any role */}
           <Route
             path="/register"
-            element={<RenderPage ChildComponent={Register} />}
+            element={<RenderPage hideHeader={true} ChildComponent={Register} />}
           />
           <Route
             path="/login"
-            element={<RenderPage ChildComponent={Login} />}
+            element={<RenderPage hideHeader={true} ChildComponent={Login} />}
           />
           <Route
             path="/"
-            element={<RenderPage ChildComponent={Home} />}
+            element={<RenderPage displayFooter={true} ChildComponent={Home} />}
           />
           <Route
             path="/book-store"

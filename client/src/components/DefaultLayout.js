@@ -16,6 +16,7 @@ import {
   CopyrightOutlined,
   NotificationOutlined,
   PictureOutlined,
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -84,13 +85,16 @@ const DefaultLayout = (props) => {
 
             {/* Menu for the Institutions i.e school & colleges */}
             {role === "institution" && (<>
-              <Menu.Item key="/inst-about" icon={<BankOutlined />}>
+              <Menu.Item key="/inst-home" icon={<BankOutlined />}>
+                <Link to="/inst-home">Home</Link>
+              </Menu.Item>
+              <Menu.Item key="/inst-about" icon={<BlockOutlined />}>
                 <Link to="/inst-about">About Us</Link>
               </Menu.Item>
               <Menu.Item key="/inst-team" icon={<TeamOutlined />}>
                 <Link to="/inst-team">Our Team</Link>
               </Menu.Item>
-              <Menu.Item key="/inst-departments" icon={<BlockOutlined />}>
+              <Menu.Item key="/inst-departments" icon={<AppstoreOutlined />}>
                 <Link to="/inst-departments">Departments</Link>
               </Menu.Item>
               <Menu.Item key="/inst-events" icon={<PictureOutlined />}>

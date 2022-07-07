@@ -3,7 +3,6 @@ import { useSelector } from "react-redux";
 import { Table } from "antd";
 
 import { Request } from "../../library";
-import { HomeLayout } from "../../components";
 import { calculateTotal, getRecordTotal } from "../dashboard/helper";
 
 const UserOrderComponent = () => {
@@ -82,7 +81,7 @@ const UserOrderComponent = () => {
   useEffect(() => getAll(), []); // Fetch all my orders
 
   return (
-    <HomeLayout hideFooter>
+    <>
       <div className="bread-crumb">
         <span className="b-parent hide-pointer">My Orders</span>
       </div>
@@ -94,7 +93,7 @@ const UserOrderComponent = () => {
           pagination={false}
         />
       </div>
-    </HomeLayout>
+    </>
   );
 }
 

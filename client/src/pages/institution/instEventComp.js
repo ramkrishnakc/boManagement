@@ -4,7 +4,7 @@ import { Button, Form, Input, message, Modal, Upload, Col } from "antd";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 
 import { LocalStore, Request } from "../../library";
-import { Confirm, DefaultLayout, Header, ListComponent, TableComponent } from "../../components";
+import { Confirm, ListComponent, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
  
 const TextArea = Input.TextArea;
@@ -173,8 +173,7 @@ const InstEvent = () => {
   useEffect(() => getAll(), []);
 
   return (
-    <DefaultLayout>
-      <Header title="Events" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -275,7 +274,7 @@ const InstEvent = () => {
           onCancel={() => setOpenConfirm({})}
         />
       )}
-    </DefaultLayout>
+    </>
   );
 };
 

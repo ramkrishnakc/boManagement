@@ -5,7 +5,7 @@ import { get } from "lodash";
 
 import { DEFAULT_ERR_MSG } from "../../constants";
 import { LocalStore, Request } from "../../library";
-import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
+import { Confirm, TableComponent } from "../../components";
 
 const SEARCH_FIELDS = ["username", "email", "verified", "role", "name"];
 
@@ -168,8 +168,7 @@ const UserComponent = () => {
   };
 
   return (
-    <DefaultLayout>
-      <Header title="Users" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -315,7 +314,7 @@ const UserComponent = () => {
           onCancel={() => setOpenConfirm({})}
         />
       )}
-    </DefaultLayout>
+    </>
   );
 }
 

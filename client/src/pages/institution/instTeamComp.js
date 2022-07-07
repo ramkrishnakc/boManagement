@@ -4,7 +4,7 @@ import { Button, Form, Input, message, Modal, Upload } from "antd";
 import { DeleteFilled, EditFilled } from "@ant-design/icons";
 
 import { LocalStore, Request } from "../../library";
-import { Confirm, DefaultLayout, Header, TableComponent } from "../../components";
+import { Confirm, TableComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 import noImage from "../../resources/no-image.png";
 
@@ -169,8 +169,7 @@ const InstTeam = () => {
   useEffect(() => getAll(), []);
 
   return (
-    <DefaultLayout>
-      <Header title="Our Team" />
+    <>
       <TableComponent
         columns={columns}
         dataSource={tableData}
@@ -260,7 +259,7 @@ const InstTeam = () => {
           onCancel={() => setOpenConfirm({})}
         />
       )}
-    </DefaultLayout>
+    </>
   );
 };
 

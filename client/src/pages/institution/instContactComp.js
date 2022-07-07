@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { get } from "lodash";
 
 import { LocalStore, Request } from "../../library";
-import { DefaultLayout, Header, ListComponent } from "../../components";
+import { ListComponent } from "../../components";
 import { DEFAULT_ERR_MSG } from "../../constants";
 
 const { TextArea } = Input;
@@ -85,8 +85,7 @@ const InstContact = () => {
   useEffect(() => getData(), []);
 
   return (
-    <DefaultLayout>
-      <Header title="Contact Us" />
+    <>
       {loadForm && (
         <Row className="html-wrapper profile-row">
           <Col span={12} className="profile-col-1">
@@ -151,7 +150,7 @@ const InstContact = () => {
           </Col>
         </Row>
       )}
-    </DefaultLayout>
+    </>
   );
 };
 

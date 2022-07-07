@@ -4,7 +4,6 @@ import { get } from "lodash";
 import { DeleteFilled } from "@ant-design/icons";
 import { Button, message, Table } from "antd";
 
-import { HomeLayout } from "../../components";
 import { LocalStore, Request } from "../../library";
 import { removeFromCart, emptyCart } from "./cartModule";
 import { getRecordTotal, calculateTotal } from "../dashboard/helper";
@@ -147,7 +146,7 @@ const CartPage = () => {
   };
 
   return (
-    <HomeLayout hideFooter>
+    <>
       <div className="bread-crumb">
         <span className="b-parent hide-pointer">My Cart</span>
       </div>
@@ -169,7 +168,7 @@ const CartPage = () => {
           </div>
         )}
       </div>
-    </HomeLayout>
+    </>
   );
 };
 
