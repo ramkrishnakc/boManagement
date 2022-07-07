@@ -1,20 +1,20 @@
-import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import {
-  DeleteFilled,
-  PlusCircleOutlined,
-  MinusCircleOutlined,
-} from "@ant-design/icons";
-import { Button, message, Table, Modal, Select, Form, Input } from "antd";
+import { get } from "lodash";
+import { DeleteFilled } from "@ant-design/icons";
+import { Button, message, Table } from "antd";
 
 import { HomeLayout } from "../../components";
-import { Request } from "../../library";
-import { updateCart, removeFromCart, emptyCart } from "./cartModule";
+import { LocalStore, Request } from "../../library";
+import { removeFromCart, emptyCart } from "./cartModule";
 import { getRecordTotal, calculateTotal } from "../dashboard/helper";
 import { TAX } from "../../constants";
 import noImage from "../../resources/no-image.png";
 import  "../../resources/cart.css";
+
+/* Payment modules */
+import KhaltiCheckout from "khalti-checkout-web";
+import config from "./khaltiConfig";
 
 const TotalSection = props => (
   <>
@@ -29,7 +29,11 @@ const TotalSection = props => (
     </div>
 
     <div className="checkout-btn-wrapper-div">
-      <Button type="primary" onClick={props.btnClick}>
+      <Button
+        block
+        type="primary"
+        onClick={props.btnClick}
+      >
         {props.btnLabel}
       </Button>
     </div>
@@ -41,7 +45,6 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const { login, cart: { cartItems } } = useSelector(state => state);
-  const [openModal, setOpenModal] = useState(false);
 
   const columns = [
     {
@@ -62,50 +65,18 @@ const CartPage = () => {
     {
       title: "Discount (%)",
       dataIndex: "discount",
-      render: (id, record) => record.discount || 0,
+      render: (id, record) => record.discount ? `${record.discount}%` : "-",
     },
     {
-      title: "Price",
+      title: "Price (Rs.)",
       dataIndex: "price",
       render: (id, record) => `Rs. ${(record.price)}`,
     },
     {
-      title: "Quantity",
+      title: "Total (Rs.)",
       dataIndex: "_id",
-      render: (id, record) => (
-        <div>
-          <MinusCircleOutlined
-            className="mx-3"
-            onClick={(() => {
-              if (record.quantity > 1) {
-                dispatch(
-                  updateCart(
-                    record._id,
-                    { quantity: record.quantity ? record.quantity - 1 : 1 }
-                  )
-                );
-              }
-            })}
-          />
-          <b>{record.quantity || 1}</b>
-          <PlusCircleOutlined
-            className="mx-3"
-            onClick={(
-              () => dispatch(
-                updateCart(
-                  record._id,
-                  { quantity: record.quantity ? record.quantity + 1 : 2 }
-                )
-              ))}
-          />
-        </div>
-      ),
-    },
-    {
-      title: "Total",
-      dataIndex: "_id",
-      render: (id, { price, discount = 0, quantity = 1 }) =>
-        `Rs. ${getRecordTotal({ price, discount, quantity })}`,
+      render: (id, { price, discount = 0 }) =>
+        `Rs. ${getRecordTotal({ price, discount })}`,
     },
     {
       title: "Actions",
@@ -120,38 +91,28 @@ const CartPage = () => {
 
   const { total, subtotal } = calculateTotal(cartItems);
 
-  const getInitialData = () => ({
-    customerName: login.name || "",
-    customerEmail: login.email || "",
-    customerNumber: login.contactNum || "",
-    customerAddress: login.address || "",
-  });
+  const saveBill = () => {
+    if (!login.id) {
+      return null;
+    }
 
-  const onFinish = (values) => {
     const payload = {
-      ...values,
+      customerId: login.id,
       taxRate: TAX,
       cartItems: cartItems.map(({
         _id,
         name,
         author,
         price,
-        quantity = 1,
-        discount = 0
+        discount,
       }) => ({
+        _id,
         name,
         author,
-        itemId: _id,
         price,
-        quantity,
         discount,
-        total: getRecordTotal({ price, discount, quantity }),
       })),
     };
-
-    if (login.id) {
-      payload.customerId = login.id;
-    }
 
     Request
       .post("/api/bills/add", payload)
@@ -159,8 +120,7 @@ const CartPage = () => {
         const { success, message: msg } = res.data;
 
         if (success) {
-          message.success("Your order has been placed & current cart is cleared.");
-          setOpenModal(false);
+          message.success("Purchase is Successful & Current Cart is cleared.");
           dispatch(emptyCart());
           navigate("/");
         } else {
@@ -171,6 +131,19 @@ const CartPage = () => {
         console.log(err);
         message.error("Something went wrong, try again later.");
       });
+  };
+
+  const checkout = () => {
+    const info = LocalStore.decodeToken();
+
+    if (get(info, "role") === "user" && Date.now() < info.expiredAt) {
+      // const CheckoutModel = new KhaltiCheckout(config);
+      // CheckoutModel.show({ amount: total * 100 }); /* "amount" should be in Paisa */
+
+      saveBill();
+    } else {
+      message.warn("Please login before you can proceed with checkout.");
+    }
   };
 
   return (
@@ -191,80 +164,10 @@ const CartPage = () => {
               subtotal={subtotal}
               total={total}
               btnLabel="CHECKOUT"
-              btnClick={() => setOpenModal(true)}
+              btnClick={checkout}
             />
           </div>
         )}
-        {openModal && (
-            <Modal
-              title="Confirm Order"
-              visible={openModal}
-              footer={false}
-              onCancel={() => setOpenModal(false)}
-              className="book-model-class"
-            >
-              <Form
-                layout="vertical"
-                onFinish={onFinish}
-                initialValues={getInitialData()}
-              >
-                <Form.Item
-                  name="customerName"
-                  label="Name"
-                  rules={[{ required: true, message: "" }]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name="customerEmail"
-                  label="Email"
-                  rules={[
-                    { required: true, message: "" },
-                    () => ({
-                      validator(rule, value) {
-                        const emailReg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-                        if (!value || emailReg.test(value)) {
-                          return Promise.resolve();
-                        }
-                        return Promise.reject("");
-                      },
-                    }),
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name="customerNumber"
-                  label="Phone Number"
-                  rules={[
-                    { required: true, message: "" },
-                    { min: 6, message: "" },
-                  ]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name="customerAddress"
-                  label="Address"
-                  rules={[{ required: true, message: "" }]}
-                >
-                  <Input />
-                </Form.Item>
-                <Form.Item
-                  name="paymentMode"
-                  label="Payment Mode"
-                  rules={[{ required: true, message: "" }]}
-                >
-                  <Select>
-                    <Select.Option value="cash">Cash</Select.Option>
-                    <Select.Option value="card">Card</Select.Option>
-                    <Select.Option value="online">Online</Select.Option>
-                  </Select>
-                </Form.Item>
-                <Button block={true} htmlType="submit" type="primary">CONFIRM</Button>
-              </Form>
-            </Modal>
-          )}
       </div>
     </HomeLayout>
   );

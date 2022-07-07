@@ -6,47 +6,18 @@ import { DefaultLayout, Header } from "../../components";
 import SimplePieChart from "./piechart";
 import SimpleLineChart from "./lineChart";
 import {
-  LATEST_INFO_COL,
+  TOTAL_INFO_COL,
+  USER_TYPE_COL,
   TOP_BOOKS_COL,
   BOOK_CATEGORY_COL,
   WEEK_COL,
   YEAR_COL,
   DASHBOARD_INIT,
+  getTopUsersCol,
 } from "./helper";
 
-const getLatestData = data => ([
-  {
-    books: `${data.bookNew} | ${data.bookTotal}`,
-    users: `${data.userUnverified} | ${data.userNew} | ${data.userTotal}`,
-    orders: `${data.orderProcessed} | ${data.orderPending} | ${data.orderReceived} | ${data.orderCancelled}`,
-  },
-  {
-    books: (
-      <SimplePieChart data={[
-        { name: `New(${data.bookNew})`, value: data.bookNew },
-        {
-          name: `Existing(${data.bookTotal - data.bookNew})`,
-          value: data.bookTotal - data.bookNew
-        },
-      ]}
-    />),
-    users: (
-      <SimplePieChart data={[
-        { name: `New(${data.userNew})`, value: data.userNew },
-        { name: `Unverified(${data.userUnverified})`, value: data.userUnverified },
-      ]}
-    />),
-    orders: <SimplePieChart data={[
-      { name: `Processed(${data.orderProcessed})`, value: data.orderProcessed },
-      { name: `Pending(${data.orderPending})`, value: data.orderPending },
-      { name: `Received(${data.orderReceived})`, value: data.orderReceived },
-      { name: `Cancelled(${data.orderCancelled})`, value: data.orderCancelled },
-    ].filter(d => d.value)} />,
-  }
-]);
-
-const getBooksByCategory = data => ([{
-  books: (
+const getPie = (data, dataKey) => ([{
+  [dataKey]: (
     <SimplePieChart
       data={Object.keys(data)
         .map(key => {
@@ -56,14 +27,14 @@ const getBooksByCategory = data => ([{
       }
       width={1000}
       height={400}
-      innerRadius={0}
+      innerRadius={120}
       outerRadius={170}
       showLabel={true}
     />),
 }]);
 
 const getSummaryData = data => {
-  const lineKeys = ["book", "user", "order"];
+  const lineKeys = ["books", "users", "orders"];
   return [{
     summary: (
       <SimpleLineChart data={data} dataKey="day" lineKeys={lineKeys} />
@@ -92,46 +63,87 @@ const DashboardComponent = () => {
   return (
     <DefaultLayout>
       <Header title="Dashboard" />
-      <p>Latest 48 hours Data: <sub>(shows latest info only, 'Total' refers all the total we have till now)</sub></p>
+      <p>Overview: <sub>(refers to total count we have till now)</sub></p>
       <Table
-        columns={LATEST_INFO_COL}
-        dataSource={getLatestData(dashboardData.latestData)}
+        columns={TOTAL_INFO_COL}
+        dataSource={dashboardData.totalOverview}
         pagination={false}
-        className="ant-table-custom"
       />
       <br />
-      <p>Books added during latest 48 hours: <sub>(shows latest info only)</sub></p>
+      <p>Available Categories: <sub>(Total count we have till now)</sub></p>
       <Table
         columns={BOOK_CATEGORY_COL}
-        dataSource={getBooksByCategory(dashboardData.booksByCategory)}
+        dataSource={getPie(dashboardData.booksByCategory, "books")}
         pagination={false}
-        className="ant-table-custom"
       />
       <br />
-      <p>Top 5 books by purchase order: <sub>(On basis of volume of book sales for 48 hours)</sub></p>
+      <p>Available Users: <sub>(Total count we have till now)</sub></p>
       <Table
-        columns={TOP_BOOKS_COL}
-        dataSource={dashboardData.topBooksByQty}
+        columns={USER_TYPE_COL}
+        dataSource={getPie(dashboardData.usersByRole, "users")}
         pagination={false}
-        className="ant-table-custom"
       />
+      {
+        dashboardData.topBooksByQty && dashboardData.topBooksByQty.length > 0 ? (
+          <>
+            <br />
+            <p>Top books by Purchase Order: <sub>(On basis of volume of book sales - max 5 books displayed)</sub></p>
+            <Table
+              columns={TOP_BOOKS_COL}
+              dataSource={dashboardData.topBooksByQty}
+              pagination={false}
+            />
+          </>
+        ) : ""
+      }
+      {
+        dashboardData.topBooksByQty && dashboardData.topBooksByQty.length > 0 ? (
+          <>
+            <br />
+            <p>Top books by Revenue: <sub>(On basis of revenue from book sales - max 5 books displayed)</sub></p>
+            <Table
+              columns={TOP_BOOKS_COL}
+              dataSource={dashboardData.topBooksByRevenue}
+              pagination={false}
+            />
+          </>
+        ) : ""
+      }
+      {
+        dashboardData.topUsers && dashboardData.topUsers.length > 0 ? (
+          <>
+            <br />
+            <p>Top Users by Purchase Orders: <sub>(On basis of book orders by users - max 5 users displayed)</sub></p>
+            <Table
+              columns={getTopUsersCol("user")}
+              dataSource={dashboardData.topUsers}
+              pagination={false}
+            />
+          </>
+        ) : ""
+      }
+      {
+        dashboardData.topWriters && dashboardData.topWriters.length > 0 ? (
+          <>
+            <br />
+            <p>Top Writers by No. Published Books: <sub>(On basis of books published by writers - max 5 writer displayed)</sub></p>
+            <Table
+              columns={getTopUsersCol("writer")}
+              dataSource={dashboardData.topWriters}
+              pagination={false}
+            />
+          </>
+        ) : ""
+      }
       <br />
-      <p>Top 5 books by revenue: <sub>(On basis of revenue for 48 hours sales. Revenue is on basis of any state of item order)</sub></p>
-      <Table
-        columns={TOP_BOOKS_COL}
-        dataSource={dashboardData.topBooksByRevenue}
-        pagination={false}
-        className="ant-table-custom"
-      />
-      <br />
-      <p>The Weekly summay: <sub>(On basis of 7 days data. Revenue(on Thousand))</sub></p>
+      <p>The Weekly summay: <sub>(On basis of 7 days data.)</sub></p>
       <Table
         columns={WEEK_COL}
         dataSource={getSummaryData(dashboardData.weekData)}
         pagination={false}
       />
       <br />
-      <p>The Yearly summay: <sub>(On basis of a year. Revenue(on Thousand))</sub></p>
+      <p>The Yearly summay: <sub>(On basis of a year.)</sub></p>
       <Table
         columns={YEAR_COL}
         dataSource={getSummaryData(dashboardData.yearData)}

@@ -62,7 +62,15 @@ const ProtectedRoute = ({ ChildComponent, role }) => {
 const RenderPage = ({ ChildComponent }) => {
   const info = LocalStore.decodeToken();
 
-  if (info && info.role && Date.now() < info.expiredAt) {
+  if (info && info.role) {
+    const isActive = Date.now() < info.expiredAt;
+
+    if (!isActive) {
+      /* Remove old tokens if any */
+      LocalStore.clear();
+      LocalStore.clear("reduxState");
+    }
+
     if (info.role === "admin") {
       return <Navigate to="/dashboard" />;
     }
@@ -74,9 +82,6 @@ const RenderPage = ({ ChildComponent }) => {
     }
   }
 
-  /* Remove old tokens if any */
-  LocalStore.clear();
-  LocalStore.clear("reduxState");
   return <ChildComponent />;
 };
 

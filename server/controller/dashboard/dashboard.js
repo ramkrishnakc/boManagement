@@ -1,32 +1,24 @@
 const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 const { logger } = require("../../config");
-const { BillModel, BookModel, CategoryModel, UserModel } = require("../../models");
+const { BillModel, BookModel, CategoryModel, InstitutionModel, UserModel } = require("../../models");
 const {
   dateBefore,
   sendData,
   sendError,
-  RECEIVED,
-  PENDING,
-  COMPLETED,
-  CANCELED,
   DAYS,
   MONTHS,
 } = require("../helper/lib");
 
 /* Return book count by category */
-const getBooksByCategory = async mDate => {
+const getBooksByCategory = async () => {
   const categories = await CategoryModel.find(
     {},
     { __v: 0, updatedAt: 0, image: 0, description: 0 }
   );
   const books = await BookModel.aggregate([
-    {
-      $match:{ createdAt: { $gt: new Date(mDate) }}
-    },
-    {
-      $group: { _id: "$category", count: { $sum: 1 } }
-    }
+    { $match: {} },
+    { $group: { _id: "$category", count: { $sum: 1 } } },
   ]);
   
   return categories.reduce((acc, curr) => {
@@ -37,22 +29,89 @@ const getBooksByCategory = async mDate => {
   }, {});
 };
 
+/* Retun total no. of counts for each entities */
+const getTotalOverview = async () => {
+  const [b, c, i, o, u] = await Promise.all([
+    BookModel.find().count(),
+    CategoryModel.find().count(),
+    InstitutionModel.find().count(),
+    BillModel.find().count(),
+    UserModel.find().count(),
+  ]);
+
+  return [{
+    totalBooks: b,
+    totalCategories: c,
+    totalInstitutions: i,
+    totalBills: o,
+    totalUsers: u,
+  }];
+};
+
+/* Return Users by category */
+const getUsersByRole = async () => {
+  const [a, w, i, u] = await Promise.all([
+    UserModel.find({ role: "admin"}).count(),
+    UserModel.find({ role: "writer"}).count(),
+    UserModel.find({ role: "institution"}).count(),
+    UserModel.find({ role: "user"}).count(),
+  ]);
+
+  return {
+    "Admin Users": a,
+    "Writers": w,
+    "Institution Users": i,
+    "Normal Users": u,
+  };
+};
+
+/* Return Top Users by purchase orders */
+const getTopUsers = async () => {
+  const users = await UserModel.find(
+    { $expr:{ $gte: [{ $size:"$purchasedBooks" }, 1] } },
+    { username: 1, email: 1, purchasedBooks: 1 }
+  );
+
+  return _.sortBy(users, [u => { return u.purchasedBooks.length; }])
+    .reverse()
+    .slice(0, 5)
+    .map(d => ({ username: d.username, email: d.email, quantity: d.purchasedBooks.length}));
+};
+
+/* Return Top Writers by published books */
+const getTopWriters = async () => {
+  const users = await UserModel.find(
+    { $expr:{ $gte: [{ $size:"$publishedBooks" }, 1] } },
+    { username: 1, email: 1, publishedBooks: 1 }
+  );
+
+  return _.sortBy(users, [u => { return u.publishedBooks.length; }])
+    .reverse()
+    .slice(0, 5)
+    .map(d => ({ username: d.username, email: d.email, quantity: d.publishedBooks.length}));
+};
+
 /* Get latest data of book, user, order e.t.c */
+/*
 const getLatestData = async mDate => {
   const promises = [
     BookModel.find({ createdAt: { $gt: mDate }}).count(),
     BookModel.find().count(),
-    UserModel.find({ role: "user", verified: false, createdAt: { $gt: mDate }}).count(),
+    UserModel.find({ role: "admin", createdAt: { $gt: mDate }}).count(),
+    UserModel.find({ role: "writer", createdAt: { $gt: mDate }}).count(),
+    UserModel.find({ role: "institution", createdAt: { $gt: mDate }}).count(),
     UserModel.find({ role: "user", createdAt: { $gt: mDate }}).count(),
-    UserModel.find({ role: "user" }).count(),
+    UserModel.find({}).count(),
     BillModel.find({ createdAt: { $gt: mDate }}, { cartItems: 1, status: 1 }),
   ]
 
   const [
     bookNew,
     bookTotal,
-    userUnverified,
-    userNew,
+    adminUsers,
+    writerUsers,
+    institutionUsers,
+    normalUsers,
     userTotal,
     orders,
   ] = await Promise.all(promises);
@@ -60,16 +119,15 @@ const getLatestData = async mDate => {
   return {
     bookNew,
     bookTotal,
-    userUnverified,
-    userNew,
+    adminUsers,
+    writerUsers,
+    institutionUsers,
+    normalUsers,
     userTotal,
-    orderReceived: orders.filter(d => d.status === RECEIVED).length,
-    orderPending: orders.filter(d => d.status === PENDING).length,
-    orderProcessed: orders.filter(d => d.status === COMPLETED).length,
-    orderCancelled: orders.filter(d => d.status === CANCELED).length,
-    allOrders: orders,
-  }
+    orders,
+  };
 };
+*/
 
 const getCount = (arr, idx) =>
   _.get(arr.find(d => d._id == idx), "count", 0);
@@ -89,7 +147,7 @@ const getSummary = async (mDate, gKey, mapper) => {
     ]),
     BillModel.aggregate([
       { $match: { createdAt: { $gt: mDate }} },
-      { $project: { [gKey]: { [`$${gKey}`]: "$createdAt" }, cartItems: 1, status: 1} },
+      { $project: { [gKey]: { [`$${gKey}`]: "$createdAt" }, cartItems: 1 } },
       { $group: {
         _id: `$${gKey}`,
         count: { $sum: 1 },
@@ -101,9 +159,9 @@ const getSummary = async (mDate, gKey, mapper) => {
 
   return Object.keys(mapper).map(idx => ({
     day: mapper[idx],
-    book: getCount(books, idx),
-    user: getCount(users, idx),
-    order: getCount(bills, idx),
+    books: getCount(books, idx),
+    users: getCount(users, idx),
+    orders: getCount(bills, idx),
   }));
 };
 
@@ -129,39 +187,47 @@ const getData = async (req, res) => {
     const year = req.query.year || new Date(); // Get data for latest or the year provided
 
     const promises = [
-      getLatestData(mDate),
-      getBooksByCategory(mDate),
+      getTotalOverview(),
+      getUsersByRole(),
+      getTopUsers(),
+      getBooksByCategory(),
       getWeekSummary(),
       getYearSummary(year),
+      BillModel.find({}),
+      getTopWriters(),
     ];
 
     const [
-      allLatestData,
+      totalOverview,
+      usersByRole,
+      topUsers,
       booksByCategory,
       weekData,
       yearData,
+      allOrders,
+      topWriters,
     ] = await Promise.all(promises);
 
     const topBooks = [];
-    const { allOrders, ...latestData } = allLatestData;
 
     allOrders.forEach(({ cartItems }) => {
-      cartItems.forEach(({ name, itemId, quantity, author, total }) => {
-        const idx = _.findIndex(topBooks, e => e.itemId === itemId);
+      cartItems.forEach(({ name, _id, price, discount, author }) => {
+        const cost = Number(Number(price - ((discount * 100)/price)).toFixed(2));
+        const idx = _.findIndex(topBooks, e => e._id === _id);
         
         if (idx > -1) {
           topBooks[idx] = {
             ...topBooks[idx],
-            quantity: topBooks[idx].quantity + quantity,
-            total: topBooks[idx].total + total,
+            quantity: topBooks[idx].quantity + 1,
+            total: topBooks[idx].cost + cost,
           };
         } else {
           topBooks.push({
             name,
-            itemId,
-            quantity,
+            _id,
             author,
-            total,
+            quantity: 1,
+            total: cost,
           });
         }
       });
@@ -176,7 +242,10 @@ const getData = async (req, res) => {
     
 
     const data = {
-      latestData,
+      totalOverview,
+      usersByRole,
+      topUsers,
+      topWriters,
       booksByCategory,
       topBooksByQty,
       topBooksByRevenue,
@@ -191,6 +260,7 @@ const getData = async (req, res) => {
   }
 };
 
+/* For the Writers */
 const getWriterDashboard = async (req, res) => {
   try {
     const user = await UserModel.findOne(
@@ -201,19 +271,23 @@ const getWriterDashboard = async (req, res) => {
 
     if (bookIds.length) {
       const books = await BookModel
-        .find({_id: { $in: bookIds.map(id => ObjectId(id)) }}, { name: 1, _id: 1 })
+        .find(
+          {_id: { $in: bookIds.map(id => ObjectId(id)) }},
+          { price: 1, discount: 1, image: 1, name: 1, _id: 1 }
+        )
         .sort({ createdAt: -1 });
       
       const promises = books.map(book =>
-        UserModel.find({ purchasedBooks: { $elemMatch: { $eq: book._id } } }).count()
+        UserModel.find({ purchasedBooks: { $elemMatch: { $eq: book._id.toString() } } }).count()
       );
       const users = await Promise.all(promises);
 
       const data = {
-        books: books.map(({ name }, idx) => ({
+        books: books.map(({ price, discount = 0, image, name }, idx) => ({
+          image,
           name,
           user: users[idx],
-          revenue: 0,
+          revenue: Number(Number((users[idx] || 0) * (price - (discount / price * 100))).toFixed(2)),
         })),
       };
       return sendData(res, data);

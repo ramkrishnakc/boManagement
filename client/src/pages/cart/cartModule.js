@@ -18,14 +18,14 @@ const cartReducer = (state = {...INITIAL_STATE}, action) => {
     case ADD_TO_CART: {
       if (state.cartItems.find(d => d._id === action.payload._id)) {
         message.info("Item is already in the cart!!");
+        return state;
       } else {
         message.success("Item added to the cart!!");
+        return {
+          ...state,
+          cartItems: [action.payload, ...state.cartItems],
+        };
       }
-      
-      return {
-        ...state,
-        cartItems: [action.payload, ...state.cartItems],
-      };
     }
 
     case UPDATE_CART: {

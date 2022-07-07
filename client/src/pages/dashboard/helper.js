@@ -16,21 +16,6 @@ export const COLORS = [
   "#44FF07",
 ];
 
-export const LATEST_INFO_COL = [
-  {
-    title: (<>Books <sub>(Newly Added | Total)</sub></>),
-    dataIndex: "books",
-  },
-  {
-    title: (<>Users <sub>(Unverifed | Newly Added | Total)</sub></>),
-    dataIndex: "users",
-  },
-  {
-    title: (<>Orders <sub>(Processed | Pending | Received | Canceled)</sub></>),
-    dataIndex: "orders",
-  },
-];
-
 export const TOP_BOOKS_COL = [
   {
     title: "Books",
@@ -45,14 +30,14 @@ export const TOP_BOOKS_COL = [
     dataIndex: "quantity",
   },
   {
-    title: "Total Revenue (RS.)",
+    title: "Total Revenue (Rs.)",
     dataIndex: "total",
   },
 ];
 
 export const BOOK_CATEGORY_COL = [
   {
-    title: "Books by Category",
+    title: "Total No. books by Category",
     dataIndex: "books",
   },
 ];
@@ -72,8 +57,9 @@ export const YEAR_COL = [
 ];
 
 export const DASHBOARD_INIT = {
-  latestData: {},
+  totalOverview: [],
   booksByCategory: {},
+  usersByRole: {},
   topBooksByQty: [],
   topBooksByRevenue: [],
   weekData: [],
@@ -89,22 +75,63 @@ export const calculateTotal = (items = [], tax = TAX) => {
       acc, { price, discount = 0, quantity = 1 }
     ) => acc + getRecordTotal({ price, quantity, discount }), 0);
 
-  return { subtotal, total: Number(Number(subtotal + subtotal * tax / 100 ).toFixed(2)) };
+  return { subtotal: Number(Number(subtotal).toFixed(2)), total: Number(Number(subtotal + subtotal * tax / 100 ).toFixed(2)) };
 };
 
-export const BOOKS_BY_USERS = [
+export const TOTAL_INFO_COL = [
   {
     title: "Books",
-    dataIndex: "name",
+    dataIndex: "totalBooks",
   },
   {
-    title: "No. of Readers",
-    dataIndex: "user",
-    render: count => count > 0 ? count : 0,
+    title: "Categories",
+    dataIndex: "totalCategories",
   },
   {
-    title: "Revenue Generated (Rs.)",
-    dataIndex: "revenue",
-    render: count => count > 0 ? `RS. ${count}` : 0,
+    title: "Institutions",
+    dataIndex: "totalInstitutions",
+  },
+  {
+    title: "Orders",
+    dataIndex: "totalBills",
+  },
+  {
+    title: "Users",
+    dataIndex: "totalUsers",
   },
 ];
+
+export const USER_TYPE_COL = [
+  {
+    title: "Total No. Users by Role",
+    dataIndex: "users",
+  },
+];
+
+export const getTopUsersCol = role => {
+  const cols = [
+    {
+      title: "Username",
+      dataIndex: "username",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+    },
+  ];
+
+  if (role === "writer") {
+    cols.push({
+      title: "No. of books Published",
+      dataIndex: "quantity",
+    });
+  }
+  if (role === "user") {
+    cols.push({
+      title: "No. of books Purchased",
+      dataIndex: "quantity",
+    });
+  }
+
+  return cols;
+};

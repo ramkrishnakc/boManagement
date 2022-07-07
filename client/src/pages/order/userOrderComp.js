@@ -4,8 +4,7 @@ import { Table } from "antd";
 
 import { Request } from "../../library";
 import { HomeLayout } from "../../components";
-import { STATUS_NAME_MAP, STATUS_COLOR_MAP } from "../../constants";
-import { calculateTotal } from "../dashboard/helper";
+import { calculateTotal, getRecordTotal } from "../dashboard/helper";
 
 const UserOrderComponent = () => {
   const [itemsData, setItemsData] = useState([]); // All data fetched from server
@@ -37,18 +36,14 @@ const UserOrderComponent = () => {
       render: d => `Rs. ${d}`,
     },
     {
-      title: "Quantity",
-      dataIndex: "quantity",
-    },
-    {
       title: "Discount (%)",
       dataIndex: "discount",
       render: d => d ? `${d}%` : "-",
     },
     {
-      title: "Total fare (Rs.)",
+      title: "Total (Rs.)",
       dataIndex: "total",
-      render: d => `Rs. ${d}`,
+      render: (d, record) => `Rs. ${getRecordTotal({ price: record.price, discount: record.discount })}`,
     },
   ];
 
@@ -59,16 +54,7 @@ const UserOrderComponent = () => {
       render: val => val ? val.toString().substring(0, 10) : "",
     },
     {
-      title: "Order Status",
-      dataIndex: "status",
-      render: d => {
-        const color = STATUS_COLOR_MAP[d];
-        const name = STATUS_NAME_MAP[d];
-        return <b style={{color}}>{name}</b>
-      }
-    },
-    {
-      title: "",
+      title: "Purchased Items",
       dataIndex: "cartItems",
       render: (items, record) => {
         const { subtotal, total } = calculateTotal(items);
