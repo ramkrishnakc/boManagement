@@ -70,7 +70,8 @@ const login = async (req, res) => {
         name: user.name,
         address: user.address,
         contactNum: user.contactNum,
-        institution: user.institution
+        institution: user.institution,
+        purchasedBooks: user.purchasedBooks,
       });
       return sendData(res, token);
     }

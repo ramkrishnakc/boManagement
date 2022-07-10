@@ -290,7 +290,7 @@ const publishBook = async (req, res) => {
       /* User info should also be updated */
       const userInfo = await UserModel.updateOne(
         { _id: ObjectId(req.params.userId) },
-        { $push: { publishedBooks: (item._id).toString() } }
+        { $addToSet: { publishedBooks: (item._id).toString() } }
       );
 
       if (userInfo) {

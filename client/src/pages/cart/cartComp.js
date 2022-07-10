@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { get } from "lodash";
-import { DeleteFilled } from "@ant-design/icons";
+import { get, intersection } from "lodash";
+import { DeleteFilled, ExclamationCircleOutlined } from "@ant-design/icons";
 import { Button, message, Table } from "antd";
 
 import { LocalStore, Request } from "../../library";
@@ -44,11 +44,25 @@ const CartPage = () => {
   const navigate = useNavigate();
 
   const { login, cart: { cartItems } } = useSelector(state => state);
+  const purchaseList = get(login, "purchasedBooks", []);
 
   const columns = [
     {
       title: "Name",
       dataIndex: "name",
+      render: (name, record) => {
+        const exist = purchaseList.find(id => id === record._id);
+
+        if (exist) {
+          return (
+            <>
+              <ExclamationCircleOutlined title="Already purchased!!" style={{color: "red"}} />
+              {" "} {name}
+            </>
+          );
+        }
+        return name;
+      }
     },
     {
       title: "Image",
@@ -136,13 +150,17 @@ const CartPage = () => {
     const info = LocalStore.decodeToken();
 
     if (get(info, "role") === "user" && Date.now() < info.expiredAt) {
+      const pList = intersection(purchaseList, cartItems.map(d => d._id));
+
+      if (pList.length) {
+        return message.warn("Please remove already purchased books from your cart.");
+      }
       // const CheckoutModel = new KhaltiCheckout(config);
       // CheckoutModel.show({ amount: total * 100 }); /* "amount" should be in Paisa */
 
-      saveBill();
-    } else {
-      message.warn("Please login before you can proceed with checkout.");
+      return saveBill();
     }
+    return message.warn("Please login before you can proceed with checkout.");
   };
 
   return (

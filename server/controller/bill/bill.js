@@ -69,7 +69,7 @@ const add = async (req, res) => {
 
       const up = await UserModel.findOneAndUpdate(
         { _id: ObjectId(customerId) },
-        { $push: { purchasedBooks: { $each: ids } } }
+        { $addToSet: { purchasedBooks: { $each: ids } } }
       );
 
       if (up) {
