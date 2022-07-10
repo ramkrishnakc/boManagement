@@ -5,7 +5,7 @@ import ReduxStore from './reduxStore';
 import { SHOW_LOADER } from '../constants';
 
 const Request = axios.create({
-  baseURL: process.env.REACT_APP_BASE_URL || "http://localhost:5000",
+  baseURL: process.env.REACT_APP_BASE_URL || "http://0.0.0.0:8080",
 });
 
 Request.interceptors.request.use(

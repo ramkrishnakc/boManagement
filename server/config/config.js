@@ -16,4 +16,18 @@ module.exports = {
     family: 4, // Use IPv4, skip trying IPv6
   },
   appName: "Learn Nepal",
+  /* For running HTTP server */
+  httpOptions: {
+    host: process.env.HTTP_HOST || "0.0.0.0",
+    port: process.env.HTTP_PORT || 8080,
+  },
+  /* For running HTTPS server */
+  httpsOptions: {
+    keyPath: process.env.HTTPS_KEY_PATH || "",
+    certPath: process.env.HTTPS_CERT_PATH || "",
+    serverOptions: {
+      host: process.env.HTTPS_HOST || "0.0.0.0",
+      port: process.env.HTTPS_PORT || 8443,
+    },
+  },
 };
