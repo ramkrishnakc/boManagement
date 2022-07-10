@@ -2,7 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { logger } = require("../../config");
-const { sendData, sendError } = require("../helper/lib");
+const { sendData, sendError, removeFiles } = require("../helper/lib");
 const {
   InstitutionModel,
   InstAboutModel,
@@ -87,6 +87,10 @@ const update = async (req, res) => {
 
     const item = await InstitutionModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
+      /* Remove image from the folder */
+      if (item.image) {
+        removeFiles([item.image]);
+      }
       return sendData(res, null, "Institution info updated successfully");
     }
     return sendError(res, 404);
@@ -94,6 +98,34 @@ const update = async (req, res) => {
     logger.error(err.stack);
     return sendError(res);
   }
+};
+
+/* Get images to remove while removing items from DB */
+const getImages = (input = {}) => {
+  let images = [];
+
+  if (!Array.isArray(input) && !_.isEmpty(input)) {
+    images = [
+      _.get(input, "images", []),
+      _.get(input, "image"),
+    ];
+  }
+
+  // Handle for array of items
+  if (Array.isArray(input)) {
+    images = input.map(ele => getImages(ele));
+  }
+  return _.filter(_.flatten(images), d => d);
+};
+
+/* Remove matching items from DB and return the items */
+const deleteManyAndReturnData = async (MyModel, refId) => {
+  const items = await MyModel.find({ refId });
+
+  if (items && items.length) {
+    await MyModel.deleteMany({ refId });
+  }
+  return items || [];
 };
 
 const remove = async (req, res) => {
@@ -107,14 +139,32 @@ const remove = async (req, res) => {
       /* Delete the users and all info about the institution */
       const promises = [
         UserModel.deleteMany({ institution: req.params.id }),
-        InstAboutModel.deleteOne({ refId: req.params.id }),
+        InstAboutModel.findOneAndDelete({ refId: req.params.id }),
         InstContactModel.deleteOne({ refId: req.params.id }),
-        InstActivityModel.deleteMany({ refId: req.params.id }),
-        InstDepartmentModel.deleteMany({ refId: req.params.id }),
-        InstNoticeModel.deleteMany({ refId: req.params.id }),
-        InstTeamModel.deleteMany({ refId: req.params.id }),
+        deleteManyAndReturnData(InstActivityModel, req.params.id),
+        deleteManyAndReturnData(InstDepartmentModel, req.params.id),
+        deleteManyAndReturnData(InstNoticeModel, req.params.id),
+        deleteManyAndReturnData(InstTeamModel, req.params.id),
       ];
-      await Promise.all(promises);
+      const [
+        u,
+        about,
+        c,
+        activities,
+        departments,
+        notices,
+        teams
+      ] = await Promise.all(promises);
+
+      /* Remove all the associated images as well from the folders */
+      const allImages = [
+        ...getImages(about),
+        ...getImages(activities),
+        ...getImages(departments),
+        ...getImages(notices),
+        ...getImages(teams),
+      ];
+      await removeFiles(allImages);
 
       const msg = `Institution with id: ${req.params.id} name: ${item.name} removed successfully`;
       logger.info(msg);
