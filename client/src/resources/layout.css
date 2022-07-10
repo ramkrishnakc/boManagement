@@ -207,3 +207,26 @@ button {
 .ant-table-cell .anticon-edit {
   color: rgb(106, 106, 243);
 }
+.pdf-page-no-wrapper {
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 10px;
+}
+.pdf-wrapper {
+  cursor: not-allowed;
+}
+.pdf-page-nav-btn {
+  background-color: unset!important;
+  color: #009688!important;
+}
+.pdf-p-info-1 {
+  color: tomato;
+  font-size: 11px;
+}
+.pdf-p-info-2 {
+  font-size: 20px;
+}
+.pdf-p-info-3 {
+  font-size: 30px;
+  color: grey;
+} 

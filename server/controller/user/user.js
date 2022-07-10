@@ -2,7 +2,7 @@ const ObjectId = require("mongoose").Types.ObjectId;
 const _ = require("lodash");
 
 const { config, logger, hash } = require("../../config");
-const { UserModel } = require("../../models");
+const { BookModel, UserModel } = require("../../models");
 const Auth = require("../../middleware/auth");
 const Mail = require("../../middleware/mail");
 const { sendData, sendError } = require("../helper/lib");
@@ -370,6 +370,31 @@ const removeInstUser = async (req, res) => {
   return remove(req, res);
 };
 
+const getMyPurchase = async (req, res) => {
+  if (!req.params.userId ||
+    req.params.userId !== _.get(res, "locals.payload.id")
+  ) {
+    return sendError(res, 400);
+  }
+
+  const user = await UserModel.findOne({ _id: ObjectId(req.params.userId) });
+  const bookIds = _.get(user, "purchasedBooks", []);
+
+  if (bookIds.length) {
+    const books = await BookModel.find(
+      {
+        _id: { $in: bookIds.map(id => ObjectId(id)) }
+      },
+      {
+        _id: 1, name: 1, author: 1, category: 1, image: 1, description: 1, language: 1
+      }
+    );
+
+    return sendData(res, books);
+  }
+  return sendError(res, 400);
+};
+
 module.exports = {
   createDefaultUser,
   login,
@@ -384,4 +409,5 @@ module.exports = {
   pwdUpdate,
   remove,
   removeInstUser,
+  getMyPurchase,
 };

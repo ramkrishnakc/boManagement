@@ -19,5 +19,8 @@ router.get("/get-inst-users/:refId", Auth.authorizeInstitution, User.getInstUser
 router.post("/add-inst-user/:refId", Auth.authorizeInstitution, User.addInstUser);
 router.delete("/remove-inst-user/:refId/:id", Auth.authorizeInstitution, User.removeInstUser);
 
+/* Get purchased items */
+router.get("/getMyPurchase/:userId", Auth.authorizeUser, User.getMyPurchase);
+
 module.exports = router;
 module.exports.createDefaultUser = User.createDefaultUser;

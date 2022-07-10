@@ -56,7 +56,7 @@ const HomeLayout = props => {
           </Link>
           { isLoggedIn && (
             <>
-              <Link to="/user-purchases" className={getClass(["user-purchases"])}>
+              <Link to="/user-purchases" className={getClass(["user-purchases", "read-book"])}>
                 Purchases
               </Link>
               <Link to="/user-orders" className={getClass(["user-orders"])}>

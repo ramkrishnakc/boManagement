@@ -33,6 +33,8 @@ const getMessage = (code, msg) => {
   switch (code) {
     case 400:
       return "Bad request";
+    case 401:
+      return "Unauthorized request";
     case 404:
       return "Not found";
     default:

@@ -22,7 +22,7 @@ router.put("/updatePublishedBook/:userId/:id", Auth.authorizeWriter, Upload.sing
 router.delete("/removePublishedBook/:userId/:id", Auth.authorizeWriter, book.removePublishedBook);
 
 /* -------- CRUD for Book resources ----------- */
-router.get("/getPdf/:refId", resource.getPdf);
+router.get("/getPdf/:userId/:refId", Auth.authorizeUser, resource.getPdf);
 router.post("/uploadPdf/:refId", Auth.authorizeAdmin, DbUpload.single("pdf"), resource.uploadPdf);
 router.post("/publishPdf/:userId/:refId", Auth.authorizeWriter, DbUpload.single("pdf"), resource.publishPdf);
 

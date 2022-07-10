@@ -32,6 +32,7 @@ import {
   UserOrder,
   UserPurchase,
   UserProfile,
+  ReadComponent,
 } from "../pages";
 
 /* Protect routes on basis of allowed role */
@@ -156,6 +157,10 @@ const AppRoutes = () => {
           <Route
             path="/user-purchases"
             element={<ProtectedRoute ChildComponent={UserPurchase} role="user" />}
+          />
+          <Route
+            path="/read-book/:pid/:pname"
+            element={<ProtectedRoute ChildComponent={ReadComponent} role="user" />}
           />
           {/* Routes that require "WRITER" role */}
           <Route

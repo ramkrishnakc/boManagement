@@ -23,6 +23,7 @@ export { default as Login } from "./login/loginComp";
 export { default as Order } from "./order/orderComp";
 export { default as UserOrder } from "./order/userOrderComp";
 export { default as UserPurchase } from "./order/userPurchase";
+export { default as ReadComponent } from "./order/readBook";
 export { default as Profile } from "./profile/profileComp";
 export { default as UserProfile } from "./profile/userProfileComp";
 export { default as Register } from "./register/registerComp";
