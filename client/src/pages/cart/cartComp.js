@@ -13,7 +13,7 @@ import  "../../resources/cart.css";
 
 /* Payment modules */
 import KhaltiCheckout from "khalti-checkout-web";
-import config from "./khaltiConfig";
+import getConfig from "./khaltiConfig";
 
 const TotalSection = props => (
   <>
@@ -155,10 +155,14 @@ const CartPage = () => {
       if (pList.length) {
         return message.warn("Please remove already purchased books from your cart.");
       }
-      // const CheckoutModel = new KhaltiCheckout(config);
-      // CheckoutModel.show({ amount: total * 100 }); /* "amount" should be in Paisa */
 
-      return saveBill();
+
+      /* Handle Payment */
+      const config = getConfig({
+        successHandler: saveBill,
+      });
+      const CheckoutModel = new KhaltiCheckout(config);
+      return CheckoutModel.show({ amount: total * 100 }); /* "amount" should be in Paisa */
     }
     return message.warn("Please login before you can proceed with checkout.");
   };
