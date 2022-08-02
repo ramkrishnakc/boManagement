@@ -228,7 +228,7 @@ const AppRoutes = () => {
             element={<RenderPage displayFooter={true} ChildComponent={Home} />}
           />
           <Route
-            path="/book-store"
+            path="/book-store/:bType"
             element={<RenderPage ChildComponent={BookList} />}
           />
           <Route

@@ -91,7 +91,7 @@ const update = async (req, res) => {
     const item = await InstTeamModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
-      if (item.image) {
+      if (payload.image && item.image) {
         removeFiles([item.image]);
       }
       const msg = `Team member info updated successfully!!`;

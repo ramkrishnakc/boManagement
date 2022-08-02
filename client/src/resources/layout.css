@@ -120,6 +120,7 @@ button {
 }
 .foot-col {
   padding-left: 20px;
+  padding-bottom: 15px;
 }
 .foot-col ul {
   padding: 0px;
@@ -127,6 +128,12 @@ button {
 .foot-col li {
   list-style-type: none;
   text-align: left;
+}
+.foot-col a {
+  color: antiquewhite;
+}
+.foot-col a:hover {
+  color: teal;
 }
 .contactfooter {
   padding-right: 30px;

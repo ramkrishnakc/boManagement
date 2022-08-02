@@ -1,14 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router-dom";
 import { Pagination, Input } from "antd";
 
 import { Request } from "../../library";
 import { Items } from "../../components";
-import { SET_SEARCH_OPTIONS, LIMIT } from "../../constants";
+import {
+  BOOK_TYPE_MAPPER,
+  SET_SEARCH_OPTIONS,
+  LIMIT,
+  RECENT_BOOKS,
+  TOP_BOOKS,
+  FREE_BOOKS,
+} from "../../constants";
 
 const SearchInput = Input.Search;
 
 const Book = () => {
+  const { bType } = useParams();
   const dispatch = useDispatch();
   const [itemsData, setItemsData] = useState([]);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
@@ -23,6 +32,20 @@ const Book = () => {
         keyword,
         keyFields: keyword ? ["name", "author"] : undefined,
       };
+
+      if (bType === FREE_BOOKS) {
+        searchPayload.matchCriteria = {
+          isFree: true,
+        };
+      }
+
+      if (bType === RECENT_BOOKS) {
+
+      }
+
+      if (bType === TOP_BOOKS) {
+
+      }
 
       const {data: { success, data }} = await Request.post("/api/books/search", searchPayload);
 
@@ -68,7 +91,9 @@ const Book = () => {
     <>
       <div className="category-header">
         <div className="bread-crumb">
-          <span className="b-parent hide-pointer">Books</span>
+          <span className="b-parent hide-pointer">
+            Books / {BOOK_TYPE_MAPPER[bType]}
+          </span>
         </div>
         <div className="search-wrapper">
           <SearchInput
@@ -82,8 +107,8 @@ const Book = () => {
       {!loading && (
         <Items
           showName
-          showPrice
           showAuthor
+          showPrice
           showBtn
           btnLabel="Add to cart"
           itemsData={itemsData}

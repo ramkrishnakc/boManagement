@@ -21,7 +21,7 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
-import { LOG_OUT, TOGGLE_SIDEBAR } from "../constants";
+import { APP_NAME, APP_NAME_ABBR, LOG_OUT, TOGGLE_SIDEBAR } from "../constants";
 import "../resources/layout.css";
 
 const { Header, Sider, Content } = Layout;
@@ -41,7 +41,7 @@ const DefaultLayout = (props) => {
       )}
       <Sider trigger={null} collapsible collapsed={sidbarCollapse}>
         <div className="logo">
-          <h3>{sidbarCollapse ? "LN" : "LEARN NEPAL"}</h3>
+          <h3>{sidbarCollapse ? APP_NAME_ABBR : APP_NAME}</h3>
         </div>
         <div>
           <Menu

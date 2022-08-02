@@ -40,14 +40,13 @@ const Items = props => {
             {props.showAuthor && (
               <h6><strong>Author: {" "}</strong>{item.author}</h6>
             )}
-            {props.showPrice && (
+            {!item.isFree && props.showPrice && (
               <h6 style={props.h6Style}>
                 <strong>Price: {" "}</strong>Rs. {item.price}
                 {dis && (<span className="discount-span">{" "}({dis}% off)</span>)}
               </h6>
             )}
-            {
-              props.showBtn && (
+            {!item.isFree && props.showBtn && (
                 <Button
                   block={true}
                   onClick={() => dispatch(addToCart(item))}
@@ -55,6 +54,7 @@ const Items = props => {
                   {props.btnLabel}
                 </Button>
               )}
+            {item.isFree && <span style={{ color: "red" }}>Available for Free</span>}
           </div>
         );
       })}

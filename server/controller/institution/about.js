@@ -70,7 +70,7 @@ const update = async (req, res, next) => {
     const item = await InstAboutModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
 
     if (item) {
-      if (Array.isArray(item.images) && item.images.length) {
+      if (_.get(payload, "images[0]") && _.get(item, "images[0]")) {
         removeFiles(item.images);
       }
       return sendData(res, null, "About information updated successfully");

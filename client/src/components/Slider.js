@@ -19,19 +19,25 @@ const SliderComponent = (props) => {
           return (
             <div key={item.name} className="slide-img-wrapper">
               <img src={item.image || noImage} alt= {item.name} />
-              {props.showName && (<h6>{item.name}</h6>)}
+              {props.showName && (
+                <h6>
+                  {item.name}
+                  {props.showFree && (
+                    <span style={{color: "red"}}>{" "} - Free</span>
+                  )}
+                </h6>
+              )}
               {props.showPrice && (
                 <h6 style={props.h6Style}>
                   <strong>Price: {" "}</strong>Rs. {item.price}
                   {dis && (<span className="discount-span">{" "}({dis}% off)</span>)}
                 </h6>
               )}
-              {
-                props.showBtn && (
-                  <Button onClick={() => dispatch(addToCart(item))}>
-                    {props.btnLabel}
-                  </Button>
-                )}
+              {props.showBtn && (
+                <Button onClick={() => dispatch(addToCart(item))}>
+                  {props.btnLabel}
+                </Button>
+              )}
             </div>
           );
         })}

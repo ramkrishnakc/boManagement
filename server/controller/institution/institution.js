@@ -88,7 +88,7 @@ const update = async (req, res) => {
     const item = await InstitutionModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
       /* Remove image from the folder */
-      if (item.image) {
+      if (payload.image && item.image) {
         removeFiles([item.image]);
       }
       return sendData(res, null, "Institution info updated successfully");

@@ -5,7 +5,7 @@ import { useReactToPrint } from "react-to-print";
 
 import { Request } from "../../library";
 import { TableComponent } from "../../components";
-import { TAX } from "../../constants";
+import { TAX, APP_NAME } from "../../constants";
 import { calculateTotal, getRecordTotal } from "../dashboard/helper";
 
 const SEARCH_FIELDS = ["username", "email"];
@@ -156,7 +156,7 @@ const OrderComponent = () => {
             setBill(null);
           }}
           visible={openModel}
-          title="Learn Nepal - Bill detail"
+          title={`${APP_NAME} - Bill detail`}
           footer={false}
           className="bill-model-class"
         >

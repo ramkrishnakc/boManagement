@@ -4,14 +4,20 @@ const { dateBefore, sendData, sendError } = require("../helper/lib");
 
 const getData = async (req, res) => {
   try {
-    const hrs = req.query.hrs || 24 * 30 // Recent 30 days
+    const hrs = req.query.hrs || 24 * 60 // Recent 60 days
     const mDate = dateBefore(hrs);
 
     const promises = [
       /* Get recently added books */
       BookModel.find(
-        { createdAt: { $gt: mDate } },
+        { createdAt: { $gt: mDate }, isFree: { $ne: true } },
         { _id: 1, name: 1, author: 1, image: 1, discount: 1, price: 1, createdAt: 1 },
+        { limit: 10, sort: { "createdAt": -1 } }
+      ),
+      /* Get available for free books */
+      BookModel.find(
+        { isFree: true },
+        { _id: 1, name: 1, author: 1, image: 1, createdAt: 1 },
         { limit: 10, sort: { "createdAt": -1 } }
       ),
       /* Get popular books on basis of cart */
@@ -47,9 +53,10 @@ const getData = async (req, res) => {
       CategoryModel.find({}, { _id: 1, name: 1, image: 1 }),
     ];
 
-    const [recentBooks, topBooks, categories] = await Promise.all(promises);
+    const [recentBooks, freeBooks, topBooks, categories] = await Promise.all(promises);
     const data = {
       recentBooks,
+      freeBooks,
       topBooks: topBooks.length >= 10 ? topBooks : [...topBooks, ...recentBooks.slice(0, 5)],
       categories,
     };

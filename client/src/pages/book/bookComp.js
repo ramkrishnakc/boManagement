@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { get } from "lodash";
 import { DeleteFilled, EditFilled, EyeOutlined } from "@ant-design/icons";
-import { Button, Form, Input, message, Modal, Select, Upload } from "antd";
+import { Button, Form, Input, Checkbox, message, Modal, Select, Upload } from "antd";
 
 import { Request } from "../../library";
 import { Confirm, TableComponent } from "../../components";
@@ -23,6 +23,7 @@ const BookComponent = () => {
   const [itemDetail, setItemDetail] = useState(null);
   const [searchKeyword, setSearchKeyword] = useState(""); // Search keyword
   const [confirmOpt, setOpenConfirm] = useState({}); // Handle open/close confirmation
+  const [isFree, setIsFree] = useState(false);
 
   const getAll = async (reqType = "books") => {
     try {
@@ -82,8 +83,9 @@ const BookComponent = () => {
       dataIndex: "author",
     },
     {
-      title: "Price",
+      title: "Price (RS.)",
       dataIndex: "price",
+      render: d => d ? `RS. ${d}` : <span style={{ "color": "green" }}>Free</span>,
     },
     {
       title: "Category",
@@ -101,6 +103,7 @@ const BookComponent = () => {
             className="mx-2"
             onClick={() => {
               setEditData(record);
+              setIsFree(record.isFree);
               setOpenModel(true);
             }}
           />
@@ -132,7 +135,16 @@ const BookComponent = () => {
       uriArr.push('add');
     }
 
-    const formKeys = Object.keys(data).filter(d => !["image", "pdf"].includes(d));
+    let formKeys = [];
+
+    if (isFree) {
+      /* Price, Discount e.t.c not needed for Free books */
+      formKeys = Object.keys(data)
+        .filter(d => !["image", "pdf", "isFree", "price", "discount"].includes(d));
+    } else {
+      formKeys = Object.keys(data).filter(d => !["image", "pdf", "isFree"].includes(d));
+    }
+
     const formData = new FormData();
 
     formKeys.forEach(key => {
@@ -144,6 +156,14 @@ const BookComponent = () => {
     const file = get(data, "image.file.originFileObj");
     if (file) {
       formData.append("file", file);
+    }
+
+    if (isFree) {
+      formData.append("price", 0);
+      formData.append("discount", 0);
+      formData.append("isFree", true);
+    } else {
+      formData.append("isFree", false);
     }
 
     try {
@@ -165,6 +185,7 @@ const BookComponent = () => {
 
         message.success(get(resp1, "data.message"));
         setEditData(null);
+        setIsFree(false);
         setOpenModel(false);
         getAll();
       } else {
@@ -231,6 +252,7 @@ const BookComponent = () => {
         <Modal
           onCancel={() => {
             setEditData(null);
+            setIsFree(false);
             setOpenModel(false);
             setItemDetail(null);
           }}
@@ -335,15 +357,22 @@ const BookComponent = () => {
               <Form.Item
                 name="price"
                 label="Price"
-                rules={[{ required: true, message: "" }]}
+                rules={[{ required: !isFree, message: "" }]}
               >
-                <Input type="number" />
+                <Input disabled={isFree} type="number" />
+              </Form.Item>
+              <Form.Item name="isFree" label="">
+                <span style={{ color: "blue" }}>Available for Free</span>{" "}
+                <Checkbox
+                  checked={isFree}
+                  onChange={() => setIsFree(!isFree)}
+                />
               </Form.Item>
               <Form.Item
                 name="discount"
                 label="Discount"
               >
-                <Input type="number" />
+                <Input disabled={isFree} type="number" />
               </Form.Item>
               <Form.Item name="description" label="Description">
                 <TextArea rows={2} />

@@ -55,3 +55,18 @@ export const SLIDER_OPTIONS = {
   autoplay: true,
   autoplaySpeed: 2000,
 };
+
+export const ALL_BOOKS = "all";
+export const RECENT_BOOKS = "recent";
+export const TOP_BOOKS = "top";
+export const FREE_BOOKS = "free";
+
+export const BOOK_TYPE_MAPPER = {
+  [ALL_BOOKS]: "All",
+  [RECENT_BOOKS]: "Recently Added",
+  [TOP_BOOKS]: "Top Rated",
+  [FREE_BOOKS]: "Available For Free",
+};
+
+export const APP_NAME = "Shine Education";
+export const APP_NAME_ABBR = "SE";

@@ -14,6 +14,7 @@ const allowedFields = [
   "language",
   "published",
   "description",
+  "isFree",
 ];
 
 const getById = async (req, res) => {
@@ -43,7 +44,12 @@ const getAll = async (req, res) => {
 };
 
 const actualSave = async req => {
-  if (!req.body.name || !req.body.price || !req.body.author || !req.body.category) {
+  if (
+    !req.body.name ||
+    !req.body.author ||
+    !req.body.category ||
+    (!req.body.isFree && !req.body.price)
+  ) {
     return null;
   }
 
@@ -94,7 +100,7 @@ const update = async (req, res) => {
     const item = await BookModel.findOneAndUpdate({ _id : ObjectId(req.params.id) } , payload);
     if (item) {
       /* Remove old image from the folder */
-      if (item.image) {
+      if (payload.image && item.image) {
         removeFiles([item.image]);
       }
       return sendData(res, { _id: req.params.id }, "Book info updated successfully!!");
@@ -195,6 +201,7 @@ const search = async (req, res) => {
           price: 1,
           discount: 1,
           image: 1,
+          isFree: 1,
         }
       },
       {
@@ -218,6 +225,7 @@ const search = async (req, res) => {
           price: 1,
           discount: 1,
           image: 1,
+          isFree: 1,
         }
       },
       { $match: { ...categoryCriteria }},

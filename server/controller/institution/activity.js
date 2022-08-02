@@ -92,7 +92,7 @@ const update = async (req, res) => {
     const item = await InstActivityModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
-      if (Array.isArray(item.images) && item.images.length) {
+      if (_.get(payload, "images[0]") && _.get(item, "images[0]")) {
         removeFiles(item.images);
       }
       const msg = `Activity | Event updated successfully!!`;
@@ -118,7 +118,7 @@ const remove = async (req, res) => {
     const item = await InstActivityModel.findOneAndDelete({ _id: ObjectId(req.params.id) });
 
     if (item) {
-      if (Array.isArray(item.images) && item.images.length) {
+      if (_.get(item, "images[0]")) {
         removeFiles(item.images);
       }
       return sendData(res, null, "Activity | Event removed successfully!!");

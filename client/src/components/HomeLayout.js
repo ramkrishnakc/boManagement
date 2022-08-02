@@ -6,7 +6,7 @@ import { get } from "lodash";
 import { ShoppingCartOutlined, LoginOutlined } from "@ant-design/icons";
 
 import LocalStore from "../library/localStore";
-import { LOG_OUT } from "../constants";
+import { ALL_BOOKS, LOG_OUT } from "../constants";
 import Footer from "./Footer";
 import Logo from "../resources/logo.png";
 import "../resources/layout.css";
@@ -45,7 +45,7 @@ const HomeLayout = props => {
           <Link to="/" className={getClass(["home"])}>
             Home
           </Link>
-          <Link to="/book-store" className={getClass(["book-store"])}>
+          <Link to={`/book-store/${ALL_BOOKS}`} className={getClass(["book-store"])}>
             Books
           </Link>
           <Link to="/category-store" className={getClass(["category-store"])}>

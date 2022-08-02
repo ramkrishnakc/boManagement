@@ -3,7 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { Row, Col } from "antd";
 
-import { STATIC_SLIDER_OPTIONS, SLIDER_OPTIONS, SET_CATEGORIES } from "../../constants";
+import {
+  APP_NAME,
+  STATIC_SLIDER_OPTIONS,
+  SLIDER_OPTIONS,
+  SET_CATEGORIES,
+  RECENT_BOOKS,
+  FREE_BOOKS,
+} from "../../constants";
 import { Request } from "../../library";
 import { SliderComponent } from "../../components";
 import "../../resources/home.css";
@@ -14,6 +21,7 @@ const HomeComponent = () => {
 
   const [homeData, setHomeData] = useState({
     recentBooks: [],
+    freeBooks: [],
     topBooks: [],
     categories: [],
   });
@@ -44,7 +52,7 @@ const HomeComponent = () => {
             <h1>
               Welcome to <br></br>{" "}
             </h1>
-            <h2>Learn Nepal</h2>
+            <h2>{APP_NAME}</h2>
           </Col>
           <Col span={12}>
             <h3>
@@ -57,23 +65,26 @@ const HomeComponent = () => {
         </Row>
       </div>
       {/* 1st slider section */}
-      <>
-        <div
-          className="slider-heading-div"
-          onClick={() => navigate("/book-store")}
-          title="Go to book store"
-        >
-          Recently Added
-        </div>
-        <SliderComponent
-          showBtn
-          showPrice
-          btnLabel="Add to cart"
-          wrapperClass="myslider"
-          settings={STATIC_SLIDER_OPTIONS}
-          items={homeData.recentBooks}
-        />
-      </>
+      {
+        homeData.recentBooks.length === 0 ? "" : (
+        <>
+          <div
+            className="slider-heading-div"
+            onClick={() => navigate(`/book-store/${RECENT_BOOKS}`)}
+            title="Go to book store"
+          >
+            Recently Added
+          </div>
+          <SliderComponent
+            showBtn
+            showPrice
+            btnLabel="Add to cart"
+            wrapperClass="myslider"
+            settings={STATIC_SLIDER_OPTIONS}
+            items={homeData.recentBooks}
+          />
+        </>
+      )}
       {/* 2nd slider section */}
       <>
         <div className="back-image-div recent-slider">
@@ -99,6 +110,27 @@ const HomeComponent = () => {
         </div>
       </>
       {/* 3rd slider section */}
+      {
+        homeData.freeBooks.length === 0 ? "" : (
+        <>
+          <div
+            className="slider-heading-div"
+            onClick={() => navigate(`/book-store/${FREE_BOOKS}`)}
+            title="Go to book store"
+          >
+            Available for Free
+            <sub style={{ fontSize: "12px" }}>(Login and read for free)</sub>
+          </div>
+          <SliderComponent
+            showName
+            showFree
+            wrapperClass="myslider"
+            settings={STATIC_SLIDER_OPTIONS}
+            items={homeData.freeBooks}
+          />
+        </>
+      )}
+      {/* 4th slider section */}
       <>
         <div
           className="slider-heading-div"

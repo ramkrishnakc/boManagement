@@ -92,7 +92,7 @@ const update = async (req, res) => {
     const item = await InstNoticeModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
-      if (Array.isArray(item.images) && item.images.length) {
+      if (_.get(payload, "images[0]") && _.get(item, "images[0]")) {
         removeFiles(item.images);
       }
       const msg = `Notice | Information updated successfully!!`;

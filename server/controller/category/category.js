@@ -99,7 +99,7 @@ const update = async (req, res) => {
 
     if (item) {
       /* Remove old image from the folder */
-      if (item.image) {
+      if (payload.image && item.image) {
         removeFiles([item.image]);
       }
       const msg = `Category with id: ${req.params.id}, name: ${item.name} updated successfully.`

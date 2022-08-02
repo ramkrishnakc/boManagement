@@ -92,7 +92,7 @@ const update = async (req, res) => {
     const item = await InstDepartmentModel.findOneAndUpdate({ _id : ObjectId(req.params.id) }, payload);
 
     if (item) {
-      if (item.image) {
+      if (payload.image && item.image) {
         removeFiles([item.image]);
       }
       const msg = `Department info updated successfully!!`;

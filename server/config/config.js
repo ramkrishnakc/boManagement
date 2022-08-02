@@ -15,7 +15,7 @@ module.exports = {
     socketTimeoutMS: 45000, // default: 30000, Close sockets after 45 seconds of inactivity
     family: 4, // Use IPv4, skip trying IPv6
   },
-  appName: "Learn Nepal",
+  appName: "Shine Education",
   /* For running HTTP server */
   httpOptions: {
     host: process.env.HTTP_HOST || "0.0.0.0",
